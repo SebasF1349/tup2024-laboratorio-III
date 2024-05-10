@@ -5,9 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class Cliente extends Persona {
-
   private TipoPersona tipoPersona;
-  private String banco;
   private LocalDate fechaAlta;
   private Set<Cuenta> cuentas = new HashSet<>();
 
@@ -17,14 +15,6 @@ public class Cliente extends Persona {
 
   public void setTipoPersona(TipoPersona tipoPersona) {
     this.tipoPersona = tipoPersona;
-  }
-
-  public String getBanco() {
-    return banco;
-  }
-
-  public void setBanco(String banco) {
-    this.banco = banco;
   }
 
   public LocalDate getFechaAlta() {
