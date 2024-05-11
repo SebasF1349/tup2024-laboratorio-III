@@ -41,8 +41,10 @@ public class MenuInputProcessor extends BaseInputProcessor {
           }
         case 2:
           {
+            ClienteProcessor clienteProcessor = new ClienteProcessor();
+            Cliente clienteVersionAntigua = clienteProcessor.getClienteByDni(banco);
             ClienteModifyProcessor clienteModifyProcessor = new ClienteModifyProcessor();
-            Cliente cliente = clienteModifyProcessor.modifyClienteByDni(banco);
+            Cliente cliente = clienteModifyProcessor.modifyCliente(clienteVersionAntigua);
             if (Objects.nonNull(cliente)) {
               banco.getClientes().add(cliente);
             }
