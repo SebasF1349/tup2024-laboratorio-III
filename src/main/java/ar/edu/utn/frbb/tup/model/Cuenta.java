@@ -1,36 +1,59 @@
 package ar.edu.utn.frbb.tup.model;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class Cuenta {
-  String nombre;
-  LocalDateTime fechaCreacion;
-  int balance;
+  String id;
+  LocalDateTime fechaApertura;
+  int saldo;
+  TipoCuenta tipoCuenta;
+  MonedaCuenta moneda;
+  List<Movimiento> movimientos;
 
-  public String getNombre() {
-    return nombre;
+  public LocalDateTime getFechaApertura() {
+    return fechaApertura;
   }
 
-  public Cuenta setNombre(String nombre) {
-    this.nombre = nombre;
+  public Cuenta setFechaApertura(LocalDateTime fechaCreacion) {
+    this.fechaApertura = fechaCreacion;
     return this;
   }
 
-  public LocalDateTime getFechaCreacion() {
-    return fechaCreacion;
+  public int getSaldo() {
+    return saldo;
   }
 
-  public Cuenta setFechaCreacion(LocalDateTime fechaCreacion) {
-    this.fechaCreacion = fechaCreacion;
+  public Cuenta setSaldo(int balance) {
+    this.saldo = balance;
     return this;
   }
 
-  public int getBalance() {
-    return balance;
+  public TipoCuenta getTipoCuenta() {
+    return tipoCuenta;
   }
 
-  public Cuenta setBalance(int balance) {
-    this.balance = balance;
-    return this;
+  public void setTipoCuenta(TipoCuenta tipoCuenta) {
+    this.tipoCuenta = tipoCuenta;
+  }
+
+  public MonedaCuenta getMoneda() {
+    return moneda;
+  }
+
+  public void setMoneda(MonedaCuenta moneda) {
+    this.moneda = moneda;
+  }
+
+  public List<Movimiento> getMovimientos() {
+    return movimientos;
+  }
+
+  public void setMovimientos(List<Movimiento> movimientos) {
+    this.movimientos = movimientos;
+  }
+
+  public boolean addMovimiento(Movimiento movimiento) {
+    return this.movimientos.add(movimiento);
   }
 }
