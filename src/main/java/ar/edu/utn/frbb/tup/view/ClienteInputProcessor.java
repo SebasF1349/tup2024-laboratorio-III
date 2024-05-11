@@ -47,6 +47,15 @@ public class ClienteInputProcessor extends BaseInputProcessor {
     LocalDate fechaAlta = this.getDateInput("Ingrese la fecha de alta del cliente:");
     cliente.setFechaAlta(fechaAlta);
 
+    System.out.println(cliente);
+    String confirmacion =
+        getStringInput("¿Los datos del nuevo cliente son correctos? [N] para editar:");
+
+    if (confirmacion.equalsIgnoreCase("n")) {
+      ClienteModifyProcessor clienteModifyProcessor = new ClienteModifyProcessor();
+      cliente = clienteModifyProcessor.modifyCliente(cliente);
+    }
+
     clearScreen();
     return cliente;
   }
