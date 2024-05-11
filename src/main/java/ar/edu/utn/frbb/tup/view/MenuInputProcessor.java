@@ -7,8 +7,6 @@ import java.util.List;
 import java.util.Objects;
 
 public class MenuInputProcessor extends BaseInputProcessor {
-  ClienteInputProcessor clienteInputProcessor = new ClienteInputProcessor();
-  ClienteModifyProcessor clienteModifyProcessor = new ClienteModifyProcessor();
   boolean exit = false;
 
   public void renderMenu(Banco banco) {
@@ -17,6 +15,7 @@ public class MenuInputProcessor extends BaseInputProcessor {
         Arrays.asList(
             "Crear un nuevo Cliente",
             "Modificar un Cliente existente",
+            "Eliminar Cliente",
             "Crear una nueva Cuenta",
             "Generar un Movimiento");
 
@@ -35,16 +34,24 @@ public class MenuInputProcessor extends BaseInputProcessor {
       switch (choice) {
         case 1:
           {
+            ClienteInputProcessor clienteInputProcessor = new ClienteInputProcessor();
             Cliente cliente = clienteInputProcessor.ingresarCliente();
             banco.getClientes().add(cliente);
             break;
           }
         case 2:
           {
+            ClienteModifyProcessor clienteModifyProcessor = new ClienteModifyProcessor();
             Cliente cliente = clienteModifyProcessor.modifyClienteByDni(banco);
             if (Objects.nonNull(cliente)) {
               banco.getClientes().add(cliente);
             }
+            break;
+          }
+        case 3:
+          {
+            ClienteDeleteProcessor clienteDeleteProcessor = new ClienteDeleteProcessor();
+            clienteDeleteProcessor.deleteCliente(banco);
             break;
           }
           //            case 2:
