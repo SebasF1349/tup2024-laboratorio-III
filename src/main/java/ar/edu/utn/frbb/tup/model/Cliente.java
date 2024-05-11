@@ -32,4 +32,25 @@ public class Cliente extends Persona {
   public void addCuenta(Cuenta cuenta) {
     this.cuentas.add(cuenta);
   }
+
+  @Override
+  public String toString() {
+    return "Cliente\nApellido y nombre: "
+        + this.getApellido()
+        + ", "
+        + this.getNombre()
+        + "\nDNI: "
+        + this.getDni()
+        + "\nFecha de Nacimiento: "
+        + this.getFechaNacimiento()
+        + this.getDireccion()
+        + "\nTeléfono: "
+        + this.getNroTelefono()
+        + "\nTipo de Persona: "
+        + this.tipoPersona
+        + "\nFecha de Alta: "
+        + this.fechaAlta
+        + "\nCuentas: "
+        + this.cuentas;
+  }
 }

@@ -4,6 +4,7 @@ public class Direccion {
   private String calle;
   private String numero;
   private String departamento;
+  private String ciudad;
 
   public String getCalle() {
     return calle;
@@ -29,9 +30,23 @@ public class Direccion {
     this.departamento = departamento;
   }
 
-  public Direccion(String calle, String numero, String departamento) {
+  public String getCiudad() {
+    return ciudad;
+  }
+
+  public void setCiudad(String ciudad) {
+    this.ciudad = ciudad;
+  }
+
+  public Direccion(String calle, String numero, String departamento, String ciudad) {
     this.calle = calle;
     this.numero = numero;
     this.departamento = departamento;
+    this.ciudad = ciudad;
+  }
+
+  @Override
+  public String toString() {
+    return "Direccion: " + this.getCalle() + " " + this.getNumero() + ", " + this.getCiudad();
   }
 }
