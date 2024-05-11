@@ -1,25 +1,11 @@
 package ar.edu.utn.frbb.tup.view;
 
-import ar.edu.utn.frbb.tup.model.Banco;
 import ar.edu.utn.frbb.tup.model.Cliente;
 import ar.edu.utn.frbb.tup.model.Direccion;
 import ar.edu.utn.frbb.tup.model.TipoPersona;
 import java.time.LocalDate;
-import java.util.Objects;
 
 public class ClienteModifyProcessor extends BaseInputProcessor {
-
-  public Cliente modifyClienteByDni(Banco banco) {
-    String dni = this.getStringInput("Ingrese el dni del usuario a modificar:");
-    Cliente cliente = banco.getClienteByDni(dni);
-    if (Objects.isNull(cliente)) {
-      System.out.println("Cliente no encontrado.");
-      scanner.nextLine();
-      return null;
-    }
-    return modifyCliente(cliente);
-  }
-
   public Cliente modifyCliente(Cliente cliente) {
 
     String enBlanco = " (o deje en blanca para mantener el valor actual):";
