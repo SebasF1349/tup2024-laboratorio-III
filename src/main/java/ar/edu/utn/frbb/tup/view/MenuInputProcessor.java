@@ -2,6 +2,8 @@ package ar.edu.utn.frbb.tup.view;
 
 import ar.edu.utn.frbb.tup.model.Banco;
 import ar.edu.utn.frbb.tup.model.Cliente;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 public class MenuInputProcessor extends BaseInputProcessor {
@@ -11,14 +13,21 @@ public class MenuInputProcessor extends BaseInputProcessor {
 
   public void renderMenu(Banco banco) {
 
+    List<String> menuOptions =
+        Arrays.asList(
+            "Crear un nuevo Cliente",
+            "Modificar un Cliente existente",
+            "Crear una nueva Cuenta",
+            "Generar un Movimiento");
+
     while (!exit) {
       System.out.println("Bienvenido a la aplicación de Banco!");
-      System.out.println("1. Crear un nuevo Cliente");
-      System.out.println("2. Modificar un Cliente existente");
-      System.out.println("3. Crear una nueva Cuenta");
-      System.out.println("4. Generar un movimiento");
-      System.out.println("5. Salir");
-      System.out.print("Ingrese su opción (1-4): ");
+      System.out.println("Elija la operación que desea realizar.");
+      for (int i = 0; i < menuOptions.size(); i++) {
+        System.out.println((i + 1) + ". " + menuOptions.get(i));
+      }
+      System.out.println((menuOptions.size() + 1) + ". Salir");
+      System.out.print("Ingrese su opción (1-" + (menuOptions.size() + 1) + "): ");
 
       int choice = scanner.nextInt();
       scanner.nextLine(); // Consume newline character
