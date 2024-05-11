@@ -1,15 +1,28 @@
 package ar.edu.utn.frbb.tup.model;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class Cuenta {
-  String id;
+  int id;
   LocalDateTime fechaApertura;
-  int saldo;
+  double saldo;
   TipoCuenta tipoCuenta;
   MonedaCuenta moneda;
   List<Movimiento> movimientos;
+
+  public Cuenta(TipoCuenta tipoCuenta, MonedaCuenta moneda) {
+    Random random = new Random();
+    int id = random.nextInt(999999);
+    this.id = id;
+    this.fechaApertura = LocalDateTime.now();
+    this.saldo = 0;
+    this.tipoCuenta = tipoCuenta;
+    this.moneda = moneda;
+    this.movimientos = new ArrayList<>();
+  }
 
   public LocalDateTime getFechaApertura() {
     return fechaApertura;
@@ -20,7 +33,7 @@ public class Cuenta {
     return this;
   }
 
-  public int getSaldo() {
+  public double getSaldo() {
     return saldo;
   }
 

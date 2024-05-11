@@ -2,6 +2,7 @@ package ar.edu.utn.frbb.tup.view;
 
 import ar.edu.utn.frbb.tup.model.Banco;
 import ar.edu.utn.frbb.tup.model.Cliente;
+import ar.edu.utn.frbb.tup.model.Cuenta;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -56,13 +57,24 @@ public class MenuInputProcessor extends BaseInputProcessor {
             clienteDeleteProcessor.deleteCliente(banco);
             break;
           }
+        case 4:
+          {
+            ClienteProcessor clienteProcessor = new ClienteProcessor();
+            Cliente cliente = clienteProcessor.getClienteByDni(banco);
+            if (Objects.nonNull(cliente)) {
+              CuentaCreateProcessor cuentaCreateProcessor = new CuentaCreateProcessor();
+              Cuenta cuenta = cuentaCreateProcessor.createCuenta();
+              cliente.addCuenta(cuenta);
+            }
+            break;
+          }
           //            case 2:
           //                createAccount();
           //                break;
           //            case 3:
           //                performTransaction();
           //                break;
-        case 4:
+        case 10:
           exit = true;
           break;
         default:
