@@ -5,7 +5,7 @@ import ar.edu.utn.frbb.tup.model.Direccion;
 import ar.edu.utn.frbb.tup.model.TipoPersona;
 import java.time.LocalDate;
 
-public class ClienteInputProcessor extends BaseInputProcessor {
+public class ClienteCreateProcessor extends BaseInputProcessor {
 
   public Cliente ingresarCliente() {
 
@@ -35,12 +35,8 @@ public class ClienteInputProcessor extends BaseInputProcessor {
     LocalDate fechaNacimiento = this.getDateInput("Ingrese la fecha de nacimiento del cliente:");
     cliente.setFechaNacimiento(fechaNacimiento);
 
-    System.out.println("Ingrese el tipo de persona Física[F] o Jurídica[J]:");
-    String tipoPersonaStr = scanner.nextLine().toUpperCase();
-    while (!tipoPersonaStr.equalsIgnoreCase("F") && !tipoPersonaStr.equalsIgnoreCase("J")) {
-      System.out.println("Tipo de persona inválido. Ingrese F (FÍSICA) o J (JURIDICA):");
-      tipoPersonaStr = scanner.nextLine().toUpperCase();
-    }
+    String tipoPersonaStr =
+        this.getEnumInput("Ingrese el tipo de persona Física[F] o Jurídica[J]:", "F", "J");
     TipoPersona tipoPersona = TipoPersona.fromString(tipoPersonaStr);
     cliente.setTipoPersona(tipoPersona);
 

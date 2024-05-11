@@ -31,4 +31,15 @@ public class BaseInputProcessor {
     }
     return fecha;
   }
+
+  public String getEnumInput(String question, String opt1, String opt2) {
+    System.out.println(question);
+    String enumValue = scanner.nextLine();
+    while (!enumValue.equalsIgnoreCase(opt1) && !enumValue.equalsIgnoreCase(opt2)) {
+      System.out.println("Valor inválido");
+      System.out.println(question);
+      enumValue = scanner.nextLine().toUpperCase();
+    }
+    return enumValue;
+  }
 }
