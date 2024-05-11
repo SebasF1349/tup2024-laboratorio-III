@@ -13,4 +13,13 @@ public class Banco {
   public void setClientes(List<Cliente> clientes) {
     this.clientes = clientes;
   }
+
+  public Cliente getClienteByDni(String dni) {
+    for (Cliente cliente : clientes) {
+      if (cliente.getDni().equals(dni)) {
+        return cliente;
+      }
+    }
+    return null;
+  }
 }
