@@ -1,6 +1,7 @@
 package ar.edu.utn.frbb.tup.view;
 
 import ar.edu.utn.frbb.tup.model.Cliente;
+import ar.edu.utn.frbb.tup.model.Cuenta;
 import ar.edu.utn.frbb.tup.model.Direccion;
 import ar.edu.utn.frbb.tup.model.TipoPersona;
 import java.time.LocalDate;
@@ -50,6 +51,15 @@ public class ClienteCreateProcessor extends BaseInputProcessor {
     if (confirmacion.equalsIgnoreCase("n")) {
       ClienteModifyProcessor clienteModifyProcessor = new ClienteModifyProcessor();
       cliente = clienteModifyProcessor.modifyCliente(cliente);
+    }
+
+    String crearCuenta =
+        getStringInput("¿Desea crear una Cuenta para el nuevo Cliente? [Y] para crear Cuenta:");
+
+    if (crearCuenta.equalsIgnoreCase("n")) {
+      CuentaCreateProcessor cuentaCreateProcessor = new CuentaCreateProcessor();
+      Cuenta cuenta = cuentaCreateProcessor.createCuenta();
+      cliente.addCuenta(cuenta);
     }
 
     clearScreen();
