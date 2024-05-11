@@ -34,7 +34,7 @@ public class MenuInputProcessor extends BaseInputProcessor {
       switch (choice) {
         case 1:
           {
-            ClienteInputProcessor clienteInputProcessor = new ClienteInputProcessor();
+            ClienteCreateProcessor clienteInputProcessor = new ClienteCreateProcessor();
             Cliente cliente = clienteInputProcessor.ingresarCliente();
             banco.getClientes().add(cliente);
             break;
