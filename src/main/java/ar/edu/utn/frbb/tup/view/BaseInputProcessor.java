@@ -18,12 +18,12 @@ public class BaseInputProcessor {
     for (int i = 0; i < menuOptions.size(); i++) {
       System.out.println((i + 1) + ". " + menuOptions.get(i));
     }
-    System.out.print("Ingrese su opción (1-" + (menuOptions.size() + 1) + "): ");
-    String optValue = scanner.nextLine();
+    System.out.println("Ingrese su opción (1-" + menuOptions.size() + "): ");
     boolean optValida = false;
     int opt = 0;
     while (!optValida) {
       try {
+        String optValue = scanner.nextLine();
         opt = Integer.parseInt(optValue);
         if (opt > 0 && opt <= menuOptions.size()) {
           optValida = true;
@@ -32,8 +32,7 @@ public class BaseInputProcessor {
           optValue = scanner.nextLine();
         }
       } catch (Exception e) {
-        System.out.print(
-            "Opción inválida. Ingrese su opción (1-" + (menuOptions.size() + 1) + "): ");
+        System.out.println("Opción inválida. Ingrese su opción (1-" + menuOptions.size() + "): ");
       }
     }
     return opt;

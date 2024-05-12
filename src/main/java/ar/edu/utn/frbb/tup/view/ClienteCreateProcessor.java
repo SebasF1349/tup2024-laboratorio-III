@@ -56,7 +56,7 @@ public class ClienteCreateProcessor extends ClienteProcessor {
     String crearCuenta =
         getStringInput("¿Desea crear una Cuenta para el nuevo Cliente? [Y] para crear Cuenta:");
 
-    if (crearCuenta.equalsIgnoreCase("n")) {
+    if (crearCuenta.equalsIgnoreCase("y")) {
       CuentaCreateProcessor cuentaCreateProcessor = new CuentaCreateProcessor();
       Cuenta cuenta = cuentaCreateProcessor.createCuenta();
       cliente.addCuenta(cuenta);
