@@ -77,6 +77,6 @@ public class Cuenta {
 
   @Override
   public String toString() {
-    return "ID:" + id + ", Tipo de cuenta:" + tipoCuenta + ", Moneda:" + moneda;
+    return "ID: " + id + ", Tipo de cuenta: " + tipoCuenta + ", Moneda: " + moneda;
   }
 }
