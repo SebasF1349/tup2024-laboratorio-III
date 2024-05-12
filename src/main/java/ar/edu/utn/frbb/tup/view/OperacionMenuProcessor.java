@@ -64,7 +64,10 @@ public class OperacionMenuProcessor extends BaseInputProcessor {
             cuenta.addMovimiento(transferencia);
             Transferencia transferenciaRecibido =
                 new Transferencia(
-                    transferencia.getMonto(), transferencia.isEsCuentaPropia(), cuenta.getId());
+                    transferencia.getMonto(),
+                    transferencia.isEsCuentaPropia(),
+                    cuenta.getId(),
+                    true);
             Cuenta clienteReceptor =
                 Clientes.getInstance().getCuentaById(transferencia.getIdCuentaDestino());
             clienteReceptor.addMovimiento(transferenciaRecibido);
