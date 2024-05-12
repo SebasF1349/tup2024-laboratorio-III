@@ -6,12 +6,12 @@ import java.util.List;
 import java.util.Random;
 
 public class Cuenta {
-  int id;
-  LocalDateTime fechaApertura;
-  double saldo;
-  TipoCuenta tipoCuenta;
-  MonedaCuenta moneda;
-  List<Movimiento> movimientos;
+  private int id;
+  private LocalDateTime fechaApertura;
+  private double saldo;
+  private TipoCuenta tipoCuenta;
+  private MonedaCuenta moneda;
+  private List<Movimiento> movimientos;
 
   public Cuenta(TipoCuenta tipoCuenta, MonedaCuenta moneda) {
     Random random = new Random();
@@ -68,5 +68,9 @@ public class Cuenta {
 
   public boolean addMovimiento(Movimiento movimiento) {
     return this.movimientos.add(movimiento);
+  }
+
+  public int getId() {
+    return id;
   }
 }

@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class MenuInputProcessor extends BaseInputProcessor {
-  boolean exit = false;
+  private boolean exit = false;
 
   public void renderMenu(Banco banco) {
 
