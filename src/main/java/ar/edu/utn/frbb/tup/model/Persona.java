@@ -30,8 +30,9 @@ public class Persona {
     return dni;
   }
 
-  public void setDni(String dni) {
+  public boolean setDni(String dni) {
     this.dni = dni;
+    return true;
   }
 
   public LocalDate getFechaNacimiento() {

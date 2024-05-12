@@ -33,6 +33,9 @@ public class MenuInputProcessor extends ClienteProcessor {
           {
             ClienteCreateProcessor clienteInputProcessor = new ClienteCreateProcessor();
             Cliente cliente = clienteInputProcessor.ingresarCliente();
+            if (Objects.isNull(cliente)) {
+              break;
+            }
             clientes.getClientes().add(cliente);
             break;
           }
