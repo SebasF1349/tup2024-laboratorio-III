@@ -23,12 +23,12 @@ public class MovimientoProcessor extends BaseInputProcessor {
 
   private int getCuentaDestino() {
     System.out.println("Ingrese el id de la cuenta destino:");
-    String cuentaStr = scanner.nextLine();
     boolean cuentaValida = false;
     int cuentaId = 0;
     while (!cuentaValida) {
       try {
         // Note: Falta revisar que el id existe
+        String cuentaStr = scanner.nextLine();
         cuentaId = Integer.parseInt(cuentaStr);
         cuentaValida = true;
       } catch (Exception e) {
