@@ -31,6 +31,7 @@ public class OperacionMenuProcessor extends BaseInputProcessor {
           {
             ConsultaSaldo consultaSaldo = new ConsultaSaldo();
             System.out.println(consultaSaldo.imprimir(cuenta.getSaldo(), cuenta.getMoneda()));
+            scanner.nextLine();
             break;
           }
         case 2:
