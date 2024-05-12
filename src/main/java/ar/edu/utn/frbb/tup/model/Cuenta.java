@@ -1,9 +1,9 @@
 package ar.edu.utn.frbb.tup.model;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Random;
+import java.util.Set;
 
 public class Cuenta {
   private int id;
@@ -11,7 +11,7 @@ public class Cuenta {
   private double saldo;
   private TipoCuenta tipoCuenta;
   private MonedaCuenta moneda;
-  private List<Movimiento> movimientos;
+  private Set<Movimiento> movimientos;
 
   public Cuenta(TipoCuenta tipoCuenta, MonedaCuenta moneda) {
     Random random = new Random();
@@ -21,7 +21,7 @@ public class Cuenta {
     this.saldo = 0;
     this.tipoCuenta = tipoCuenta;
     this.moneda = moneda;
-    this.movimientos = new ArrayList<>();
+    this.movimientos = new HashSet<>();
   }
 
   public LocalDateTime getFechaApertura() {
@@ -58,19 +58,25 @@ public class Cuenta {
     this.moneda = moneda;
   }
 
-  public List<Movimiento> getMovimientos() {
+  public Set<Movimiento> getMovimientos() {
     return movimientos;
   }
 
-  public void setMovimientos(List<Movimiento> movimientos) {
+  public void setMovimientos(Set<Movimiento> movimientos) {
     this.movimientos = movimientos;
   }
 
-  public boolean addMovimiento(Movimiento movimiento) {
-    return this.movimientos.add(movimiento);
+  public void addMovimiento(Movimiento movimiento) {
+    this.saldo = movimiento.actualizarCuentaMonto(saldo);
+    this.movimientos.add(movimiento);
   }
 
   public int getId() {
     return id;
+  }
+
+  @Override
+  public String toString() {
+    return "ID:" + id + ", Tipo de cuenta:" + tipoCuenta + ", Moneda:" + moneda;
   }
 }
