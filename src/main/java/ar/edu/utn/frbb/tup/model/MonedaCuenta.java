@@ -23,4 +23,15 @@ public enum MonedaCuenta {
     throw new IllegalArgumentException(
         "No se pudo encontrar un MonedaCuenta con la descripción: " + text);
   }
+
+  public String getSymbol() {
+    switch (this) {
+      case PESOS_ARGENTINOS:
+        return "$";
+      case DOLARES_AMERICANOS:
+        return "us$";
+      default:
+        return "Moneda not found";
+    }
+  }
 }
