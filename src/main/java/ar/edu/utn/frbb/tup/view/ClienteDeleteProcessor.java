@@ -4,7 +4,7 @@ import ar.edu.utn.frbb.tup.model.Banco;
 import ar.edu.utn.frbb.tup.model.Cliente;
 import java.util.Objects;
 
-public class ClienteDeleteProcessor extends BaseInputProcessor {
+public class ClienteDeleteProcessor extends ClienteProcessor {
   public void deleteCliente(Banco banco) {
     String dni = this.getStringInput("Ingrese el dni del Cliente a eliminar:");
     Cliente cliente = banco.getClienteByDni(dni);

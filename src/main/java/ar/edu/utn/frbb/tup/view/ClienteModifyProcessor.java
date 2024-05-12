@@ -5,7 +5,7 @@ import ar.edu.utn.frbb.tup.model.Direccion;
 import ar.edu.utn.frbb.tup.model.TipoPersona;
 import java.time.LocalDate;
 
-public class ClienteModifyProcessor extends BaseInputProcessor {
+public class ClienteModifyProcessor extends ClienteProcessor {
   public Cliente modifyCliente(Cliente cliente) {
 
     String enBlanco = " (o deje en blanco para mantener el valor actual):";
