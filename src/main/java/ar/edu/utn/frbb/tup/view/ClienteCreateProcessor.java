@@ -6,7 +6,7 @@ import ar.edu.utn.frbb.tup.model.Direccion;
 import ar.edu.utn.frbb.tup.model.TipoPersona;
 import java.time.LocalDate;
 
-public class ClienteCreateProcessor extends BaseInputProcessor {
+public class ClienteCreateProcessor extends ClienteProcessor {
 
   public Cliente ingresarCliente() {
 
