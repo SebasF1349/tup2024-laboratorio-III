@@ -23,4 +23,16 @@ public enum TipoCuenta {
     throw new IllegalArgumentException(
         "No se pudo encontrar un TipoCuenta con la descripción: " + text);
   }
+
+  @Override
+  public String toString() {
+    switch (this) {
+      case CUENTA_CORRIENTE:
+        return "Cuenta Corriente";
+      case CAJA_AHORROS:
+        return "Caja de Ahorros";
+      default:
+        return null;
+    }
+  }
 }

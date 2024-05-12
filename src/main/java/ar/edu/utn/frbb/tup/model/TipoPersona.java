@@ -23,4 +23,16 @@ public enum TipoPersona {
     throw new IllegalArgumentException(
         "No se pudo encontrar un TipoPersona con la descripción: " + text);
   }
+
+  @Override
+  public String toString() {
+    switch (this) {
+      case PERSONA_FISICA:
+        return "Persona Física";
+      case PERSONA_JURIDICA:
+        return "Persona Jurídica";
+      default:
+        return null;
+    }
+  }
 }

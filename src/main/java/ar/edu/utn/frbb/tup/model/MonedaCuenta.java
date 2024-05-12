@@ -34,4 +34,16 @@ public enum MonedaCuenta {
         return "Moneda not found";
     }
   }
+
+  @Override
+  public String toString() {
+    switch (this) {
+      case PESOS_ARGENTINOS:
+        return "Pesos Argentinos";
+      case DOLARES_AMERICANOS:
+        return "Dólares Americanos";
+      default:
+        return null;
+    }
+  }
 }

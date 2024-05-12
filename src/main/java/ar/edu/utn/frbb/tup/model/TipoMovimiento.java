@@ -23,4 +23,16 @@ public enum TipoMovimiento {
     throw new IllegalArgumentException(
         "No se pudo encontrar un TipoMovimiento con la descripción: " + text);
   }
+
+  @Override
+  public String toString() {
+    switch (this) {
+      case DEBITO:
+        return "Débito";
+      case CREDITO:
+        return "Crédito";
+      default:
+        return null;
+    }
+  }
 }
