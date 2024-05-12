@@ -1,13 +1,14 @@
 package ar.edu.utn.frbb.tup.view;
 
-import ar.edu.utn.frbb.tup.model.Banco;
 import ar.edu.utn.frbb.tup.model.Cliente;
+import ar.edu.utn.frbb.tup.model.Clientes;
 import java.util.Objects;
 
 public class ClienteDeleteProcessor extends ClienteProcessor {
-  public void deleteCliente(Banco banco) {
+  public void deleteCliente() {
+    Clientes clientes = Clientes.getInstance();
     String dni = this.getStringInput("Ingrese el dni del Cliente a eliminar:");
-    Cliente cliente = banco.getClienteByDni(dni);
+    Cliente cliente = clientes.getClienteByDni(dni);
     if (Objects.isNull(cliente)) {
       System.out.println("Cliente no encontrado.");
     } else {
@@ -19,7 +20,7 @@ public class ClienteDeleteProcessor extends ClienteProcessor {
               + "? Ingrese S para confirmar");
       String response = scanner.nextLine();
       if (response.equalsIgnoreCase("s")) {
-        banco.deleteCliente(cliente);
+        clientes.deleteCliente(cliente);
         System.out.println("Cliente eliminado.");
       } else {
         System.out.println("El Cliente no ha sido eliminado.");

@@ -1,10 +1,15 @@
 package ar.edu.utn.frbb.tup.view;
 
+import ar.edu.utn.frbb.tup.model.Cliente;
+import ar.edu.utn.frbb.tup.model.Clientes;
+import ar.edu.utn.frbb.tup.model.Cuenta;
 import ar.edu.utn.frbb.tup.model.Deposito;
 import ar.edu.utn.frbb.tup.model.Retiro;
 import ar.edu.utn.frbb.tup.model.Transferencia;
+import java.util.Objects;
+import java.util.Set;
 
-public class MovimientoProcessor extends BaseInputProcessor {
+public class MovimientoProcessor extends ClienteProcessor {
   private double getMonto() {
     System.out.println("Ingrese monto:");
     String montoStr = scanner.nextLine();
@@ -48,10 +53,33 @@ public class MovimientoProcessor extends BaseInputProcessor {
     return new Deposito(monto);
   }
 
-  public Transferencia createTransferencia() {
-    double monto = this.getMonto();
+  public Transferencia createTransferencia(Cuenta cuenta) {
     boolean esCuentaPropia = this.getBooleanInput("¿Desea transferir a una cuenta propia?");
-    int idCuentaDestino = this.getCuentaDestino();
+    Clientes clientes = Clientes.getInstance();
+    Cliente cliente = clientes.getClienteByCuentaId(cuenta.getId());
+    int idCuentaDestino;
+    if (esCuentaPropia) {
+      Set<Cuenta> cuentas = Set.copyOf(cliente.getCuentas());
+      cuentas.remove(cuenta);
+      if (cuentas.size() == 0) {
+        System.out.println("El Cliente no posee otras Cuentas para transferir");
+        scanner.nextLine();
+        return null;
+      }
+      Cuenta cuentaDestino = this.getCuentaId(cuentas);
+      if (Objects.isNull(cuentaDestino)) {
+        return null;
+      }
+      idCuentaDestino = cuentaDestino.getId();
+    } else {
+      idCuentaDestino = this.getCuentaDestino();
+      if (Objects.isNull(clientes.getClienteByCuentaId(idCuentaDestino))) {
+        System.out.println("La cuenta de destino no existe.");
+        scanner.nextLine();
+        return null;
+      }
+    }
+    double monto = this.getMonto();
     return new Transferencia(monto, esCuentaPropia, idCuentaDestino);
   }
 }

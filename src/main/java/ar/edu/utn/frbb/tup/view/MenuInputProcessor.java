@@ -1,18 +1,17 @@
 package ar.edu.utn.frbb.tup.view;
 
-import ar.edu.utn.frbb.tup.model.Banco;
 import ar.edu.utn.frbb.tup.model.Cliente;
+import ar.edu.utn.frbb.tup.model.Clientes;
 import ar.edu.utn.frbb.tup.model.Cuenta;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
-public class MenuInputProcessor extends BaseInputProcessor {
+public class MenuInputProcessor extends ClienteProcessor {
   private boolean exit = false;
 
-  public void renderMenu(Banco banco) {
+  public void renderMenu() {
+    Clientes clientes = Clientes.getInstance();
 
     clearScreen();
 
@@ -34,13 +33,13 @@ public class MenuInputProcessor extends BaseInputProcessor {
           {
             ClienteCreateProcessor clienteInputProcessor = new ClienteCreateProcessor();
             Cliente cliente = clienteInputProcessor.ingresarCliente();
-            banco.getClientes().add(cliente);
+            clientes.getClientes().add(cliente);
             break;
           }
         case 2:
           {
             ClienteProcessor clienteProcessor = new ClienteProcessor();
-            Cliente clienteVersionAntigua = clienteProcessor.getClienteByDni(banco);
+            Cliente clienteVersionAntigua = clienteProcessor.getClienteByDni();
             if (Objects.isNull(clienteVersionAntigua)) {
               break;
             }
@@ -49,51 +48,45 @@ public class MenuInputProcessor extends BaseInputProcessor {
             if (Objects.isNull(cliente)) {
               break;
             }
-            banco.getClientes().add(cliente);
+            clientes.getClientes().add(cliente);
             break;
           }
         case 3:
           {
             ClienteDeleteProcessor clienteDeleteProcessor = new ClienteDeleteProcessor();
-            clienteDeleteProcessor.deleteCliente(banco);
+            clienteDeleteProcessor.deleteCliente();
             break;
           }
         case 4:
           {
             ClienteProcessor clienteProcessor = new ClienteProcessor();
-            Cliente cliente = clienteProcessor.getClienteByDni(banco);
+            Cliente cliente = clienteProcessor.getClienteByDni();
             if (Objects.isNull(cliente)) {
               break;
             }
             CuentaCreateProcessor cuentaCreateProcessor = new CuentaCreateProcessor();
             Cuenta cuenta = cuentaCreateProcessor.createCuenta();
-            cliente.addCuenta(cuenta);
+            boolean success = cliente.addCuenta(cuenta);
+            if (!success) {
+              System.out.println(
+                  "No se pudo agregar la cuenta. Es posible que la cuenta ya esté asociada a otro"
+                      + " cliente.");
+            }
             break;
           }
         case 5:
           {
             ClienteProcessor clienteProcessor = new ClienteProcessor();
-            Cliente cliente = clienteProcessor.getClienteByDni(banco);
+            Cliente cliente = clienteProcessor.getClienteByDni();
             if (Objects.isNull(cliente)) {
               break;
             }
-            Set<Cuenta> cuentasSet = cliente.getCuentas();
-            if (cuentasSet.isEmpty()) {
-              System.out.println(
-                  "El cliente selecionado no tiene cuentas sobre las cuales operar.");
-              scanner.nextLine();
+            Cuenta cuenta = this.getCuentaId(cliente.getCuentas());
+            if (Objects.isNull(cuenta)) {
               break;
             }
-            List<Cuenta> cuentasList = new ArrayList<>();
-            List<String> cuentasStr = new ArrayList<>();
-            for (Cuenta cuenta : cuentasSet) {
-              cuentasList.add(cuenta);
-              cuentasStr.add(cuenta.toString());
-            }
-            int cuentaChoice =
-                this.getMultipleOptionsInput("Elija la cuenta sobre la cual operar:", cuentasStr);
             OperacionMenuProcessor operacionMenuProcessor = new OperacionMenuProcessor();
-            operacionMenuProcessor.renderMenu(cuentasList.get(cuentaChoice - 1));
+            operacionMenuProcessor.renderMenu(cuenta);
             break;
           }
         case 6:

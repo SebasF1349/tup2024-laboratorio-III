@@ -59,7 +59,12 @@ public class ClienteCreateProcessor extends ClienteProcessor {
     if (crearCuenta.equalsIgnoreCase("y")) {
       CuentaCreateProcessor cuentaCreateProcessor = new CuentaCreateProcessor();
       Cuenta cuenta = cuentaCreateProcessor.createCuenta();
-      cliente.addCuenta(cuenta);
+      boolean success = cliente.addCuenta(cuenta);
+      if (!success) {
+        System.out.println(
+            "No se pudo agregar la cuenta. Es posible que la cuenta ya esté asociada a otro"
+                + " cliente.");
+      }
     }
 
     clearScreen();
