@@ -65,8 +65,23 @@ public class BaseInputProcessor {
     while (!enumValue.equalsIgnoreCase(opt1) && !enumValue.equalsIgnoreCase(opt2)) {
       System.out.println("Valor inválido");
       System.out.println(question);
-      enumValue = scanner.nextLine().toUpperCase();
+      enumValue = scanner.nextLine();
     }
     return enumValue;
+  }
+
+  public boolean getBooleanInput(String question) {
+    String yesOrNo = " Ingrese Si[S] o No[N].";
+    System.out.println(question + yesOrNo);
+    String answer = scanner.nextLine().toUpperCase();
+    while (!answer.equals("S")
+        && !answer.equals("N")
+        && !answer.equals("SI")
+        && !answer.equals("NO")) {
+      System.out.println("Valor inválido");
+      System.out.println(question + yesOrNo);
+      answer = scanner.nextLine().toUpperCase();
+    }
+    return answer.equals("S") || answer.equals("SI");
   }
 }
