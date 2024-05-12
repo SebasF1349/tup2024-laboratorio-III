@@ -80,6 +80,6 @@ public class MovimientoProcessor extends ClienteProcessor {
       }
     }
     double monto = this.getMonto();
-    return new Transferencia(monto, esCuentaPropia, idCuentaDestino);
+    return new Transferencia(monto, esCuentaPropia, idCuentaDestino, false);
   }
 }
