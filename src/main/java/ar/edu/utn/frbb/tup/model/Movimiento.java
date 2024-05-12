@@ -1,30 +1,27 @@
 package ar.edu.utn.frbb.tup.model;
 
 import java.time.LocalDateTime;
+import java.util.Random;
 
 public abstract class Movimiento extends Operacion {
   private int id;
   private LocalDateTime diaHora;
   private double monto;
 
-  public void setId(int id) {
+  public Movimiento(double monto) {
+    Random random = new Random();
+    int id = random.nextInt(999999);
     this.id = id;
+    this.diaHora = LocalDateTime.now();
+    this.monto = monto;
   }
 
   public int getId() {
     return id;
   }
 
-  public void setDiaHora(LocalDateTime diaHora) {
-    this.diaHora = diaHora;
-  }
-
   public LocalDateTime getDiaHora() {
     return diaHora;
-  }
-
-  public void setMonto(double monto) {
-    this.monto = monto;
   }
 
   public double getMonto() {

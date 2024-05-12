@@ -4,6 +4,12 @@ public class Transferencia extends Movimiento {
   private boolean esCuentaPropia;
   private int idCuentaDestino;
 
+  public Transferencia(double monto, boolean esCuentaPropia, int idCuentaDestino) {
+    super(monto);
+    this.esCuentaPropia = esCuentaPropia;
+    this.idCuentaDestino = idCuentaDestino;
+  }
+
   public boolean isEsCuentaPropia() {
     return esCuentaPropia;
   }
