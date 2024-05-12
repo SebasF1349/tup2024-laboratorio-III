@@ -1,6 +1,7 @@
 package ar.edu.utn.frbb.tup.view;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Scanner;
 
 public class BaseInputProcessor {
@@ -10,6 +11,32 @@ public class BaseInputProcessor {
   protected static void clearScreen() {
     System.out.print("\033[H\033[2J");
     System.out.flush();
+  }
+
+  public int getMultipleOptionsInput(String question, List<String> menuOptions) {
+    System.out.println(question);
+    for (int i = 0; i < menuOptions.size(); i++) {
+      System.out.println((i + 1) + ". " + menuOptions.get(i));
+    }
+    System.out.print("Ingrese su opción (1-" + (menuOptions.size() + 1) + "): ");
+    String optValue = scanner.nextLine();
+    boolean optValida = false;
+    int opt = 0;
+    while (!optValida) {
+      try {
+        opt = Integer.parseInt(optValue);
+        if (opt > 0 && opt <= menuOptions.size()) {
+          optValida = true;
+        } else {
+          System.out.println(question);
+          optValue = scanner.nextLine();
+        }
+      } catch (Exception e) {
+        System.out.print(
+            "Opción inválida. Ingrese su opción (1-" + (menuOptions.size() + 1) + "): ");
+      }
+    }
+    return opt;
   }
 
   public String getStringInput(String question) {

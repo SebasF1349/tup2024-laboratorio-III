@@ -3,9 +3,11 @@ package ar.edu.utn.frbb.tup.view;
 import ar.edu.utn.frbb.tup.model.Banco;
 import ar.edu.utn.frbb.tup.model.Cliente;
 import ar.edu.utn.frbb.tup.model.Cuenta;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 public class MenuInputProcessor extends BaseInputProcessor {
   private boolean exit = false;
@@ -18,19 +20,12 @@ public class MenuInputProcessor extends BaseInputProcessor {
             "Modificar un Cliente existente",
             "Eliminar Cliente",
             "Crear una nueva Cuenta",
-            "Generar un Movimiento");
+            "Realizar una Operación",
+            "Salir");
 
     while (!exit) {
-      System.out.println("Bienvenido a la aplicación de Banco!");
-      System.out.println("Elija la operación que desea realizar.");
-      for (int i = 0; i < menuOptions.size(); i++) {
-        System.out.println((i + 1) + ". " + menuOptions.get(i));
-      }
-      System.out.println((menuOptions.size() + 1) + ". Salir");
-      System.out.print("Ingrese su opción (1-" + (menuOptions.size() + 1) + "): ");
-
-      int choice = scanner.nextInt();
-      scanner.nextLine(); // Consume newline character
+      int choice =
+          this.getMultipleOptionsInput("Bienvenido a la aplicación de Banco!", menuOptions);
 
       switch (choice) {
         case 1:
