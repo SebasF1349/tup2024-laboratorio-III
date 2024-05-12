@@ -8,7 +8,7 @@ import java.time.LocalDate;
 public class ClienteModifyProcessor extends BaseInputProcessor {
   public Cliente modifyCliente(Cliente cliente) {
 
-    String enBlanco = " (o deje en blanca para mantener el valor actual):";
+    String enBlanco = " (o deje en blanco para mantener el valor actual):";
     clearScreen();
 
     System.out.println("Nombre actual: " + cliente.getNombre());

@@ -36,15 +36,6 @@ public class CuentaCreateProcessor extends BaseInputProcessor {
 
     Cuenta cuenta = new Cuenta(tipoCuenta, moneda);
 
-    // System.out.println(cuenta);
-    // String confirmacion =
-    //    getStringInput("¿Los datos de la nueva cuenta son correctos? [N] para editar:");
-    //
-    // if (confirmacion.equalsIgnoreCase("n")) {
-    //  cuentaModifyProcessor cuentaModifyProcessor = new cuentaModifyProcessor();
-    //  cuenta = cuentaModifyProcessor.modifycuenta(cuenta);
-    // }
-
     clearScreen();
     return cuenta;
   }
