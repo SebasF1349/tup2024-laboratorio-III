@@ -34,6 +34,15 @@ public class Clientes {
     return null;
   }
 
+  public boolean existsClienteByDni(String dni) {
+    for (Cliente cliente : clientes) {
+      if (cliente.getDni().equals(dni)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   public Cliente getClienteByCuentaId(int cuentaId) {
     for (Cliente cliente : clientes) {
       if (cliente.hasCuenta(cuentaId)) {

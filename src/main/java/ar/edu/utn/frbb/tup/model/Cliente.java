@@ -9,6 +9,14 @@ public class Cliente extends Persona {
   private LocalDate fechaAlta;
   private Set<Cuenta> cuentas = new HashSet<>();
 
+  @Override
+  public boolean setDni(String dni) {
+    if (!Clientes.getInstance().existsClienteByDni(dni)) {
+      return super.setDni(dni);
+    }
+    return false;
+  }
+
   public TipoPersona getTipoPersona() {
     return tipoPersona;
   }
