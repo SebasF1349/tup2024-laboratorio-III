@@ -13,10 +13,19 @@ public class Cuenta {
   private MonedaCuenta moneda;
   private Set<Movimiento> movimientos;
 
-  public Cuenta(TipoCuenta tipoCuenta, MonedaCuenta moneda) {
+  private int getRandomId() {
+    Clientes clientes = Clientes.getInstance();
     Random random = new Random();
-    int id = random.nextInt(999999);
-    this.id = id;
+    while (true) {
+      int id = random.nextInt(999999);
+      if (!clientes.existsCuentaById(id)) {
+        return id;
+      }
+    }
+  }
+
+  public Cuenta(TipoCuenta tipoCuenta, MonedaCuenta moneda) {
+    this.id = this.getRandomId();
     this.fechaApertura = LocalDateTime.now();
     this.saldo = 0;
     this.tipoCuenta = tipoCuenta;

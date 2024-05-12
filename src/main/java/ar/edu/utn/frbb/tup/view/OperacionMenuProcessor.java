@@ -1,5 +1,6 @@
 package ar.edu.utn.frbb.tup.view;
 
+import ar.edu.utn.frbb.tup.model.Clientes;
 import ar.edu.utn.frbb.tup.model.ConsultaSaldo;
 import ar.edu.utn.frbb.tup.model.Cuenta;
 import ar.edu.utn.frbb.tup.model.Deposito;
@@ -54,13 +55,19 @@ public class OperacionMenuProcessor extends BaseInputProcessor {
         case 4:
           {
             MovimientoProcessor movimientoProcessor = new MovimientoProcessor();
-            Transferencia transferencia = movimientoProcessor.createTransferencia();
+            Transferencia transferencia = movimientoProcessor.createTransferencia(cuenta);
             if (transferencia.getMonto() > cuenta.getSaldo()) {
               System.out.println("Saldo insuficiente");
               scanner.nextLine();
               break;
             }
             cuenta.addMovimiento(transferencia);
+            Transferencia transferenciaRecibido =
+                new Transferencia(
+                    transferencia.getMonto(), transferencia.isEsCuentaPropia(), cuenta.getId());
+            Cuenta clienteReceptor =
+                Clientes.getInstance().getCuentaById(transferencia.getIdCuentaDestino());
+            clienteReceptor.addMovimiento(transferenciaRecibido);
             break;
           }
         case 5:

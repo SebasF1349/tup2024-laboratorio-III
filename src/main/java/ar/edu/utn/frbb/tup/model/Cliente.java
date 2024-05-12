@@ -29,8 +29,29 @@ public class Cliente extends Persona {
     return cuentas;
   }
 
-  public void addCuenta(Cuenta cuenta) {
-    this.cuentas.add(cuenta);
+  public boolean addCuenta(Cuenta cuenta) {
+    if (Clientes.getInstance().existsCuentaById(cuenta.getId())) {
+      return false;
+    }
+    return this.cuentas.add(cuenta);
+  }
+
+  public boolean hasCuenta(int idCuenta) {
+    for (Cuenta cuenta : cuentas) {
+      if (cuenta.getId() == idCuenta) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  public Cuenta getCuentaById(int idCuenta) {
+    for (Cuenta cuenta : cuentas) {
+      if (cuenta.getId() == idCuenta) {
+        return cuenta;
+      }
+    }
+    return null;
   }
 
   @Override
