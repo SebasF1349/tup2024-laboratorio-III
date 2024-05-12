@@ -6,6 +6,7 @@ import ar.edu.utn.frbb.tup.model.Cuenta;
 import ar.edu.utn.frbb.tup.model.Deposito;
 import ar.edu.utn.frbb.tup.model.Retiro;
 import ar.edu.utn.frbb.tup.model.Transferencia;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
@@ -59,7 +60,12 @@ public class MovimientoProcessor extends ClienteProcessor {
     Cliente cliente = clientes.getClienteByCuentaId(cuenta.getId());
     int idCuentaDestino;
     if (esCuentaPropia) {
-      Set<Cuenta> cuentas = Set.copyOf(cliente.getCuentas());
+      Set<Cuenta> cuentas = new HashSet<>();
+      for (Cuenta cuentaCliente : cliente.getCuentas()) {
+        if (!cuentaCliente.equals(cuenta)) {
+          cuentas.add(cuentaCliente);
+        }
+      }
       cuentas.remove(cuenta);
       if (cuentas.size() == 0) {
         System.out.println("El Cliente no posee otras Cuentas para transferir");
