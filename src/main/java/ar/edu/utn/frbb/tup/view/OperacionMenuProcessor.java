@@ -14,7 +14,12 @@ public class OperacionMenuProcessor extends BaseInputProcessor {
   public void renderMenu(Cuenta cuenta) {
 
     List<String> menuOptions =
-        Arrays.asList("Consulta Saldo", "Retiro de Dinero", "Deposito de Dinero", "Transferencia");
+        Arrays.asList(
+            "Consulta Saldo",
+            "Retiro de Dinero",
+            "Deposito de Dinero",
+            "Transferencia",
+            "Volver al menú anterior");
 
     while (!exit) {
       int choice =
@@ -31,6 +36,11 @@ public class OperacionMenuProcessor extends BaseInputProcessor {
           {
             MovimientoProcessor movimientoProcessor = new MovimientoProcessor();
             Retiro retiro = movimientoProcessor.createRetiro();
+            if (retiro.getMonto() > cuenta.getSaldo()) {
+              System.out.println("Saldo insuficiente");
+              scanner.nextLine();
+              break;
+            }
             cuenta.addMovimiento(retiro);
             break;
           }
@@ -45,6 +55,11 @@ public class OperacionMenuProcessor extends BaseInputProcessor {
           {
             MovimientoProcessor movimientoProcessor = new MovimientoProcessor();
             Transferencia transferencia = movimientoProcessor.createTransferencia();
+            if (transferencia.getMonto() > cuenta.getSaldo()) {
+              System.out.println("Saldo insuficiente");
+              scanner.nextLine();
+              break;
+            }
             cuenta.addMovimiento(transferencia);
             break;
           }
@@ -52,7 +67,7 @@ public class OperacionMenuProcessor extends BaseInputProcessor {
           exit = true;
           break;
         default:
-          System.out.println("Opción inválida. Por favor seleccione 1-4.");
+          System.out.println("Opción no implementada");
       }
       clearScreen();
     }
