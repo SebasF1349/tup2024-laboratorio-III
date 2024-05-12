@@ -62,17 +62,30 @@ public class MenuInputProcessor extends BaseInputProcessor {
             }
             break;
           }
-          //            case 2:
-          //                createAccount();
-          //                break;
-          //            case 3:
-          //                performTransaction();
-          //                break;
-        case 10:
+        case 5:
+          {
+            ClienteProcessor clienteProcessor = new ClienteProcessor();
+            Cliente cliente = clienteProcessor.getClienteByDni(banco);
+            if (Objects.nonNull(cliente)) {
+              Set<Cuenta> cuentasSet = cliente.getCuentas();
+              List<Cuenta> cuentasList = new ArrayList<>();
+              List<String> cuentasStr = new ArrayList<>();
+              for (Cuenta cuenta : cuentasSet) {
+                cuentasList.add(cuenta);
+                cuentasStr.add(cuenta.toString());
+              }
+              int cuentaChoice =
+                  this.getMultipleOptionsInput("Elija la cuenta sobre la cual operar:", cuentasStr);
+              OperacionMenuProcessor operacionMenuProcessor = new OperacionMenuProcessor();
+              operacionMenuProcessor.renderMenu(cuentasList.get(cuentaChoice));
+            }
+            break;
+          }
+        case 6:
           exit = true;
           break;
         default:
-          System.out.println("Opción inválida. Por favor seleccione 1-4.");
+          System.out.println("Opción no implementada");
       }
       clearScreen();
     }
