@@ -38,31 +38,36 @@ public class OperacionMenuProcessor extends BaseInputProcessor {
           {
             MovimientoProcessor movimientoProcessor = new MovimientoProcessor();
             Retiro retiro = movimientoProcessor.createRetiro();
-            if (retiro.getMonto() > cuenta.getSaldo()) {
-              System.out.println("Saldo insuficiente");
+            try {
+              cuenta.addMovimiento(retiro);
+            } catch (IllegalArgumentException e) {
+              System.err.println(e.getMessage());
               scanner.nextLine();
-              break;
             }
-            cuenta.addMovimiento(retiro);
             break;
           }
         case 3:
           {
             MovimientoProcessor movimientoProcessor = new MovimientoProcessor();
             Deposito deposito = movimientoProcessor.createDeposito();
-            cuenta.addMovimiento(deposito);
+            try {
+              cuenta.addMovimiento(deposito);
+            } catch (IllegalArgumentException e) {
+              System.err.println(e.getMessage());
+              scanner.nextLine();
+            }
             break;
           }
         case 4:
           {
             MovimientoProcessor movimientoProcessor = new MovimientoProcessor();
             Transferencia transferencia = movimientoProcessor.createTransferencia(cuenta);
-            if (transferencia.getMonto() > cuenta.getSaldo()) {
-              System.out.println("Saldo insuficiente");
+            try {
+              cuenta.addMovimiento(transferencia);
+            } catch (IllegalArgumentException e) {
+              System.err.println(e.getMessage());
               scanner.nextLine();
-              break;
             }
-            cuenta.addMovimiento(transferencia);
             Transferencia transferenciaRecibido =
                 new Transferencia(
                     transferencia.getMonto(),
@@ -71,7 +76,12 @@ public class OperacionMenuProcessor extends BaseInputProcessor {
                     true);
             Cuenta clienteReceptor =
                 Clientes.getInstance().getCuentaById(transferencia.getIdCuentaDestino());
-            clienteReceptor.addMovimiento(transferenciaRecibido);
+            try {
+              clienteReceptor.addMovimiento(transferenciaRecibido);
+            } catch (IllegalArgumentException e) {
+              System.err.println(e.getMessage());
+              scanner.nextLine();
+            }
             break;
           }
         case 5:
