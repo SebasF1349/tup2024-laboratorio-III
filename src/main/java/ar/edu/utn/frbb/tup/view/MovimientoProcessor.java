@@ -33,10 +33,13 @@ public class MovimientoProcessor extends ClienteProcessor {
     int cuentaId = 0;
     while (!cuentaValida) {
       try {
-        // Note: Falta revisar que el id existe
         String cuentaStr = scanner.nextLine();
         cuentaId = Integer.parseInt(cuentaStr);
-        cuentaValida = true;
+        if (Clientes.getInstance().existsCuentaById(cuentaId)) {
+          cuentaValida = true;
+        } else {
+          System.out.println("Id de Cuenta inválida. Ingrese el id como un número:");
+        }
       } catch (Exception e) {
         System.out.println("Id de Cuenta inválida. Ingrese el id como un número:");
       }
