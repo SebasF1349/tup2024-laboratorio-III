@@ -37,11 +37,12 @@ public class Cliente extends Persona {
     return cuentas;
   }
 
-  public boolean addCuenta(Cuenta cuenta) {
+  public void addCuenta(Cuenta cuenta) throws Exception {
     if (Clientes.getInstance().existsCuentaById(cuenta.getId())) {
-      return false;
+      throw new Exception(
+          "No fue posible agregar la Cuenta. La misma ya posee un Cliente asociado.");
     }
-    return this.cuentas.add(cuenta);
+    this.cuentas.add(cuenta);
   }
 
   public boolean hasCuenta(int idCuenta) {

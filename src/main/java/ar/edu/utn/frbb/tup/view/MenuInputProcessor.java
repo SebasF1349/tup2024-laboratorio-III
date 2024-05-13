@@ -69,11 +69,10 @@ public class MenuInputProcessor extends ClienteProcessor {
             }
             CuentaCreateProcessor cuentaCreateProcessor = new CuentaCreateProcessor();
             Cuenta cuenta = cuentaCreateProcessor.createCuenta();
-            boolean success = cliente.addCuenta(cuenta);
-            if (!success) {
-              System.out.println(
-                  "No se pudo agregar la cuenta. Es posible que la cuenta ya esté asociada a otro"
-                      + " cliente.");
+            try {
+              cliente.addCuenta(cuenta);
+            } catch (Exception e) {
+              System.out.println(e.getMessage());
             }
             break;
           }
