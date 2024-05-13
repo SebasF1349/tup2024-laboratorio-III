@@ -37,9 +37,9 @@ public class Cliente extends Persona {
     return cuentas;
   }
 
-  public void addCuenta(Cuenta cuenta) throws Exception {
+  public void addCuenta(Cuenta cuenta) throws IllegalArgumentException {
     if (Clientes.getInstance().existsCuentaById(cuenta.getId())) {
-      throw new Exception(
+      throw new IllegalArgumentException(
           "No fue posible agregar la Cuenta. La misma ya posee un Cliente asociado.");
     }
     this.cuentas.add(cuenta);
