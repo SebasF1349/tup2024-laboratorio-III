@@ -56,8 +56,12 @@ public class MenuInputProcessor extends ClienteProcessor {
           }
         case 3:
           {
+            Cliente cliente = this.getClienteByDni();
+            if (Objects.isNull(cliente)) {
+              break;
+            }
             ClienteDeleteProcessor clienteDeleteProcessor = new ClienteDeleteProcessor();
-            clienteDeleteProcessor.deleteCliente();
+            clienteDeleteProcessor.deleteCliente(cliente);
             break;
           }
         case 4:
