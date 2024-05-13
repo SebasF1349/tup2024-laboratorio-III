@@ -65,7 +65,7 @@ public class ClienteCreateProcessor extends ClienteProcessor {
       Cuenta cuenta = cuentaCreateProcessor.createCuenta();
       try {
         cliente.addCuenta(cuenta);
-      } catch (Exception e) {
+      } catch (IllegalArgumentException e) {
         System.out.println(e.getMessage());
       }
     }
