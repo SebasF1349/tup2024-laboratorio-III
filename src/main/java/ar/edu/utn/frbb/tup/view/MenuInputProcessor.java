@@ -41,16 +41,12 @@ public class MenuInputProcessor extends ClienteProcessor {
           }
         case 2:
           {
-            ClienteProcessor clienteProcessor = new ClienteProcessor();
-            Cliente clienteVersionAntigua = clienteProcessor.getClienteByDni();
+            Cliente clienteVersionAntigua = this.getClienteByDni();
             if (Objects.isNull(clienteVersionAntigua)) {
               break;
             }
             ClienteModifyProcessor clienteModifyProcessor = new ClienteModifyProcessor();
             Cliente cliente = clienteModifyProcessor.modifyCliente(clienteVersionAntigua);
-            if (Objects.isNull(cliente)) {
-              break;
-            }
             clientes.getClientes().add(cliente);
             break;
           }
@@ -66,8 +62,7 @@ public class MenuInputProcessor extends ClienteProcessor {
           }
         case 4:
           {
-            ClienteProcessor clienteProcessor = new ClienteProcessor();
-            Cliente cliente = clienteProcessor.getClienteByDni();
+            Cliente cliente = this.getClienteByDni();
             if (Objects.isNull(cliente)) {
               break;
             }
@@ -82,8 +77,7 @@ public class MenuInputProcessor extends ClienteProcessor {
           }
         case 5:
           {
-            ClienteProcessor clienteProcessor = new ClienteProcessor();
-            Cliente cliente = clienteProcessor.getClienteByDni();
+            Cliente cliente = this.getClienteByDni();
             if (Objects.isNull(cliente)) {
               break;
             }
