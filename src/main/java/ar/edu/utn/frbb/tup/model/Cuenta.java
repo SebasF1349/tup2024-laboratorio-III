@@ -75,8 +75,12 @@ public class Cuenta {
     this.movimientos = movimientos;
   }
 
-  public void addMovimiento(Movimiento movimiento) {
-    this.saldo = movimiento.actualizarCuentaMonto(saldo);
+  public void addMovimiento(Movimiento movimiento) throws IllegalArgumentException {
+    double nuevoSaldo = movimiento.actualizarCuentaMonto(saldo);
+    if (nuevoSaldo < 0) {
+      throw new IllegalArgumentException("Saldo insuficiente");
+    }
+    this.saldo = nuevoSaldo;
     this.movimientos.add(movimiento);
   }
 
