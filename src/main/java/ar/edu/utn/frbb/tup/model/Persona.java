@@ -1,9 +1,10 @@
 package ar.edu.utn.frbb.tup.model;
 
 import java.time.LocalDate;
+import java.time.Period;
 
 public class Persona {
-  private String dni;
+  private long dni;
   private String nombre;
   private String apellido;
   private Direccion direccion;
@@ -26,11 +27,11 @@ public class Persona {
     this.apellido = apellido;
   }
 
-  public String getDni() {
+  public long getDni() {
     return dni;
   }
 
-  public boolean setDni(String dni) {
+  public boolean setDni(long dni) {
     this.dni = dni;
     return true;
   }
@@ -57,5 +58,11 @@ public class Persona {
 
   public void setNroTelefono(String nroTelefono) {
     this.nroTelefono = nroTelefono;
+  }
+
+  public int getEdad() {
+    LocalDate currentDate = LocalDate.now();
+    Period agePeriod = Period.between(fechaNacimiento, currentDate);
+    return agePeriod.getYears();
   }
 }

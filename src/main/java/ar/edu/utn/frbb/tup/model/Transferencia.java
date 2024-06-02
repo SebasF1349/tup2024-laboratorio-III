@@ -2,14 +2,14 @@ package ar.edu.utn.frbb.tup.model;
 
 public class Transferencia extends Movimiento {
   private boolean esCuentaPropia;
-  private int idCuentaDestino;
+  private long numeroCuentaDestino;
   private boolean esDestinatario;
 
   public Transferencia(
-      double monto, boolean esCuentaPropia, int idCuentaDestino, boolean esDestinatario) {
+      double monto, boolean esCuentaPropia, long numeroCuentaDestino, boolean esDestinatario) {
     super(monto);
     this.esCuentaPropia = esCuentaPropia;
-    this.idCuentaDestino = idCuentaDestino;
+    this.numeroCuentaDestino = numeroCuentaDestino;
     this.esDestinatario = esDestinatario;
   }
 
@@ -29,12 +29,12 @@ public class Transferencia extends Movimiento {
     this.esCuentaPropia = esCuentaPropia;
   }
 
-  public int getIdCuentaDestino() {
-    return idCuentaDestino;
+  public long getNumeroCuentaDestino() {
+    return numeroCuentaDestino;
   }
 
-  public void setIdCuentaDestino(int idCuentaDestino) {
-    this.idCuentaDestino = idCuentaDestino;
+  public void setIdCuentaDestino(long numeroCuentaDestino) {
+    this.numeroCuentaDestino = numeroCuentaDestino;
   }
 
   public TipoMovimiento getTipoMovimiento() {

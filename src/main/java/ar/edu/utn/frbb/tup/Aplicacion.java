@@ -1,6 +1,6 @@
 package ar.edu.utn.frbb.tup;
 
-import ar.edu.utn.frbb.tup.view.MenuInputProcessor;
+import ar.edu.utn.frbb.tup.presentation.input.MenuInputProcessor;
 
 class Aplicacion {
 

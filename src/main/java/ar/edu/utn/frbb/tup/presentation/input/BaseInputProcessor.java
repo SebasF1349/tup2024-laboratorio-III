@@ -1,4 +1,4 @@
-package ar.edu.utn.frbb.tup.view;
+package ar.edu.utn.frbb.tup.presentation.input;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -41,6 +41,22 @@ public class BaseInputProcessor {
   public String getStringInput(String question) {
     System.out.println(question);
     return scanner.nextLine();
+  }
+
+  public long getLongInput(String question) {
+    System.out.println(question);
+    long num = 0;
+    boolean numValido = false;
+    while (!numValido) {
+      try {
+        num = Long.parseLong(scanner.nextLine());
+        numValido = true;
+      } catch (Exception e) {
+        System.out.println("Formato de número inválido");
+        System.out.println(question);
+      }
+    }
+    return num;
   }
 
   public LocalDate getDateInput(String question) {

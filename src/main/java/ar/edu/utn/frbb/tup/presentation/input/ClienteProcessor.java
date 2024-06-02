@@ -1,4 +1,4 @@
-package ar.edu.utn.frbb.tup.view;
+package ar.edu.utn.frbb.tup.presentation.input;
 
 import ar.edu.utn.frbb.tup.model.Cliente;
 import ar.edu.utn.frbb.tup.model.Clientes;
@@ -10,7 +10,7 @@ import java.util.Set;
 
 public class ClienteProcessor extends BaseInputProcessor {
   public Cliente getClienteByDni() {
-    String dni = this.getStringInput("Ingrese el dni del Cliente:");
+    long dni = this.getLongInput("Ingrese el dni del Cliente:");
     Cliente cliente = Clientes.getInstance().getClienteByDni(dni);
     if (Objects.isNull(cliente)) {
       System.out.println("Cliente no encontrado.");

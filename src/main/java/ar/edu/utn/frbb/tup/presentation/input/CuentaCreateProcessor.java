@@ -1,4 +1,4 @@
-package ar.edu.utn.frbb.tup.view;
+package ar.edu.utn.frbb.tup.presentation.input;
 
 import ar.edu.utn.frbb.tup.model.Cuenta;
 import ar.edu.utn.frbb.tup.model.MonedaCuenta;

@@ -6,32 +6,46 @@ import java.util.Random;
 import java.util.Set;
 
 public class Cuenta {
-  private int id;
+  private long numeroCuenta;
   private LocalDateTime fechaApertura;
-  private double saldo;
+  private double balance;
   private TipoCuenta tipoCuenta;
   private MonedaCuenta moneda;
-  private Set<Movimiento> movimientos;
+  private Cliente Titular;
 
-  private int getRandomId() {
-    Clientes clientes = Clientes.getInstance();
-    Random random = new Random();
-    while (true) {
-      int id = random.nextInt(999999);
-      if (!clientes.existsCuentaById(id)) {
-        return id;
-      }
-    }
+  public Cuenta() {
+    this.numeroCuenta = this.getRandomId();
+    this.fechaApertura = LocalDateTime.now();
+    this.balance = 0;
+    this.movimientos = new HashSet<>();
   }
 
   public Cuenta(TipoCuenta tipoCuenta, MonedaCuenta moneda) {
-    this.id = this.getRandomId();
+    this.numeroCuenta = this.getRandomId();
     this.fechaApertura = LocalDateTime.now();
-    this.saldo = 0;
+    this.balance = 0;
     this.tipoCuenta = tipoCuenta;
     this.moneda = moneda;
     this.movimientos = new HashSet<>();
   }
+
+  public long getNumeroCuenta() {
+    return numeroCuenta;
+  }
+
+  public void setNumeroCuenta(long numeroCuenta) {
+    this.numeroCuenta = numeroCuenta;
+  }
+
+  public Cliente getTitular() {
+    return Titular;
+  }
+
+  public void setTitular(Cliente titular) {
+    Titular = titular;
+  }
+
+  private Set<Movimiento> movimientos;
 
   public LocalDateTime getFechaApertura() {
     return fechaApertura;
@@ -42,12 +56,12 @@ public class Cuenta {
     return this;
   }
 
-  public double getSaldo() {
-    return saldo;
+  public double getBalance() {
+    return balance;
   }
 
-  public Cuenta setSaldo(int balance) {
-    this.saldo = balance;
+  public Cuenta setBalance(double balance) {
+    this.balance = balance;
     return this;
   }
 
@@ -76,20 +90,27 @@ public class Cuenta {
   }
 
   public void addMovimiento(Movimiento movimiento) throws IllegalArgumentException {
-    double nuevoSaldo = movimiento.actualizarCuentaMonto(saldo);
+    double nuevoSaldo = movimiento.actualizarCuentaMonto(balance);
     if (nuevoSaldo < 0) {
       throw new IllegalArgumentException("Saldo insuficiente");
     }
-    this.saldo = nuevoSaldo;
+    this.balance = nuevoSaldo;
     this.movimientos.add(movimiento);
   }
 
-  public int getId() {
-    return id;
+  private int getRandomId() {
+    Clientes clientes = Clientes.getInstance();
+    Random random = new Random();
+    while (true) {
+      int id = random.nextInt(999999);
+      if (!clientes.existsCuentaById(id)) {
+        return id;
+      }
+    }
   }
 
   @Override
   public String toString() {
-    return "ID: " + id + ", Tipo de cuenta: " + tipoCuenta + ", Moneda: " + moneda;
+    return "ID: " + numeroCuenta + ", Tipo de cuenta: " + tipoCuenta + ", Moneda: " + moneda;
   }
 }

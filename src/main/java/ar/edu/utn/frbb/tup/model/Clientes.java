@@ -25,45 +25,45 @@ public class Clientes {
     clientes.add(cliente);
   }
 
-  public Cliente getClienteByDni(String dni) {
+  public Cliente getClienteByDni(long dni) {
     for (Cliente cliente : clientes) {
-      if (cliente.getDni().equals(dni)) {
+      if (cliente.getDni() == dni) {
         return cliente;
       }
     }
     return null;
   }
 
-  public boolean existsClienteByDni(String dni) {
+  public boolean existsClienteByDni(long dni) {
     for (Cliente cliente : clientes) {
-      if (cliente.getDni().equals(dni)) {
+      if (cliente.getDni() == dni) {
         return true;
       }
     }
     return false;
   }
 
-  public Cliente getClienteByCuentaId(int cuentaId) {
+  public Cliente getClienteByCuentaId(long numeroCuenta) {
     for (Cliente cliente : clientes) {
-      if (cliente.hasCuenta(cuentaId)) {
+      if (cliente.hasCuenta(numeroCuenta)) {
         return cliente;
       }
     }
     return null;
   }
 
-  public boolean existsCuentaById(int cuentaId) {
+  public boolean existsCuentaById(long numeroCuenta) {
     for (Cliente cliente : clientes) {
-      if (cliente.hasCuenta(cuentaId)) {
+      if (cliente.hasCuenta(numeroCuenta)) {
         return true;
       }
     }
     return false;
   }
 
-  public Cuenta getCuentaById(int cuentaId) {
+  public Cuenta getCuentaById(long numeroCuenta) {
     for (Cliente cliente : clientes) {
-      Cuenta cuenta = cliente.getCuentaById(cuentaId);
+      Cuenta cuenta = cliente.getCuentaById(numeroCuenta);
       if (Objects.nonNull(cuenta)) {
         return cuenta;
       }

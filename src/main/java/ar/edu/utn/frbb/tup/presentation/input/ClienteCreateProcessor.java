@@ -1,4 +1,4 @@
-package ar.edu.utn.frbb.tup.view;
+package ar.edu.utn.frbb.tup.presentation.input;
 
 import ar.edu.utn.frbb.tup.model.Cliente;
 import ar.edu.utn.frbb.tup.model.Cuenta;
@@ -14,7 +14,7 @@ public class ClienteCreateProcessor extends ClienteProcessor {
 
     clearScreen();
 
-    String dni = this.getStringInput("Ingrese el dni del cliente:");
+    long dni = this.getLongInput("Ingrese el dni del cliente:");
     if (!cliente.setDni(dni)) {
       System.out.println("Ya existe un cliente con este DNI.");
       scanner.nextLine();

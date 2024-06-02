@@ -1,4 +1,4 @@
-package ar.edu.utn.frbb.tup.view;
+package ar.edu.utn.frbb.tup.presentation.input;
 
 import ar.edu.utn.frbb.tup.model.Clientes;
 import ar.edu.utn.frbb.tup.model.ConsultaSaldo;
@@ -30,7 +30,7 @@ public class OperacionMenuProcessor extends BaseInputProcessor {
         case 1:
           {
             ConsultaSaldo consultaSaldo = new ConsultaSaldo();
-            System.out.println(consultaSaldo.imprimir(cuenta.getSaldo(), cuenta.getMoneda()));
+            System.out.println(consultaSaldo.imprimir(cuenta.getBalance(), cuenta.getMoneda()));
             scanner.nextLine();
             break;
           }
@@ -72,10 +72,10 @@ public class OperacionMenuProcessor extends BaseInputProcessor {
                 new Transferencia(
                     transferencia.getMonto(),
                     transferencia.isEsCuentaPropia(),
-                    cuenta.getId(),
+                    cuenta.getNumeroCuenta(),
                     true);
             Cuenta clienteReceptor =
-                Clientes.getInstance().getCuentaById(transferencia.getIdCuentaDestino());
+                Clientes.getInstance().getCuentaById(transferencia.getNumeroCuentaDestino());
             try {
               clienteReceptor.addMovimiento(transferenciaRecibido);
             } catch (IllegalArgumentException e) {

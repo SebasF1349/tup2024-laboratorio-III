@@ -10,7 +10,7 @@ public class Cliente extends Persona {
   private Set<Cuenta> cuentas = new HashSet<>();
 
   @Override
-  public boolean setDni(String dni) {
+  public boolean setDni(long dni) {
     if (!Clientes.getInstance().existsClienteByDni(dni)) {
       return super.setDni(dni);
     }
@@ -37,26 +37,30 @@ public class Cliente extends Persona {
     return cuentas;
   }
 
+  public void setCuentas(Set<Cuenta> cuentas) {
+    this.cuentas = cuentas;
+  }
+
   public void addCuenta(Cuenta cuenta) throws IllegalArgumentException {
-    if (Clientes.getInstance().existsCuentaById(cuenta.getId())) {
+    if (Clientes.getInstance().existsCuentaById(cuenta.getNumeroCuenta())) {
       throw new IllegalArgumentException(
           "No fue posible agregar la Cuenta. La misma ya posee un Cliente asociado.");
     }
     this.cuentas.add(cuenta);
   }
 
-  public boolean hasCuenta(int idCuenta) {
+  public boolean hasCuenta(long numeroCuenta) {
     for (Cuenta cuenta : cuentas) {
-      if (cuenta.getId() == idCuenta) {
+      if (cuenta.getNumeroCuenta() == numeroCuenta) {
         return true;
       }
     }
     return false;
   }
 
-  public Cuenta getCuentaById(int idCuenta) {
+  public Cuenta getCuentaById(long numeroCuenta) {
     for (Cuenta cuenta : cuentas) {
-      if (cuenta.getId() == idCuenta) {
+      if (cuenta.getNumeroCuenta() == numeroCuenta) {
         return cuenta;
       }
     }
