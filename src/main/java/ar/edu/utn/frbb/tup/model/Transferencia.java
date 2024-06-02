@@ -1,5 +1,7 @@
 package ar.edu.utn.frbb.tup.model;
 
+import java.time.LocalDateTime;
+
 public class Transferencia extends Movimiento {
   private boolean esCuentaPropia;
   private long numeroCuentaDestino;
@@ -8,6 +10,19 @@ public class Transferencia extends Movimiento {
   public Transferencia(
       double monto, boolean esCuentaPropia, long numeroCuentaDestino, boolean esDestinatario) {
     super(monto);
+    this.esCuentaPropia = esCuentaPropia;
+    this.numeroCuentaDestino = numeroCuentaDestino;
+    this.esDestinatario = esDestinatario;
+  }
+
+  public Transferencia(
+      double monto,
+      boolean esCuentaPropia,
+      long numeroCuentaDestino,
+      boolean esDestinatario,
+      LocalDateTime diaHora,
+      long movimientoId) {
+    super(monto, diaHora, movimientoId);
     this.esCuentaPropia = esCuentaPropia;
     this.numeroCuentaDestino = numeroCuentaDestino;
     this.esDestinatario = esDestinatario;

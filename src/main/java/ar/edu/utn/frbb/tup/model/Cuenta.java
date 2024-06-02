@@ -11,7 +11,8 @@ public class Cuenta {
   private double balance;
   private TipoCuenta tipoCuenta;
   private MonedaCuenta moneda;
-  private Cliente Titular;
+  private Cliente titular;
+  private Set<Movimiento> movimientos;
 
   public Cuenta() {
     this.numeroCuenta = this.getRandomId();
@@ -38,14 +39,12 @@ public class Cuenta {
   }
 
   public Cliente getTitular() {
-    return Titular;
+    return titular;
   }
 
   public void setTitular(Cliente titular) {
-    Titular = titular;
+    this.titular = titular;
   }
-
-  private Set<Movimiento> movimientos;
 
   public LocalDateTime getFechaApertura() {
     return fechaApertura;
