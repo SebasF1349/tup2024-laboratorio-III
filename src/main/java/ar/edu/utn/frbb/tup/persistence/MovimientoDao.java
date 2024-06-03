@@ -1,7 +1,9 @@
 package ar.edu.utn.frbb.tup.persistence;
 
 import ar.edu.utn.frbb.tup.model.Movimiento;
+import org.springframework.stereotype.Service;
 
+@Service
 public class MovimientoDao extends AbstractBaseDao {
   @Override
   protected String getEntityName() {

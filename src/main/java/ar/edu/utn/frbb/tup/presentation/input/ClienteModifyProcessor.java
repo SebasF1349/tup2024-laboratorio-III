@@ -5,7 +5,9 @@ import ar.edu.utn.frbb.tup.model.Direccion;
 import ar.edu.utn.frbb.tup.model.TipoPersona;
 import ar.edu.utn.frbb.tup.model.exception.ClienteNoExistsException;
 import java.time.LocalDate;
+import org.springframework.stereotype.Component;
 
+@Component
 public class ClienteModifyProcessor extends ClienteProcessor {
   public void modifyCliente() {
     Cliente cliente;

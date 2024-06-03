@@ -6,7 +6,9 @@ import ar.edu.utn.frbb.tup.model.MonedaCuenta;
 import ar.edu.utn.frbb.tup.model.TipoCuenta;
 import ar.edu.utn.frbb.tup.model.exception.ClienteNoExistsException;
 import ar.edu.utn.frbb.tup.model.exception.CuentaAlreadyExistsException;
+import org.springframework.stereotype.Component;
 
+@Component
 public class CuentaCreateProcessor extends CuentaProcessor {
   public void createCuenta() {
     clearScreen();

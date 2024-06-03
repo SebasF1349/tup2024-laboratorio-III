@@ -6,7 +6,9 @@ import ar.edu.utn.frbb.tup.model.exception.ClienteNoExistsException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import org.springframework.stereotype.Component;
 
+@Component
 public class MenuInputProcessor extends BusinessProcessor {
   ClienteCreateProcessor clienteCreateProcessor;
   ClienteModifyProcessor clienteModifyProcessor;

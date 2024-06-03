@@ -3,7 +3,9 @@ package ar.edu.utn.frbb.tup.service;
 import ar.edu.utn.frbb.tup.model.Cuenta;
 import ar.edu.utn.frbb.tup.model.exception.CuentaAlreadyExistsException;
 import ar.edu.utn.frbb.tup.persistence.CuentaDao;
+import org.springframework.stereotype.Service;
 
+@Service
 public class CuentaService {
   CuentaDao cuentaDao = new CuentaDao();
 
