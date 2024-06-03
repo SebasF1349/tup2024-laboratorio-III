@@ -1,5 +1,6 @@
 package ar.edu.utn.frbb.tup.persistence;
 
+import ar.edu.utn.frbb.tup.model.Cuenta;
 import ar.edu.utn.frbb.tup.model.Deposito;
 import ar.edu.utn.frbb.tup.model.Movimiento;
 import ar.edu.utn.frbb.tup.model.Retiro;
@@ -9,16 +10,16 @@ import java.time.LocalDateTime;
 
 public class MovimientoEntity extends BaseEntity {
   private String movimiento;
-  private long movimientoId;
+  private String numeroCuenta;
   private LocalDateTime diaHora;
   private double monto;
   private boolean esCuentaPropia;
-  private long numeroCuentaDestino;
+  private String numeroCuentaDestino;
   private boolean esDestinatario;
 
   public MovimientoEntity(Movimiento movimiento) {
     super(movimiento.getMovimientoId());
-    this.movimientoId = movimiento.getMovimientoId();
+    this.numeroCuenta = movimiento.getCuenta().getNumeroCuenta();
     this.diaHora = movimiento.getDiaHora();
     this.monto = movimiento.getMonto();
     if (movimiento instanceof Transferencia) {
@@ -36,6 +37,8 @@ public class MovimientoEntity extends BaseEntity {
   }
 
   public Movimiento toMovimiento() {
+    CuentaDao cuentaDao = new CuentaDao();
+    Cuenta cuenta = cuentaDao.find(this.numeroCuenta);
     Movimiento movimiento;
     switch (this.movimiento) {
       case "TRANSFERENCIA":

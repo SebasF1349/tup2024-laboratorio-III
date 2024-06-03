@@ -14,12 +14,14 @@ public class ClienteCreateProcessor extends ClienteProcessor {
 
     clearScreen();
 
-    long dni = this.getLongInput("Ingrese el dni del cliente:");
-    if (!cliente.setDni(dni)) {
-      System.out.println("Ya existe un cliente con este DNI.");
-      scanner.nextLine();
-      return null;
-    }
+    String dni = this.getStringInput("Ingrese el dni del cliente:");
+    cliente.setDni(dni);
+    // NOTE: Check if dni exists
+    // if (cliente.setDni(dni)) {
+    //  System.out.println("Ya existe un cliente con este DNI.");
+    //  scanner.nextLine();
+    //  return null;
+    // }
 
     String nombre = this.getStringInput("Ingrese el nombre del cliente:");
     cliente.setNombre(nombre);

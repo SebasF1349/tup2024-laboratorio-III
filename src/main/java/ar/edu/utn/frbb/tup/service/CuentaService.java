@@ -15,7 +15,7 @@ public class CuentaService {
     cuentaDao.save(cuenta);
   }
 
-  public Cuenta find(long id) {
-    return cuentaDao.find(id);
+  public Cuenta find(String numeroCuenta) {
+    return cuentaDao.find(numeroCuenta);
   }
 }

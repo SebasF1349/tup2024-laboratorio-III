@@ -8,7 +8,7 @@ public class MovimientoDao extends AbstractBaseDao {
     return "MOVIMIENTO";
   }
 
-  public Movimiento find(long idMovimiento) {
+  public Movimiento find(String idMovimiento) {
     if (getInMemoryDatabase().get(idMovimiento) == null) return null;
     return ((MovimientoEntity) getInMemoryDatabase().get(idMovimiento)).toMovimiento();
   }

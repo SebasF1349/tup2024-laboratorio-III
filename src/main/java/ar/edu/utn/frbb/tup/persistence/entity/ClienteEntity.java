@@ -17,7 +17,7 @@ public class ClienteEntity extends BaseEntity {
   private final String apellido;
   private final LocalDate fechaAlta;
   private final LocalDate fechaNacimiento;
-  private List<Long> cuentas;
+  private List<String> cuentas;
 
   public ClienteEntity(Cliente cliente) {
     super(cliente.getDni());
@@ -54,7 +54,7 @@ public class ClienteEntity extends BaseEntity {
     if (!this.cuentas.isEmpty()) {
       Set<Cuenta> c = new HashSet<>();
       CuentaDao cuentaDao = new CuentaDao();
-      for (long numeroCuenta : cuentas) {
+      for (String numeroCuenta : cuentas) {
         Cuenta titular = cuentaDao.find(numeroCuenta);
         c.add(titular);
       }

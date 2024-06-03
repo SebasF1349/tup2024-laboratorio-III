@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 
 public class Transferencia extends Movimiento {
   private boolean esCuentaPropia;
-  private long numeroCuentaDestino;
+  private String numeroCuentaDestino;
   private boolean esDestinatario;
 
   public Transferencia(
@@ -18,11 +18,11 @@ public class Transferencia extends Movimiento {
   public Transferencia(
       double monto,
       boolean esCuentaPropia,
-      long numeroCuentaDestino,
+      String numeroCuentaDestino,
       boolean esDestinatario,
       LocalDateTime diaHora,
-      long movimientoId) {
     super(monto, diaHora, movimientoId);
+      String movimientoId,
     this.esCuentaPropia = esCuentaPropia;
     this.numeroCuentaDestino = numeroCuentaDestino;
     this.esDestinatario = esDestinatario;
@@ -44,11 +44,11 @@ public class Transferencia extends Movimiento {
     this.esCuentaPropia = esCuentaPropia;
   }
 
-  public long getNumeroCuentaDestino() {
+  public String getNumeroCuentaDestino() {
     return numeroCuentaDestino;
   }
 
-  public void setIdCuentaDestino(long numeroCuentaDestino) {
+  public void setIdCuentaDestino(String numeroCuentaDestino) {
     this.numeroCuentaDestino = numeroCuentaDestino;
   }
 

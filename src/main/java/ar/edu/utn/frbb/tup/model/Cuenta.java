@@ -2,11 +2,11 @@ package ar.edu.utn.frbb.tup.model;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
-import java.util.Random;
 import java.util.Set;
+import java.util.UUID;
 
 public class Cuenta {
-  private long numeroCuenta;
+  private String numeroCuenta;
   private LocalDateTime fechaApertura;
   private double balance;
   private TipoCuenta tipoCuenta;
@@ -30,11 +30,11 @@ public class Cuenta {
     this.movimientos = new HashSet<>();
   }
 
-  public long getNumeroCuenta() {
+  public String getNumeroCuenta() {
     return numeroCuenta;
   }
 
-  public void setNumeroCuenta(long numeroCuenta) {
+  public void setNumeroCuenta(String numeroCuenta) {
     this.numeroCuenta = numeroCuenta;
   }
 
@@ -97,15 +97,8 @@ public class Cuenta {
     this.movimientos.add(movimiento);
   }
 
-  private int getRandomId() {
-    Clientes clientes = Clientes.getInstance();
-    Random random = new Random();
-    while (true) {
-      int id = random.nextInt(999999);
-      if (!clientes.existsCuentaById(id)) {
-        return id;
-      }
-    }
+  private String getRandomId() {
+    return UUID.randomUUID().toString();
   }
 
   @Override

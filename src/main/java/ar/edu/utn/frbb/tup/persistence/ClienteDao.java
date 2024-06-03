@@ -5,7 +5,7 @@ import ar.edu.utn.frbb.tup.persistence.entity.ClienteEntity;
 
 public class ClienteDao extends AbstractBaseDao {
 
-  public Cliente find(long dni) {
+  public Cliente find(String dni) {
     if (getInMemoryDatabase().get(dni) == null) return null;
     return ((ClienteEntity) getInMemoryDatabase().get(dni)).toCliente();
   }

@@ -7,12 +7,10 @@ import ar.edu.utn.frbb.tup.persistence.ClienteDao;
 import java.time.LocalDateTime;
 
 public class CuentaEntity extends BaseEntity {
-  String nombre;
-  LocalDateTime fechaCreacion;
-  double balance;
-  String tipoCuenta;
-  Long titular;
-  long numeroCuenta;
+  private LocalDateTime fechaCreacion;
+  private double balance;
+  private String tipoCuenta;
+  private String titular;
 
   public CuentaEntity(Cuenta cuenta) {
     super(cuenta.getNumeroCuenta());
@@ -25,7 +23,7 @@ public class CuentaEntity extends BaseEntity {
   public Cuenta toCuenta() {
     Cuenta cuenta = new Cuenta();
     cuenta.setBalance(this.balance);
-    cuenta.setNumeroCuenta(this.numeroCuenta);
+    cuenta.setNumeroCuenta(this.getId());
     cuenta.setTipoCuenta(TipoCuenta.valueOf(this.tipoCuenta));
     cuenta.setFechaApertura(this.fechaCreacion);
 

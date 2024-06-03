@@ -58,9 +58,9 @@ public class Cliente extends Persona {
     return false;
   }
 
-  public Cuenta getCuentaById(long numeroCuenta) {
+  public Cuenta getCuentaById(String numeroCuenta) {
     for (Cuenta cuenta : cuentas) {
-      if (cuenta.getNumeroCuenta() == numeroCuenta) {
+      if (cuenta.getNumeroCuenta().equals(numeroCuenta)) {
         return cuenta;
       }
     }

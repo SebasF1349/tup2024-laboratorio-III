@@ -9,7 +9,7 @@ public class CuentaDao extends AbstractBaseDao {
     return "CUENTA";
   }
 
-  public Cuenta find(long numeroCuenta) {
+  public Cuenta find(String numeroCuenta) {
     if (getInMemoryDatabase().get(numeroCuenta) == null) return null;
     return ((CuentaEntity) getInMemoryDatabase().get(numeroCuenta)).toCuenta();
   }

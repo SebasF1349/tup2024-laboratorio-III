@@ -1,13 +1,13 @@
 package ar.edu.utn.frbb.tup.persistence.entity;
 
 public class BaseEntity {
-  private final Long Id;
+  private final String Id;
 
-  public BaseEntity(long id) {
+  public BaseEntity(String id) {
     Id = id;
   }
 
-  public Long getId() {
+  public String getId() {
     return Id;
   }
 }

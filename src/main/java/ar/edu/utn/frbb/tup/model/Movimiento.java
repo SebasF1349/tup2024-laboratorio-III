@@ -5,15 +5,12 @@ import java.time.LocalDateTime;
 import java.util.Random;
 
 public abstract class Movimiento extends Operacion {
-  private long movimientoId;
+  private String movimientoId;
   private LocalDateTime diaHora;
   private double monto;
 
-  public Movimiento(double monto) {
-    Random random = new Random();
-    int randomValue = random.nextInt(999);
-    long timestamp = Instant.now().getEpochSecond();
-    this.movimientoId = timestamp + randomValue;
+  public Movimiento(double monto, Cuenta cuenta) {
+    this.movimientoId = UUID.randomUUID().toString();
     this.diaHora = LocalDateTime.now();
     this.monto = monto;
   }
@@ -24,7 +21,7 @@ public abstract class Movimiento extends Operacion {
     this.monto = monto;
   }
 
-  public long getMovimientoId() {
+  public String getMovimientoId() {
     return movimientoId;
   }
 

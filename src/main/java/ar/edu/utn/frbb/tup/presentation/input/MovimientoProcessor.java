@@ -27,24 +27,20 @@ public class MovimientoProcessor extends ClienteProcessor {
     return monto;
   }
 
-  private int getCuentaDestino() {
+  private String getCuentaDestino() {
     System.out.println("Ingrese el id de la cuenta destino:");
     boolean cuentaValida = false;
-    int cuentaId = 0;
+    String numeroCuenta = null;
+    CuentaService cuentaService = new CuentaService();
     while (!cuentaValida) {
-      try {
-        String cuentaStr = scanner.nextLine();
-        cuentaId = Integer.parseInt(cuentaStr);
-        if (Clientes.getInstance().existsCuentaById(cuentaId)) {
-          cuentaValida = true;
-        } else {
-          System.out.println("Id de Cuenta inválida. Ingrese el id como un número:");
-        }
-      } catch (Exception e) {
+      numeroCuenta = scanner.nextLine();
+      if (numeroCuenta != null && cuentaService.find(numeroCuenta) != null) {
+        cuentaValida = true;
+      } else {
         System.out.println("Id de Cuenta inválida. Ingrese el id como un número:");
       }
     }
-    return cuentaId;
+    return numeroCuenta;
   }
 
   public Retiro createRetiro() {
@@ -61,7 +57,7 @@ public class MovimientoProcessor extends ClienteProcessor {
     boolean esCuentaPropia = this.getBooleanInput("¿Desea transferir a una cuenta propia?");
     Clientes clientes = Clientes.getInstance();
     Cliente cliente = clientes.getClienteByCuentaId(cuenta.getNumeroCuenta());
-    long numeroCuentaDestino;
+    String numeroCuentaDestino;
     if (esCuentaPropia) {
       Set<Cuenta> cuentas = new HashSet<>();
       for (Cuenta cuentaCliente : cliente.getCuentas()) {
