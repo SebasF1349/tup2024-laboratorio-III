@@ -8,8 +8,12 @@ public class Transferencia extends Movimiento {
   private boolean esDestinatario;
 
   public Transferencia(
-      double monto, boolean esCuentaPropia, long numeroCuentaDestino, boolean esDestinatario) {
-    super(monto);
+      double monto,
+      boolean esCuentaPropia,
+      String numeroCuentaDestino,
+      boolean esDestinatario,
+      Cuenta cuenta) {
+    super(monto, cuenta);
     this.esCuentaPropia = esCuentaPropia;
     this.numeroCuentaDestino = numeroCuentaDestino;
     this.esDestinatario = esDestinatario;
@@ -21,8 +25,9 @@ public class Transferencia extends Movimiento {
       String numeroCuentaDestino,
       boolean esDestinatario,
       LocalDateTime diaHora,
-    super(monto, diaHora, movimientoId);
       String movimientoId,
+      Cuenta cuenta) {
+    super(monto, diaHora, movimientoId, cuenta);
     this.esCuentaPropia = esCuentaPropia;
     this.numeroCuentaDestino = numeroCuentaDestino;
     this.esDestinatario = esDestinatario;

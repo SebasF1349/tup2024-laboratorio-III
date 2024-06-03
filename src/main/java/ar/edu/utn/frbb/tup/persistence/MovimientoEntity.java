@@ -53,10 +53,10 @@ public class MovimientoEntity extends BaseEntity {
                 cuenta);
         break;
       case "RETIRO":
-        movimiento = new Retiro(this.monto, this.diaHora, this.movimientoId);
+        movimiento = new Retiro(this.monto, this.diaHora, this.getId(), cuenta);
         break;
       case "DEPOSITO":
-        movimiento = new Deposito(this.monto, this.diaHora, this.movimientoId);
+        movimiento = new Deposito(this.monto, this.diaHora, this.getId(), cuenta);
         break;
       default:
         throw new IllegalArgumentException("Movimiento Entity mal guardado");

@@ -1,10 +1,10 @@
 package ar.edu.utn.frbb.tup.model;
 
-import java.time.Instant;
 import java.time.LocalDateTime;
-import java.util.Random;
+import java.util.UUID;
 
 public abstract class Movimiento extends Operacion {
+  private Cuenta cuenta;
   private String movimientoId;
   private LocalDateTime diaHora;
   private double monto;
@@ -13,12 +13,22 @@ public abstract class Movimiento extends Operacion {
     this.movimientoId = UUID.randomUUID().toString();
     this.diaHora = LocalDateTime.now();
     this.monto = monto;
+    this.cuenta = cuenta;
   }
 
-  public Movimiento(double monto, LocalDateTime diaHora, long movimientoId) {
+  public Movimiento(double monto, LocalDateTime diaHora, String movimientoId, Cuenta cuenta) {
     this.movimientoId = movimientoId;
     this.diaHora = diaHora;
     this.monto = monto;
+    this.cuenta = cuenta;
+  }
+
+  public Cuenta getCuenta() {
+    return cuenta;
+  }
+
+  public void setCuenta(Cuenta cuenta) {
+    this.cuenta = cuenta;
   }
 
   public String getMovimientoId() {

@@ -45,12 +45,12 @@ public class MovimientoProcessor extends ClienteProcessor {
 
   public Retiro createRetiro() {
     double monto = this.getMonto();
-    return new Retiro(monto);
+    return new Retiro(monto, this.cuenta);
   }
 
   public Deposito createDeposito() {
     double monto = this.getMonto();
-    return new Deposito(monto);
+    return new Deposito(monto, this.cuenta);
   }
 
   public Transferencia createTransferencia(Cuenta cuenta) {
@@ -85,6 +85,6 @@ public class MovimientoProcessor extends ClienteProcessor {
       }
     }
     double monto = this.getMonto();
-    return new Transferencia(monto, esCuentaPropia, numeroCuentaDestino, false);
+    return new Transferencia(monto, esCuentaPropia, numeroCuentaDestino, false, this.cuenta);
   }
 }
