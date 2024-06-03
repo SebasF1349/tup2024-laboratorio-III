@@ -19,15 +19,17 @@ public class Cuenta {
     this.fechaApertura = LocalDateTime.now();
     this.balance = 0;
     this.movimientos = new HashSet<>();
+    this.titular = null;
   }
 
-  public Cuenta(TipoCuenta tipoCuenta, MonedaCuenta moneda) {
+  public Cuenta(TipoCuenta tipoCuenta, MonedaCuenta moneda, Cliente titular) {
     this.numeroCuenta = this.getRandomId();
     this.fechaApertura = LocalDateTime.now();
     this.balance = 0;
     this.tipoCuenta = tipoCuenta;
     this.moneda = moneda;
     this.movimientos = new HashSet<>();
+    this.titular = titular;
   }
 
   public String getNumeroCuenta() {

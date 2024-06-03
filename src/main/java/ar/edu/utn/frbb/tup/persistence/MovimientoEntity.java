@@ -49,7 +49,8 @@ public class MovimientoEntity extends BaseEntity {
                 this.numeroCuentaDestino,
                 this.esDestinatario,
                 this.diaHora,
-                this.movimientoId);
+                this.getId(),
+                cuenta);
         break;
       case "RETIRO":
         movimiento = new Retiro(this.monto, this.diaHora, this.movimientoId);

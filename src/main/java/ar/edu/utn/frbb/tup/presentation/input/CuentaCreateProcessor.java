@@ -20,7 +20,15 @@ public class CuentaCreateProcessor extends BaseInputProcessor {
             "D");
     MonedaCuenta moneda = MonedaCuenta.fromString(monedaStr);
 
-    Cuenta cuenta = new Cuenta(tipoCuenta, moneda);
+    Cuenta cuenta = new Cuenta(tipoCuenta, moneda, cliente);
+
+    try {
+      cuentaService.darDeAltaCuenta(cuenta);
+    } catch (CuentaAlreadyExistsException e) {
+      System.out.println();
+      System.out.println(e.getMessage());
+      System.out.println();
+    }
 
     clearScreen();
     return cuenta;
