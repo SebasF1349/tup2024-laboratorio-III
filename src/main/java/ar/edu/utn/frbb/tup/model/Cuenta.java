@@ -1,5 +1,6 @@
 package ar.edu.utn.frbb.tup.model;
 
+import ar.edu.utn.frbb.tup.persistence.MovimientoDao;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -97,6 +98,8 @@ public class Cuenta {
     }
     this.balance = nuevoSaldo;
     this.movimientos.add(movimiento);
+    MovimientoDao movimientoDao = new MovimientoDao();
+    movimientoDao.save(movimiento);
   }
 
   private String getRandomId() {
