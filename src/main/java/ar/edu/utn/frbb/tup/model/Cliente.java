@@ -8,14 +8,7 @@ public class Cliente extends Persona {
   private TipoPersona tipoPersona;
   private LocalDate fechaAlta;
   private Set<Cuenta> cuentas = new HashSet<>();
-
-  @Override
-  public boolean setDni(long dni) {
-    if (!Clientes.getInstance().existsClienteByDni(dni)) {
-      return super.setDni(dni);
-    }
-    return false;
-  }
+  private boolean activo;
 
   public TipoPersona getTipoPersona() {
     return tipoPersona;
@@ -33,6 +26,14 @@ public class Cliente extends Persona {
     this.fechaAlta = fechaAlta;
   }
 
+  public boolean isActivo() {
+    return activo;
+  }
+
+  public void setActivo(boolean activo) {
+    this.activo = activo;
+  }
+
   public Set<Cuenta> getCuentas() {
     return cuentas;
   }
@@ -42,10 +43,6 @@ public class Cliente extends Persona {
   }
 
   public void addCuenta(Cuenta cuenta) throws IllegalArgumentException {
-    if (Clientes.getInstance().existsCuentaById(cuenta.getNumeroCuenta())) {
-      throw new IllegalArgumentException(
-          "No fue posible agregar la Cuenta. La misma ya posee un Cliente asociado.");
-    }
     this.cuentas.add(cuenta);
   }
 

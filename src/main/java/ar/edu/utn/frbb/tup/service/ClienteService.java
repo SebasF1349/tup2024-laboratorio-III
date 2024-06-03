@@ -3,12 +3,12 @@ package ar.edu.utn.frbb.tup.service;
 import ar.edu.utn.frbb.tup.model.Cliente;
 import ar.edu.utn.frbb.tup.model.Cuenta;
 import ar.edu.utn.frbb.tup.model.exception.ClienteAlreadyExistsException;
+import ar.edu.utn.frbb.tup.model.exception.ClienteNoExistsException;
 import ar.edu.utn.frbb.tup.model.exception.TipoCuentaAlreadyExistsException;
 import ar.edu.utn.frbb.tup.persistence.ClienteDao;
 import ar.edu.utn.frbb.tup.persistence.CuentaDao;
 
 public class ClienteService {
-
   ClienteDao clienteDao = new ClienteDao();
   CuentaDao cuentaDao = new CuentaDao();
 
@@ -46,5 +46,9 @@ public class ClienteService {
     }
 
     return cliente;
+  }
+  public void eliminarCliente(Cliente cliente) {
+    cliente.setActivo(false);
+    clienteDao.save(cliente);
   }
 }
