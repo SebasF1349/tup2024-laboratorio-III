@@ -1,12 +1,23 @@
 package ar.edu.utn.frbb.tup.presentation.input;
 
+import ar.edu.utn.frbb.tup.model.Cliente;
 import ar.edu.utn.frbb.tup.model.Cuenta;
 import ar.edu.utn.frbb.tup.model.MonedaCuenta;
 import ar.edu.utn.frbb.tup.model.TipoCuenta;
+import ar.edu.utn.frbb.tup.model.exception.ClienteNoExistsException;
+import ar.edu.utn.frbb.tup.model.exception.CuentaAlreadyExistsException;
 
-public class CuentaCreateProcessor extends BaseInputProcessor {
-  public Cuenta createCuenta() {
+public class CuentaCreateProcessor extends CuentaProcessor {
+  public void createCuenta() {
     clearScreen();
+
+    Cliente cliente;
+    try {
+      cliente = this.getClienteByDni();
+    } catch (ClienteNoExistsException e) {
+      System.out.println(e.getMessage());
+      return;
+    }
 
     String tipoCuentaStr =
         this.getEnumInput(
@@ -31,6 +42,5 @@ public class CuentaCreateProcessor extends BaseInputProcessor {
     }
 
     clearScreen();
-    return cuenta;
   }
 }

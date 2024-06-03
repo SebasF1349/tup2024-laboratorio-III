@@ -1,11 +1,13 @@
 package ar.edu.utn.frbb.tup.presentation.input;
 
+import ar.edu.utn.frbb.tup.service.ClienteService;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Scanner;
 
 public class BaseInputProcessor {
 
+  ClienteService clienteService = new ClienteService();
   protected Scanner scanner = new Scanner(System.in);
 
   protected static void clearScreen() {

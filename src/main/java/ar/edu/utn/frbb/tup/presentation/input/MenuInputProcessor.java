@@ -1,18 +1,43 @@
 package ar.edu.utn.frbb.tup.presentation.input;
 
 import ar.edu.utn.frbb.tup.model.Cliente;
-import ar.edu.utn.frbb.tup.model.Clientes;
 import ar.edu.utn.frbb.tup.model.Cuenta;
+import ar.edu.utn.frbb.tup.model.exception.ClienteNoExistsException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-public class MenuInputProcessor extends ClienteProcessor {
-  private boolean exit = false;
+public class MenuInputProcessor extends BusinessProcessor {
+  ClienteCreateProcessor clienteCreateProcessor;
+  ClienteModifyProcessor clienteModifyProcessor;
+  ClienteDeleteProcessor clienteDeleteProcessor;
+  CuentaCreateProcessor cuentaCreateProcessor;
+  OperacionMenuProcessor operacionMenuProcessor;
+
+  boolean exit = false;
+
+  public MenuInputProcessor(
+      ClienteCreateProcessor clienteInputProcessor,
+      ClienteModifyProcessor clienteModifyProcessor,
+      ClienteDeleteProcessor clienteDeleteProcessor,
+      CuentaCreateProcessor cuentaInputProcessor,
+      OperacionMenuProcessor operacionMenuProcessor) {
+    this.clienteCreateProcessor = clienteInputProcessor;
+    this.clienteModifyProcessor = clienteModifyProcessor;
+    this.clienteDeleteProcessor = clienteDeleteProcessor;
+    this.cuentaCreateProcessor = cuentaInputProcessor;
+    this.operacionMenuProcessor = operacionMenuProcessor;
+  }
+
+  public MenuInputProcessor() {
+    this.clienteCreateProcessor = new ClienteCreateProcessor();
+    this.clienteModifyProcessor = new ClienteModifyProcessor();
+    this.clienteDeleteProcessor = new ClienteDeleteProcessor();
+    this.cuentaCreateProcessor = new CuentaCreateProcessor();
+    this.operacionMenuProcessor = new OperacionMenuProcessor(null);
+  }
 
   public void renderMenu() {
-    Clientes clientes = Clientes.getInstance();
-
     clearScreen();
 
     List<String> menuOptions =
@@ -31,69 +56,46 @@ public class MenuInputProcessor extends ClienteProcessor {
       switch (choice) {
         case 1:
           {
-            ClienteCreateProcessor clienteInputProcessor = new ClienteCreateProcessor();
-            Cliente cliente = clienteInputProcessor.ingresarCliente();
-            if (Objects.isNull(cliente)) {
-              break;
-            }
-            clientes.getClientes().add(cliente);
+            clienteCreateProcessor.ingresarCliente();
             break;
           }
         case 2:
           {
-            Cliente clienteVersionAntigua = this.getClienteByDni();
-            if (Objects.isNull(clienteVersionAntigua)) {
-              break;
-            }
-            ClienteModifyProcessor clienteModifyProcessor = new ClienteModifyProcessor();
-            Cliente cliente = clienteModifyProcessor.modifyCliente(clienteVersionAntigua);
-            clientes.getClientes().add(cliente);
+            clienteModifyProcessor.modifyCliente();
             break;
           }
         case 3:
           {
-            Cliente cliente = this.getClienteByDni();
-            if (Objects.isNull(cliente)) {
-              break;
-            }
-            ClienteDeleteProcessor clienteDeleteProcessor = new ClienteDeleteProcessor();
-            clienteDeleteProcessor.deleteCliente(cliente);
+            clienteDeleteProcessor.deleteCliente();
             break;
           }
         case 4:
           {
-            Cliente cliente = this.getClienteByDni();
-            if (Objects.isNull(cliente)) {
-              break;
-            }
-            CuentaCreateProcessor cuentaCreateProcessor = new CuentaCreateProcessor();
-            Cuenta cuenta = cuentaCreateProcessor.createCuenta();
-            try {
-              cliente.addCuenta(cuenta);
-            } catch (IllegalArgumentException e) {
-              System.out.println(e.getMessage());
-            }
+            cuentaCreateProcessor.createCuenta();
             break;
           }
         case 5:
           {
-            Cliente cliente = this.getClienteByDni();
-            if (Objects.isNull(cliente)) {
-              break;
+            Cliente cliente;
+            try {
+              cliente = this.getClienteByDni();
+            } catch (ClienteNoExistsException e) {
+              System.out.println(e.getMessage());
+              return;
             }
             Cuenta cuenta = this.getCuentaId(cliente.getCuentas());
             if (Objects.isNull(cuenta)) {
               break;
             }
-            OperacionMenuProcessor operacionMenuProcessor = new OperacionMenuProcessor();
-            operacionMenuProcessor.renderMenu(cuenta);
+            operacionMenuProcessor.setCuenta(cuenta);
+            operacionMenuProcessor.renderMenu();
             break;
           }
         case 6:
           exit = true;
           break;
         default:
-          System.out.println("Opción no implementada");
+          System.out.println("Opción no válida, intente nuevamente.");
       }
       clearScreen();
     }

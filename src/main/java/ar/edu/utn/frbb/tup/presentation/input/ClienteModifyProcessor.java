@@ -3,10 +3,18 @@ package ar.edu.utn.frbb.tup.presentation.input;
 import ar.edu.utn.frbb.tup.model.Cliente;
 import ar.edu.utn.frbb.tup.model.Direccion;
 import ar.edu.utn.frbb.tup.model.TipoPersona;
+import ar.edu.utn.frbb.tup.model.exception.ClienteNoExistsException;
 import java.time.LocalDate;
 
 public class ClienteModifyProcessor extends ClienteProcessor {
-  public Cliente modifyCliente(Cliente cliente) {
+  public void modifyCliente() {
+    Cliente cliente;
+    try {
+      cliente = this.getClienteByDni();
+    } catch (ClienteNoExistsException e) {
+      System.out.println(e.getMessage());
+      return;
+    }
 
     String enBlanco = " (o deje en blanco para mantener el valor actual):";
     clearScreen();
@@ -68,10 +76,20 @@ public class ClienteModifyProcessor extends ClienteProcessor {
     String confirmacion = getStringInput("¿Los datos del cliente son correctos? [N] para editar:");
 
     if (confirmacion.equalsIgnoreCase("n")) {
-      cliente = this.modifyCliente(cliente);
+      this.modifyCliente();
+      return;
+    }
+
+    try {
+      clienteService.actualizarCliente(cliente);
+    } catch (ClienteNoExistsException e) {
+      System.out.println(e.getMessage());
+      return;
+    } catch (IllegalArgumentException e) {
+      System.out.println(e.getMessage());
+      return;
     }
 
     clearScreen();
-    return cliente;
   }
 }

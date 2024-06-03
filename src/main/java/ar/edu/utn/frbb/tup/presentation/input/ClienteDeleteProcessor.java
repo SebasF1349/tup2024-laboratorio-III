@@ -1,10 +1,18 @@
 package ar.edu.utn.frbb.tup.presentation.input;
 
 import ar.edu.utn.frbb.tup.model.Cliente;
-import ar.edu.utn.frbb.tup.model.Clientes;
+import ar.edu.utn.frbb.tup.model.exception.ClienteNoExistsException;
 
 public class ClienteDeleteProcessor extends ClienteProcessor {
-  public void deleteCliente(Cliente cliente) {
+  public void deleteCliente() {
+    Cliente cliente;
+    try {
+      cliente = this.getClienteByDni();
+    } catch (ClienteNoExistsException e) {
+      System.out.println(e.getMessage());
+      return;
+    }
+
     System.out.println(
         "¿Esta seguro que quiere eliminar al cliente "
             + cliente.getApellido()
@@ -15,7 +23,7 @@ public class ClienteDeleteProcessor extends ClienteProcessor {
             + ")? Ingrese S para confirmar");
     String response = scanner.nextLine();
     if (response.equalsIgnoreCase("s")) {
-      Clientes.getInstance().deleteCliente(cliente);
+      clienteService.eliminarCliente(cliente);
       System.out.println("Cliente eliminado.");
     } else {
       System.out.println("El Cliente no ha sido eliminado.");

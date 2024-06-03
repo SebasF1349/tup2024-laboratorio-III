@@ -1,14 +1,14 @@
 package ar.edu.utn.frbb.tup.presentation.input;
 
 import ar.edu.utn.frbb.tup.model.Cliente;
-import ar.edu.utn.frbb.tup.model.Cuenta;
 import ar.edu.utn.frbb.tup.model.Direccion;
 import ar.edu.utn.frbb.tup.model.TipoPersona;
+import ar.edu.utn.frbb.tup.model.exception.ClienteAlreadyExistsException;
 import java.time.LocalDate;
 
 public class ClienteCreateProcessor extends ClienteProcessor {
 
-  public Cliente ingresarCliente() {
+  public void ingresarCliente() {
 
     Cliente cliente = new Cliente();
 
@@ -50,29 +50,38 @@ public class ClienteCreateProcessor extends ClienteProcessor {
     LocalDate fechaAlta = this.getDateInput("Ingrese la fecha de alta del cliente:");
     cliente.setFechaAlta(fechaAlta);
 
-    System.out.println(cliente);
-    String confirmacion =
-        getStringInput("¿Los datos del nuevo cliente son correctos? [N] para editar:");
+    // NOTE: Modify cliente before saving?
+    // System.out.println(cliente);
+    // String confirmacion =
+    //    getStringInput("¿Los datos del nuevo cliente son correctos? [N] para editar:");
+    //
+    // if (confirmacion.equalsIgnoreCase("n")) {
+    //  ClienteModifyProcessor clienteModifyProcessor = new ClienteModifyProcessor();
+    //  cliente = clienteModifyProcessor.modifyCliente(cliente);
+    // }
 
-    if (confirmacion.equalsIgnoreCase("n")) {
-      ClienteModifyProcessor clienteModifyProcessor = new ClienteModifyProcessor();
-      cliente = clienteModifyProcessor.modifyCliente(cliente);
-    }
+    // NOTE: Create cuenta while creating Cliente?
+    // String crearCuenta =
+    //    getStringInput("¿Desea crear una Cuenta para el nuevo Cliente? [Y] para crear Cuenta:");
+    //
+    // if (crearCuenta.equalsIgnoreCase("y")) {
+    //  CuentaCreateProcessor cuentaCreateProcessor = new CuentaCreateProcessor();
+    //  Cuenta cuenta = cuentaCreateProcessor.createCuenta();
+    //  try {
+    //    cliente.addCuenta(cuenta);
+    //  } catch (IllegalArgumentException e) {
+    //    System.out.println(e.getMessage());
+    //  }
+    // }
 
-    String crearCuenta =
-        getStringInput("¿Desea crear una Cuenta para el nuevo Cliente? [Y] para crear Cuenta:");
-
-    if (crearCuenta.equalsIgnoreCase("y")) {
-      CuentaCreateProcessor cuentaCreateProcessor = new CuentaCreateProcessor();
-      Cuenta cuenta = cuentaCreateProcessor.createCuenta();
-      try {
-        cliente.addCuenta(cuenta);
-      } catch (IllegalArgumentException e) {
-        System.out.println(e.getMessage());
-      }
+    try {
+      clienteService.darDeAltaCliente(cliente);
+    } catch (ClienteAlreadyExistsException e) {
+      System.out.println();
+      System.out.println(e.getMessage());
+      System.out.println();
     }
 
     clearScreen();
-    return cliente;
   }
 }

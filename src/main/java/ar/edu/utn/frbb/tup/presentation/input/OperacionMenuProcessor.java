@@ -1,18 +1,23 @@
 package ar.edu.utn.frbb.tup.presentation.input;
 
-import ar.edu.utn.frbb.tup.model.Clientes;
 import ar.edu.utn.frbb.tup.model.ConsultaSaldo;
 import ar.edu.utn.frbb.tup.model.Cuenta;
 import ar.edu.utn.frbb.tup.model.Deposito;
 import ar.edu.utn.frbb.tup.model.Retiro;
 import ar.edu.utn.frbb.tup.model.Transferencia;
+import ar.edu.utn.frbb.tup.service.CuentaService;
 import java.util.Arrays;
 import java.util.List;
 
-public class OperacionMenuProcessor extends BaseInputProcessor {
+public class OperacionMenuProcessor extends OperacionProcessor {
+  MovimientoProcessor movimientoProcessor;
   private boolean exit = false;
 
-  public void renderMenu(Cuenta cuenta) {
+  public OperacionMenuProcessor(MovimientoProcessor movimientoProcessor) {
+    this.movimientoProcessor = movimientoProcessor;
+  }
+
+  public void renderMenu() {
 
     List<String> menuOptions =
         Arrays.asList(
@@ -36,48 +41,31 @@ public class OperacionMenuProcessor extends BaseInputProcessor {
           }
         case 2:
           {
-            MovimientoProcessor movimientoProcessor = new MovimientoProcessor();
             Retiro retiro = movimientoProcessor.createRetiro();
-            try {
-              cuenta.addMovimiento(retiro);
-            } catch (IllegalArgumentException e) {
-              System.err.println(e.getMessage());
-              scanner.nextLine();
-            }
+            this.addMovimiento(retiro);
             break;
           }
         case 3:
           {
-            MovimientoProcessor movimientoProcessor = new MovimientoProcessor();
             Deposito deposito = movimientoProcessor.createDeposito();
-            try {
-              cuenta.addMovimiento(deposito);
-            } catch (IllegalArgumentException e) {
-              System.err.println(e.getMessage());
-              scanner.nextLine();
-            }
+            this.addMovimiento(deposito);
             break;
           }
         case 4:
           {
-            MovimientoProcessor movimientoProcessor = new MovimientoProcessor();
-            Transferencia transferencia = movimientoProcessor.createTransferencia(cuenta);
-            try {
-              cuenta.addMovimiento(transferencia);
-            } catch (IllegalArgumentException e) {
-              System.err.println(e.getMessage());
-              scanner.nextLine();
-            }
+            Transferencia transferencia = movimientoProcessor.createTransferencia();
+            this.addMovimiento(transferencia);
             Transferencia transferenciaRecibido =
                 new Transferencia(
                     transferencia.getMonto(),
                     transferencia.isEsCuentaPropia(),
                     cuenta.getNumeroCuenta(),
-                    true);
-            Cuenta clienteReceptor =
-                Clientes.getInstance().getCuentaById(transferencia.getNumeroCuentaDestino());
+                    true,
+                    cuenta);
+            CuentaService cuentaService = new CuentaService();
+            Cuenta cuentaDestino = cuentaService.find(transferencia.getNumeroCuentaDestino());
             try {
-              clienteReceptor.addMovimiento(transferenciaRecibido);
+              cuentaDestino.addMovimiento(transferenciaRecibido);
             } catch (IllegalArgumentException e) {
               System.err.println(e.getMessage());
               scanner.nextLine();
@@ -88,7 +76,7 @@ public class OperacionMenuProcessor extends BaseInputProcessor {
           exit = true;
           break;
         default:
-          System.out.println("Opción no implementada");
+          System.out.println("Opción no válida, intente nuevamente.");
       }
       clearScreen();
     }
