@@ -11,7 +11,12 @@ public class Retiro extends Movimiento {
     super(monto, diaHora, movimientoId, cuenta);
   }
 
-  public TipoMovimiento getTipoMovimiento() {
-    return TipoMovimiento.CREDITO;
+  public TipoTransaccion getTipoTransaccion() {
+    return TipoTransaccion.CREDITO;
+  }
+
+  @Override
+  public String getTipoMovimiento() {
+    return "RETIRO";
   }
 }

@@ -22,17 +22,11 @@ public class MovimientoEntity extends BaseEntity {
     this.numeroCuenta = movimiento.getCuenta().getNumeroCuenta();
     this.diaHora = movimiento.getDiaHora();
     this.monto = movimiento.getMonto();
+    this.movimiento = movimiento.getTipoMovimiento();
     if (movimiento instanceof Transferencia) {
-      this.movimiento = "TRANSFERENCIA";
       this.esCuentaPropia = ((Transferencia) movimiento).isEsCuentaPropia();
       this.numeroCuentaDestino = ((Transferencia) movimiento).getNumeroCuentaDestino();
       this.esDestinatario = ((Transferencia) movimiento).isEsDestinatario();
-    } else if (movimiento instanceof Retiro) {
-      this.movimiento = "RETIRO";
-    } else if (movimiento instanceof Deposito) {
-      this.movimiento = "DEPOSITO";
-    } else {
-      throw new IllegalArgumentException("Unhandled Movimiento subclass");
     }
   }
 
@@ -59,7 +53,7 @@ public class MovimientoEntity extends BaseEntity {
         movimiento = new Deposito(this.monto, this.diaHora, this.getId(), cuenta);
         break;
       default:
-        throw new IllegalArgumentException("Movimiento Entity mal guardado");
+        throw new IllegalArgumentException("Unhandled TipoMovimiento");
     }
     return movimiento;
   }

@@ -43,16 +43,18 @@ public abstract class Movimiento extends Operacion {
     return monto;
   }
 
-  public abstract TipoMovimiento getTipoMovimiento();
+  public abstract TipoTransaccion getTipoTransaccion();
 
   public double actualizarCuentaMonto(double montoCuenta) {
-    switch (getTipoMovimiento()) {
+    switch (getTipoTransaccion()) {
       case DEBITO:
         return montoCuenta + this.getMonto();
       case CREDITO:
         return montoCuenta - this.getMonto();
       default:
-        throw new IllegalArgumentException("Unhandled TipoMovimiento");
+        throw new IllegalArgumentException("Unhandled TipoTransaccion");
     }
   }
+
+  public abstract String getTipoMovimiento();
 }

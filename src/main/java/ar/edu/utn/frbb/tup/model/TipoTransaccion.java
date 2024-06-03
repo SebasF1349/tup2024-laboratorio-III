@@ -1,12 +1,12 @@
 package ar.edu.utn.frbb.tup.model;
 
-public enum TipoMovimiento {
+public enum TipoTransaccion {
   DEBITO("D"),
   CREDITO("C");
 
   private final String descripcion;
 
-  TipoMovimiento(String descripcion) {
+  TipoTransaccion(String descripcion) {
     this.descripcion = descripcion;
   }
 
@@ -14,14 +14,14 @@ public enum TipoMovimiento {
     return descripcion;
   }
 
-  public static TipoMovimiento fromString(String text) {
-    for (TipoMovimiento tipo : TipoMovimiento.values()) {
+  public static TipoTransaccion fromString(String text) {
+    for (TipoTransaccion tipo : TipoTransaccion.values()) {
       if (tipo.descripcion.equalsIgnoreCase(text)) {
         return tipo;
       }
     }
     throw new IllegalArgumentException(
-        "No se pudo encontrar un TipoMovimiento con la descripción: " + text);
+        "No se pudo encontrar un TipoTransaccion con la descripción: " + text);
   }
 
   @Override

@@ -57,11 +57,16 @@ public class Transferencia extends Movimiento {
     this.numeroCuentaDestino = numeroCuentaDestino;
   }
 
-  public TipoMovimiento getTipoMovimiento() {
+  public TipoTransaccion getTipoTransaccion() {
     if (esDestinatario) {
-      return TipoMovimiento.DEBITO;
+      return TipoTransaccion.DEBITO;
     } else {
-      return TipoMovimiento.CREDITO;
+      return TipoTransaccion.CREDITO;
     }
+  }
+
+  @Override
+  public String getTipoMovimiento() {
+    return "TRANSFERENCIA";
   }
 }
