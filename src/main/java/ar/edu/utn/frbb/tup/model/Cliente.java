@@ -38,6 +38,12 @@ public class Cliente extends Persona {
     return cuentas;
   }
 
+  public Set<Cuenta> getCuentasFiltrada(Cuenta cuenta) {
+    Set<Cuenta> cuentasFiltrada = new HashSet<>(this.cuentas);
+    cuentasFiltrada.remove(cuenta);
+    return cuentasFiltrada;
+  }
+
   public void setCuentas(Set<Cuenta> cuentas) {
     this.cuentas = cuentas;
   }

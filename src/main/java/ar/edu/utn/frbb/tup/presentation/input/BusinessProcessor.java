@@ -21,13 +21,9 @@ public class BusinessProcessor extends BaseInputProcessor {
       return null;
     }
     List<Cuenta> cuentasList = new ArrayList<>();
-    List<String> cuentasStr = new ArrayList<>();
-    for (Cuenta cuenta : cuentas) {
-      cuentasList.add(cuenta);
-      cuentasStr.add(cuenta.toString());
-    }
+    cuentasList.addAll(cuentas);
     int cuentaChoice =
-        this.getMultipleOptionsInput("Elija la cuenta sobre la cual operar:", cuentasStr);
+        this.getMultipleOptionsInput("Elija la cuenta sobre la cual operar:", cuentasList);
     return cuentasList.get(cuentaChoice - 1);
   }
 }

@@ -6,9 +6,7 @@ import ar.edu.utn.frbb.tup.model.Deposito;
 import ar.edu.utn.frbb.tup.model.Retiro;
 import ar.edu.utn.frbb.tup.model.Transferencia;
 import ar.edu.utn.frbb.tup.service.CuentaService;
-import java.util.HashSet;
 import java.util.Objects;
-import java.util.Set;
 
 public class MovimientoProcessor extends OperacionProcessor {
   private double getMonto() {
@@ -58,14 +56,7 @@ public class MovimientoProcessor extends OperacionProcessor {
     Cliente cliente = this.cuenta.getTitular();
     String numeroCuentaDestino;
     if (esCuentaPropia) {
-      Set<Cuenta> cuentas = new HashSet<>();
-      for (Cuenta cuentaCliente : cliente.getCuentas()) {
-        if (!cuentaCliente.equals(this.cuenta)) {
-          cuentas.add(cuentaCliente);
-        }
-      }
-      cuentas.remove(this.cuenta);
-      Cuenta cuentaDestino = this.getCuentaId(cuentas);
+      Cuenta cuentaDestino = this.getCuentaId(cliente.getCuentasFiltrada(this.cuenta));
       if (Objects.isNull(cuentaDestino)) {
         return null;
       }

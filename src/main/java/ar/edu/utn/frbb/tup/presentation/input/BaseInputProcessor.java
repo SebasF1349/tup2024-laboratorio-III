@@ -15,10 +15,11 @@ public class BaseInputProcessor {
     System.out.flush();
   }
 
-  public int getMultipleOptionsInput(String question, List<String> menuOptions) {
+  // NOTE: Investigar mejor forma de aceptar tanto Strings como classes en List
+  public int getMultipleOptionsInput(String question, List<?> menuOptions) {
     System.out.println(question);
     for (int i = 0; i < menuOptions.size(); i++) {
-      System.out.println((i + 1) + ". " + menuOptions.get(i));
+      System.out.println((i + 1) + ". " + String.valueOf(menuOptions.get(i)));
     }
     System.out.println("Ingrese su opción (1-" + menuOptions.size() + "): ");
     boolean optValida = false;
