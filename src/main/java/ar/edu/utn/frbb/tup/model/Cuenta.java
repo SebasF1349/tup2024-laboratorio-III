@@ -1,6 +1,5 @@
 package ar.edu.utn.frbb.tup.model;
 
-import ar.edu.utn.frbb.tup.persistence.MovimientoDao;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -92,14 +91,7 @@ public class Cuenta {
   }
 
   public void addMovimiento(Movimiento movimiento) throws IllegalArgumentException {
-    double nuevoSaldo = movimiento.actualizarCuentaMonto(balance);
-    if (nuevoSaldo < 0) {
-      throw new IllegalArgumentException("Saldo insuficiente");
-    }
-    this.balance = nuevoSaldo;
     this.movimientos.add(movimiento);
-    MovimientoDao movimientoDao = new MovimientoDao();
-    movimientoDao.save(movimiento);
   }
 
   private String getRandomId() {
