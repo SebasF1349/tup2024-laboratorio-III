@@ -2,8 +2,8 @@ package ar.edu.utn.frbb.tup.presentation.input;
 
 import ar.edu.utn.frbb.tup.model.Cliente;
 import ar.edu.utn.frbb.tup.model.Cuenta;
-import ar.edu.utn.frbb.tup.model.MonedaCuenta;
 import ar.edu.utn.frbb.tup.model.TipoCuenta;
+import ar.edu.utn.frbb.tup.model.TipoMoneda;
 import ar.edu.utn.frbb.tup.model.exception.ClienteNoExistsException;
 import ar.edu.utn.frbb.tup.model.exception.CuentaAlreadyExistsException;
 import ar.edu.utn.frbb.tup.model.exception.TipoCuentaAlreadyExistsException;
@@ -32,7 +32,7 @@ public class CuentaCreateProcessor extends CuentaProcessor {
             "Ingrese la moneda de la Cuenta - Pesos Argentinos[P] o Dólares Americanos[D]:",
             "P",
             "D");
-    MonedaCuenta moneda = MonedaCuenta.fromString(monedaStr);
+    TipoMoneda moneda = TipoMoneda.fromString(monedaStr);
 
     Cuenta cuenta = new Cuenta(tipoCuenta, moneda, cliente);
 

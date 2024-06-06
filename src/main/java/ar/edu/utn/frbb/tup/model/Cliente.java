@@ -52,7 +52,7 @@ public class Cliente extends Persona {
     this.cuentas.add(cuenta);
   }
 
-  public boolean hasCuenta(TipoCuenta tipoCuenta, MonedaCuenta moneda) {
+  public boolean hasCuenta(TipoCuenta tipoCuenta, TipoMoneda moneda) {
     for (Cuenta cuenta : cuentas) {
       if (tipoCuenta.equals(cuenta.getTipoCuenta()) && moneda.equals(cuenta.getMoneda())) {
         return true;

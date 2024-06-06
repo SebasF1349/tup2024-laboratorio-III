@@ -10,7 +10,7 @@ public class Cuenta {
   private LocalDateTime fechaApertura;
   private double balance;
   private TipoCuenta tipoCuenta;
-  private MonedaCuenta moneda;
+  private TipoMoneda moneda;
   private Cliente titular;
   private Set<Movimiento> movimientos;
 
@@ -22,12 +22,12 @@ public class Cuenta {
     this.titular = null;
   }
 
-  public Cuenta(TipoCuenta tipoCuenta, MonedaCuenta moneda, Cliente titular) {
+  public Cuenta(TipoCuenta tipoCuenta, TipoMoneda tipoMoneda, Cliente titular) {
     this.numeroCuenta = this.getRandomId();
     this.fechaApertura = LocalDateTime.now();
     this.balance = 0;
     this.tipoCuenta = tipoCuenta;
-    this.moneda = moneda;
+    this.moneda = tipoMoneda;
     this.movimientos = new HashSet<>();
     this.titular = titular;
   }

@@ -1,12 +1,12 @@
 package ar.edu.utn.frbb.tup.model;
 
-public enum MonedaCuenta {
+public enum TipoMoneda {
   PESOS_ARGENTINOS("P"),
   DOLARES_AMERICANOS("D");
 
   private final String descripcion;
 
-  MonedaCuenta(String descripcion) {
+  TipoMoneda(String descripcion) {
     this.descripcion = descripcion;
   }
 
@@ -14,8 +14,8 @@ public enum MonedaCuenta {
     return descripcion;
   }
 
-  public static MonedaCuenta fromString(String text) {
-    for (MonedaCuenta tipo : MonedaCuenta.values()) {
+  public static TipoMoneda fromString(String text) {
+    for (TipoMoneda tipo : TipoMoneda.values()) {
       if (tipo.descripcion.equalsIgnoreCase(text)) {
         return tipo;
       }
