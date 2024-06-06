@@ -63,4 +63,44 @@ public class CuentaEntity extends BaseEntity {
 
     return cuenta;
   }
+
+  public LocalDateTime getFechaCreacion() {
+    return fechaCreacion;
+  }
+
+  public void setFechaCreacion(LocalDateTime fechaCreacion) {
+    this.fechaCreacion = fechaCreacion;
+  }
+
+  public double getBalance() {
+    return balance;
+  }
+
+  public void setBalance(double balance) {
+    this.balance = balance;
+  }
+
+  public String getTipoCuenta() {
+    return tipoCuenta;
+  }
+
+  public void setTipoCuenta(String tipoCuenta) {
+    this.tipoCuenta = tipoCuenta;
+  }
+
+  public String getTitular() {
+    return titular;
+  }
+
+  public void setTitular(String titular) {
+    this.titular = titular;
+  }
+
+  public List<String> getMovimientos() {
+    return movimientos;
+  }
+
+  public void setMovimientos(List<String> movimientos) {
+    this.movimientos = movimientos;
+  }
 }

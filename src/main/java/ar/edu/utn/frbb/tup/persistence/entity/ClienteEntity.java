@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Set;
 
 public class ClienteEntity extends BaseEntity {
-
   private final String tipoPersona;
   private final String nombre;
   private final String apellido;
@@ -62,5 +61,33 @@ public class ClienteEntity extends BaseEntity {
     }
 
     return cliente;
+  }
+
+  public String getTipoPersona() {
+    return tipoPersona;
+  }
+
+  public String getNombre() {
+    return nombre;
+  }
+
+  public String getApellido() {
+    return apellido;
+  }
+
+  public LocalDate getFechaAlta() {
+    return fechaAlta;
+  }
+
+  public LocalDate getFechaNacimiento() {
+    return fechaNacimiento;
+  }
+
+  public List<String> getCuentas() {
+    return cuentas;
+  }
+
+  public void setCuentas(List<String> cuentas) {
+    this.cuentas = cuentas;
   }
 }
