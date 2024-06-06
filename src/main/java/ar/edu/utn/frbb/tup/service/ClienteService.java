@@ -30,14 +30,16 @@ public class ClienteService {
     clienteDao.save(cliente);
   }
 
-  public void agregarCuenta(Cuenta cuenta, Cliente cliente)
-      throws TipoCuentaAlreadyExistsException {
-    if (cliente.hasCuenta(cuenta.getTipoCuenta(), cuenta.getMoneda())) {
+  public void agregarCuenta(Cuenta cuenta, String dniTitular)
+      throws TipoCuentaAlreadyExistsException, ClienteNoExistsException {
+    Cliente titular = buscarClientePorDni(dniTitular);
+    cuenta.setTitular(titular);
+    if (titular.hasCuenta(cuenta.getTipoCuenta(), cuenta.getMoneda())) {
       throw new TipoCuentaAlreadyExistsException(
           "El cliente ya posee una cuenta de ese tipo y moneda");
     }
-    cliente.addCuenta(cuenta);
-    clienteDao.save(cliente);
+    titular.addCuenta(cuenta);
+    clienteDao.save(titular);
   }
 
   public Cliente buscarClientePorDni(String dni) throws ClienteNoExistsException {

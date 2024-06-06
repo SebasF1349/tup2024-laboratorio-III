@@ -39,12 +39,16 @@ public class CuentaCreateProcessor extends CuentaProcessor {
     // NOTE: Debo hacer algo si falla agregarCuenta pero no darDeAltaCuenta
     try {
       cuentaService.darDeAltaCuenta(cuenta);
-      clienteService.agregarCuenta(cuenta, cliente);
+      clienteService.agregarCuenta(cuenta, cliente.getDni());
     } catch (CuentaAlreadyExistsException e) {
       System.out.println();
       System.out.println(e.getMessage());
       System.out.println();
     } catch (TipoCuentaAlreadyExistsException e) {
+      System.out.println();
+      System.out.println(e.getMessage());
+      System.out.println();
+    } catch (ClienteNoExistsException e) {
       System.out.println();
       System.out.println(e.getMessage());
       System.out.println();
