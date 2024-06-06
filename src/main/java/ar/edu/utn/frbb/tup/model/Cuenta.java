@@ -36,16 +36,18 @@ public class Cuenta {
     return numeroCuenta;
   }
 
-  public void setNumeroCuenta(String numeroCuenta) {
+  public Cuenta setNumeroCuenta(String numeroCuenta) {
     this.numeroCuenta = numeroCuenta;
+    return this;
   }
 
   public Cliente getTitular() {
     return titular;
   }
 
-  public void setTitular(Cliente titular) {
+  public Cuenta setTitular(Cliente titular) {
     this.titular = titular;
+    return this;
   }
 
   public LocalDateTime getFechaApertura() {
@@ -70,24 +72,27 @@ public class Cuenta {
     return tipoCuenta;
   }
 
-  public void setTipoCuenta(TipoCuenta tipoCuenta) {
+  public Cuenta setTipoCuenta(TipoCuenta tipoCuenta) {
     this.tipoCuenta = tipoCuenta;
+    return this;
   }
 
-  public MonedaCuenta getMoneda() {
+  public TipoMoneda getMoneda() {
     return moneda;
   }
 
-  public void setMoneda(MonedaCuenta moneda) {
+  public Cuenta setMoneda(TipoMoneda moneda) {
     this.moneda = moneda;
+    return this;
   }
 
   public Set<Movimiento> getMovimientos() {
     return movimientos;
   }
 
-  public void setMovimientos(Set<Movimiento> movimientos) {
+  public Cuenta setMovimientos(Set<Movimiento> movimientos) {
     this.movimientos = movimientos;
+    return this;
   }
 
   public void addMovimiento(Movimiento movimiento) throws IllegalArgumentException {
