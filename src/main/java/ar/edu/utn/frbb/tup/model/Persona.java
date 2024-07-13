@@ -7,8 +7,6 @@ public class Persona {
   private String dni;
   private String nombre;
   private String apellido;
-  private Direccion direccion;
-  private String nroTelefono;
   private LocalDate fechaNacimiento;
 
   public Persona() {}
@@ -50,22 +48,6 @@ public class Persona {
 
   public void setFechaNacimiento(LocalDate fechaNacimiento) {
     this.fechaNacimiento = fechaNacimiento;
-  }
-
-  public Direccion getDireccion() {
-    return direccion;
-  }
-
-  public void setDireccion(Direccion direccion) {
-    this.direccion = direccion;
-  }
-
-  public String getNroTelefono() {
-    return nroTelefono;
-  }
-
-  public void setNroTelefono(String nroTelefono) {
-    this.nroTelefono = nroTelefono;
   }
 
   public int getEdad() {

@@ -97,10 +97,6 @@ public class Cliente extends Persona {
         + "\nFecha de Nacimiento: "
         + this.getFechaNacimiento()
         + "\n"
-        + this.getDireccion()
-        + "\nTeléfono: "
-        + this.getNroTelefono()
-        + "\nTipo de Persona: "
         + this.tipoPersona
         + "\nFecha de Alta: "
         + this.fechaAlta
