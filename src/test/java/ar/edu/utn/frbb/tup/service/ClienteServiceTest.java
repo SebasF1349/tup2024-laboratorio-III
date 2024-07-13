@@ -33,22 +33,6 @@ public class ClienteServiceTest {
   }
 
   @Test
-  public void testClienteMenor18Años() {
-    Cliente clienteMenorDeEdad = new Cliente();
-    clienteMenorDeEdad.setFechaNacimiento(LocalDate.now().minusYears(17));
-    assertThrows(
-        IllegalArgumentException.class, () -> clienteService.darDeAltaCliente(clienteMenorDeEdad));
-  }
-
-  @Test
-  public void testClienteSuccess() throws ClienteAlreadyExistsException {
-    Cliente cliente = createCliente();
-    clienteService.darDeAltaCliente(cliente);
-
-    verify(clienteDao, times(1)).save(cliente);
-  }
-
-  @Test
   public void testClienteAlreadyExistsException() throws ClienteAlreadyExistsException {
     Cliente cliente = createCliente();
 
@@ -56,6 +40,45 @@ public class ClienteServiceTest {
 
     assertThrows(
         ClienteAlreadyExistsException.class, () -> clienteService.darDeAltaCliente(cliente));
+  }
+
+  @Test
+  public void testClienteMenorDeEdadException() {
+    Cliente clienteMenorDeEdad = new Cliente();
+    clienteMenorDeEdad.setFechaNacimiento(LocalDate.now().minusYears(17));
+    assertThrows(
+        ClienteMenorDeEdadException.class,
+        () -> clienteService.darDeAltaCliente(clienteMenorDeEdad));
+  }
+
+  @Test
+  public void testDarDeAltaClienteSuccess()
+      throws ClienteAlreadyExistsException, ClienteMenorDeEdadException {
+    Cliente cliente = createCliente();
+    clienteService.darDeAltaCliente(cliente);
+
+    verify(clienteDao, times(1)).save(cliente);
+  }
+
+  @Test
+  public void testTipoCuentaAlreadExistsException()
+      throws TipoCuentaAlreadyExistsException, ClienteNoExistsException {
+    Cliente cliente = createCliente();
+    Cuenta cuenta = createCuenta();
+
+    when(clienteDao.find(dniCliente, true)).thenReturn(cliente);
+
+    clienteService.agregarCuenta(cuenta, cliente.getDni());
+
+    verify(clienteDao, times(1)).save(cliente);
+    assertEquals(1, cliente.getCuentas().size());
+    assertEquals(cliente, cuenta.getTitular());
+
+    Cuenta cuentaDuplicada = createCuenta();
+
+    assertThrows(
+        TipoCuentaAlreadyExistsException.class,
+        () -> clienteService.agregarCuenta(cuentaDuplicada, cliente.getDni()));
   }
 
   @Test
@@ -70,26 +93,6 @@ public class ClienteServiceTest {
 
     verify(clienteDao, times(1)).save(cliente);
 
-    assertEquals(1, cliente.getCuentas().size());
-    assertEquals(cliente, cuenta.getTitular());
-  }
-
-  @Test
-  public void testAgregarCuentaAClienteDuplicada()
-      throws TipoCuentaAlreadyExistsException, ClienteNoExistsException {
-    Cliente cliente = createCliente();
-    Cuenta cuenta = createCuenta();
-
-    when(clienteDao.find(dniCliente, true)).thenReturn(cliente);
-
-    clienteService.agregarCuenta(cuenta, cliente.getDni());
-
-    Cuenta cuenta2 = createCuenta();
-
-    assertThrows(
-        TipoCuentaAlreadyExistsException.class,
-        () -> clienteService.agregarCuenta(cuenta2, cliente.getDni()));
-    verify(clienteDao, times(1)).save(cliente);
     assertEquals(1, cliente.getCuentas().size());
     assertEquals(cliente, cuenta.getTitular());
   }
@@ -135,11 +138,21 @@ public class ClienteServiceTest {
   }
 
   @Test
-  public void testBuscarClienteNoExisteException() throws TipoCuentaAlreadyExistsException {
+  public void testClienteNoExisteException() throws TipoCuentaAlreadyExistsException {
     when(clienteDao.find(dniCliente, true)).thenReturn(null);
 
     assertThrows(
         ClienteNoExistsException.class, () -> clienteService.buscarClientePorDni(dniCliente));
+  }
+
+  @Test
+  public void testBuscarClientePorDniSuccess()
+      throws TipoCuentaAlreadyExistsException, ClienteNoExistsException {
+    Cliente cliente = createCliente();
+
+    when(clienteDao.find(dniCliente, true)).thenReturn(cliente);
+
+    assertEquals(cliente, clienteService.buscarClientePorDni(dniCliente));
   }
 
   private Cliente createCliente() {

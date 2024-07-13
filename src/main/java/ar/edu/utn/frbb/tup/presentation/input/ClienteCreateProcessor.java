@@ -4,6 +4,7 @@ import ar.edu.utn.frbb.tup.model.Cliente;
 import ar.edu.utn.frbb.tup.model.Direccion;
 import ar.edu.utn.frbb.tup.model.TipoPersona;
 import ar.edu.utn.frbb.tup.model.exception.ClienteAlreadyExistsException;
+import ar.edu.utn.frbb.tup.service.ClienteMenorDeEdadException;
 import java.time.LocalDate;
 import org.springframework.stereotype.Component;
 
@@ -82,6 +83,8 @@ public class ClienteCreateProcessor extends ClienteProcessor {
       System.out.println();
       System.out.println(e.getMessage());
       System.out.println();
+    } catch (ClienteMenorDeEdadException e) {
+      e.printStackTrace();
     }
 
     clearScreen();

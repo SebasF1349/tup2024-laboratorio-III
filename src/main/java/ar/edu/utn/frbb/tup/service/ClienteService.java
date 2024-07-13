@@ -14,17 +14,14 @@ public class ClienteService {
   ClienteDao clienteDao = new ClienteDao();
   CuentaDao cuentaDao = new CuentaDao();
 
-  public void darDeAltaCliente(Cliente cliente) throws ClienteAlreadyExistsException {
+  public void darDeAltaCliente(Cliente cliente)
+      throws ClienteAlreadyExistsException, ClienteMenorDeEdadException {
     if (clienteDao.find(cliente.getDni(), false) != null) {
       throw new ClienteAlreadyExistsException("Ya existe un cliente con DNI " + cliente.getDni());
     }
 
-    if (cliente.getFechaNacimiento() == null) {
-      throw new IllegalArgumentException("La fecha de nacimiento no puede ser nula");
-    }
-
     if (cliente.getEdad() < 18) {
-      throw new IllegalArgumentException("El cliente debe ser mayor a 18 años");
+      throw new ClienteMenorDeEdadException("El cliente debe ser mayor a 18 años");
     }
 
     clienteDao.save(cliente);
