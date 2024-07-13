@@ -27,23 +27,6 @@ public class ClienteServiceTest {
 
   @InjectMocks private ClienteService clienteService;
 
-  private Cliente createCliente() {
-    Cliente cliente = new Cliente();
-    cliente.setDni(dniCliente);
-    cliente.setNombre("Nombre");
-    cliente.setApellido("Apellido");
-    cliente.setFechaNacimiento(LocalDate.of(1990, 1, 1));
-    cliente.setTipoPersona(TipoPersona.PERSONA_FISICA);
-    return cliente;
-  }
-
-  private Cuenta createCuenta() {
-    return new Cuenta()
-        .setMoneda(TipoMoneda.PESOS_ARGENTINOS)
-        .setBalance(500000)
-        .setTipoCuenta(TipoCuenta.CAJA_AHORROS);
-  }
-
   @BeforeAll
   public void setUp() {
     MockitoAnnotations.openMocks(this);
@@ -111,7 +94,72 @@ public class ClienteServiceTest {
     assertEquals(cliente, cuenta.getTitular());
   }
 
-  // Agregar una CA$ y CC$ --> success 2 cuentas, titular peperino
-  // Agregar una CA$ y CAU$S --> success 2 cuentas, titular peperino...
-  // Testear clienteService.buscarPorDni
+  @Test
+  public void testAgregarDosCuentaDistintoTipoSuccess()
+      throws TipoCuentaAlreadyExistsException, ClienteNoExistsException {
+    Cliente cliente = this.createCliente();
+
+    when(clienteDao.find(dniCliente, true)).thenReturn(cliente);
+
+    Cuenta cuentaAhorro = this.createCuenta(TipoMoneda.PESOS_ARGENTINOS, TipoCuenta.CAJA_AHORROS);
+    clienteService.agregarCuenta(cuentaAhorro, cliente.getDni());
+
+    Cuenta cuentaCorriente =
+        this.createCuenta(TipoMoneda.PESOS_ARGENTINOS, TipoCuenta.CUENTA_CORRIENTE);
+    clienteService.agregarCuenta(cuentaCorriente, cliente.getDni());
+
+    verify(clienteDao, times(2)).save(cliente);
+    assertEquals(2, cliente.getCuentas().size());
+    assertEquals(cliente, cuentaAhorro.getTitular());
+    assertEquals(cliente, cuentaCorriente.getTitular());
+  }
+
+  @Test
+  public void testAgregarDosCuentaDistintaMonedaSuccess()
+      throws TipoCuentaAlreadyExistsException, ClienteNoExistsException {
+    Cliente cliente = this.createCliente();
+
+    when(clienteDao.find(dniCliente, true)).thenReturn(cliente);
+
+    Cuenta cuentaPesos = this.createCuenta(TipoMoneda.PESOS_ARGENTINOS, TipoCuenta.CAJA_AHORROS);
+    clienteService.agregarCuenta(cuentaPesos, cliente.getDni());
+
+    Cuenta cuentaDolares =
+        this.createCuenta(TipoMoneda.DOLARES_AMERICANOS, TipoCuenta.CAJA_AHORROS);
+    clienteService.agregarCuenta(cuentaDolares, cliente.getDni());
+
+    verify(clienteDao, times(2)).save(cliente);
+    assertEquals(2, cliente.getCuentas().size());
+    assertEquals(cliente, cuentaPesos.getTitular());
+    assertEquals(cliente, cuentaDolares.getTitular());
+  }
+
+  @Test
+  public void testBuscarClienteNoExisteException() throws TipoCuentaAlreadyExistsException {
+    when(clienteDao.find(dniCliente, true)).thenReturn(null);
+
+    assertThrows(
+        ClienteNoExistsException.class, () -> clienteService.buscarClientePorDni(dniCliente));
+  }
+
+  private Cliente createCliente() {
+    Cliente cliente = new Cliente();
+    cliente.setDni(dniCliente);
+    cliente.setNombre("Nombre");
+    cliente.setApellido("Apellido");
+    cliente.setFechaNacimiento(LocalDate.of(1990, 1, 1));
+    cliente.setTipoPersona(TipoPersona.PERSONA_FISICA);
+    return cliente;
+  }
+
+  private Cuenta createCuenta() {
+    return new Cuenta()
+        .setMoneda(TipoMoneda.PESOS_ARGENTINOS)
+        .setBalance(500000)
+        .setTipoCuenta(TipoCuenta.CAJA_AHORROS);
+  }
+
+  private Cuenta createCuenta(TipoMoneda moneda, TipoCuenta cuenta) {
+    return new Cuenta().setMoneda(moneda).setBalance(500000).setTipoCuenta(cuenta);
+  }
 }
