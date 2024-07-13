@@ -155,6 +155,60 @@ public class ClienteServiceTest {
     assertEquals(cliente, clienteService.buscarClientePorDni(dniCliente));
   }
 
+  @Test
+  public void testClienteNoExistsExceptionOnUpdate() {
+    Cliente cliente = createCliente();
+
+    when(clienteDao.find(dniCliente, false)).thenReturn(null);
+
+    assertThrows(ClienteNoExistsException.class, () -> clienteService.actualizarCliente(cliente));
+  }
+
+  @Test
+  public void testClienteMenorDeEdadOnUpdateException() {
+    Cliente clienteMenorDeEdad = createCliente();
+    clienteMenorDeEdad.setFechaNacimiento(LocalDate.now().minusYears(17));
+
+    when(clienteDao.find(dniCliente, false)).thenReturn(clienteMenorDeEdad);
+
+    assertThrows(
+        ClienteMenorDeEdadException.class,
+        () -> clienteService.actualizarCliente(clienteMenorDeEdad));
+  }
+
+  @Test
+  public void testActualizarClienteSuccess()
+      throws ClienteNoExistsException, ClienteMenorDeEdadException {
+    Cliente cliente = createCliente();
+
+    when(clienteDao.find(dniCliente, false)).thenReturn(cliente);
+
+    clienteService.actualizarCliente(cliente);
+
+    verify(clienteDao, times(1)).save(cliente);
+  }
+
+  @Test
+  public void testClienteNoExistsExceptionOnDelete() {
+    Cliente cliente = createCliente();
+
+    when(clienteDao.find(dniCliente, false)).thenReturn(null);
+
+    assertThrows(ClienteNoExistsException.class, () -> clienteService.eliminarCliente(cliente));
+  }
+
+  @Test
+  public void testEliminarClienteSuccess() throws ClienteNoExistsException {
+    Cliente cliente = createCliente();
+
+    when(clienteDao.find(dniCliente, false)).thenReturn(cliente);
+
+    clienteService.eliminarCliente(cliente);
+
+    assertEquals(false, cliente.isActivo());
+    verify(clienteDao, times(1)).save(cliente);
+  }
+
   private Cliente createCliente() {
     Cliente cliente = new Cliente();
     cliente.setDni(dniCliente);

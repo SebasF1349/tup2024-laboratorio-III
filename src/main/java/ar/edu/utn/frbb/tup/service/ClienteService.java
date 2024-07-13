@@ -49,23 +49,23 @@ public class ClienteService {
     return cliente;
   }
 
-  public void actualizarCliente(Cliente cliente) throws ClienteNoExistsException {
+  public void actualizarCliente(Cliente cliente)
+      throws ClienteNoExistsException, ClienteMenorDeEdadException {
     if (clienteDao.find(cliente.getDni(), false) == null) {
       throw new ClienteNoExistsException("No existe un cliente con DNI " + cliente.getDni());
     }
 
-    if (cliente.getFechaNacimiento() == null) {
-      throw new IllegalArgumentException("La fecha de nacimiento no puede ser nula");
-    }
-
     if (cliente.getEdad() < 18) {
-      throw new IllegalArgumentException("El cliente debe ser mayor a 18 años");
+      throw new ClienteMenorDeEdadException("El cliente debe ser mayor a 18 años");
     }
 
     clienteDao.save(cliente);
   }
 
-  public void eliminarCliente(Cliente cliente) {
+  public void eliminarCliente(Cliente cliente) throws ClienteNoExistsException {
+    if (clienteDao.find(cliente.getDni(), false) == null) {
+      throw new ClienteNoExistsException("No existe un cliente con DNI " + cliente.getDni());
+    }
     cliente.setActivo(false);
     clienteDao.save(cliente);
   }

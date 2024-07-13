@@ -25,7 +25,11 @@ public class ClienteDeleteProcessor extends ClienteProcessor {
             + ")? Ingrese S para confirmar");
     String response = scanner.nextLine();
     if (response.equalsIgnoreCase("s")) {
-      clienteService.eliminarCliente(cliente);
+      try {
+        clienteService.eliminarCliente(cliente);
+      } catch (ClienteNoExistsException e) {
+        e.printStackTrace();
+      }
       System.out.println("Cliente eliminado.");
     } else {
       System.out.println("El Cliente no ha sido eliminado.");
