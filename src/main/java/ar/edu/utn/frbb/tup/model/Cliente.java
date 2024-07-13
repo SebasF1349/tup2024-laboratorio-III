@@ -1,5 +1,6 @@
 package ar.edu.utn.frbb.tup.model;
 
+import ar.edu.utn.frbb.tup.controller.ClienteDto;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
@@ -9,6 +10,20 @@ public class Cliente extends Persona {
   private LocalDate fechaAlta;
   private Set<Cuenta> cuentas = new HashSet<>();
   private boolean activo;
+
+  public Cliente() {
+    super();
+  }
+
+  public Cliente(ClienteDto clienteDto) {
+    super(
+        clienteDto.getDni(),
+        clienteDto.getApellido(),
+        clienteDto.getNombre(),
+        clienteDto.getFechaNacimiento());
+    fechaAlta = LocalDate.now();
+    tipoPersona = TipoPersona.fromString(clienteDto.getTipoPersona());
+  }
 
   public TipoPersona getTipoPersona() {
     return tipoPersona;
@@ -91,5 +106,51 @@ public class Cliente extends Persona {
         + this.fechaAlta
         + "\nCuentas: "
         + this.cuentas;
+  }
+
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + ((tipoPersona == null) ? 0 : tipoPersona.hashCode());
+    result = prime * result + ((fechaAlta == null) ? 0 : fechaAlta.hashCode());
+    result = prime * result + ((cuentas == null) ? 0 : cuentas.hashCode());
+    result = prime * result + (activo ? 1231 : 1237);
+    return result;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
+    Cliente other = (Cliente) obj;
+    if (tipoPersona != other.tipoPersona) {
+      return false;
+    }
+    if (fechaAlta == null) {
+      if (other.fechaAlta != null) {
+        return false;
+      }
+    } else if (!fechaAlta.equals(other.fechaAlta)) {
+      return false;
+    }
+    if (cuentas == null) {
+      if (other.cuentas != null) {
+        return false;
+      }
+    } else if (!cuentas.equals(other.cuentas)) {
+      return false;
+    }
+    if (activo != other.activo) {
+      return false;
+    }
+    return true;
   }
 }

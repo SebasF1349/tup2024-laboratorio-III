@@ -11,6 +11,15 @@ public class Persona {
   private String nroTelefono;
   private LocalDate fechaNacimiento;
 
+  public Persona() {}
+
+  public Persona(String dni, String apellido, String nombre, String fechaNacimiento) {
+    this.dni = dni;
+    this.apellido = apellido;
+    this.nombre = nombre;
+    this.fechaNacimiento = LocalDate.parse(fechaNacimiento);
+  }
+
   public String getNombre() {
     return nombre;
   }

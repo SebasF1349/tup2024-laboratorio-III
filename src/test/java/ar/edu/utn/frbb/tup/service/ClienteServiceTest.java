@@ -3,6 +3,7 @@ package ar.edu.utn.frbb.tup.service;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import ar.edu.utn.frbb.tup.controller.ClienteDto;
 import ar.edu.utn.frbb.tup.model.*;
 import ar.edu.utn.frbb.tup.model.exception.ClienteAlreadyExistsException;
 import ar.edu.utn.frbb.tup.model.exception.ClienteNoExistsException;
@@ -34,18 +35,20 @@ public class ClienteServiceTest {
 
   @Test
   public void testClienteAlreadyExistsException() throws ClienteAlreadyExistsException {
-    Cliente cliente = createCliente();
+    ClienteDto clienteDto = createClienteDto();
+    Cliente cliente = new Cliente(clienteDto);
 
     when(clienteDao.find(dniCliente, false)).thenReturn(cliente);
 
     assertThrows(
-        ClienteAlreadyExistsException.class, () -> clienteService.darDeAltaCliente(cliente));
+        ClienteAlreadyExistsException.class, () -> clienteService.darDeAltaCliente(clienteDto));
   }
 
   @Test
   public void testClienteMenorDeEdadException() {
-    Cliente clienteMenorDeEdad = new Cliente();
-    clienteMenorDeEdad.setFechaNacimiento(LocalDate.now().minusYears(17));
+    ClienteDto clienteMenorDeEdad = createClienteDto();
+    String seventeenBirthday = LocalDate.now().minusYears(17).toString();
+    clienteMenorDeEdad.setFechaNacimiento(seventeenBirthday);
     assertThrows(
         ClienteMenorDeEdadException.class,
         () -> clienteService.darDeAltaCliente(clienteMenorDeEdad));
@@ -54,8 +57,11 @@ public class ClienteServiceTest {
   @Test
   public void testDarDeAltaClienteSuccess()
       throws ClienteAlreadyExistsException, ClienteMenorDeEdadException {
-    Cliente cliente = createCliente();
-    clienteService.darDeAltaCliente(cliente);
+
+    ClienteDto clienteDto = createClienteDto();
+    Cliente cliente = new Cliente(clienteDto);
+
+    clienteService.darDeAltaCliente(clienteDto);
 
     verify(clienteDao, times(1)).save(cliente);
   }
@@ -63,6 +69,7 @@ public class ClienteServiceTest {
   @Test
   public void testTipoCuentaAlreadExistsException()
       throws TipoCuentaAlreadyExistsException, ClienteNoExistsException {
+
     Cliente cliente = createCliente();
     Cuenta cuenta = createCuenta();
 
@@ -84,6 +91,7 @@ public class ClienteServiceTest {
   @Test
   public void testAgregarCuentaAClienteSuccess()
       throws TipoCuentaAlreadyExistsException, ClienteNoExistsException {
+
     Cliente cliente = createCliente();
     Cuenta cuenta = createCuenta();
 
@@ -100,7 +108,8 @@ public class ClienteServiceTest {
   @Test
   public void testAgregarDosCuentaDistintoTipoSuccess()
       throws TipoCuentaAlreadyExistsException, ClienteNoExistsException {
-    Cliente cliente = this.createCliente();
+
+    Cliente cliente = createCliente();
 
     when(clienteDao.find(dniCliente, true)).thenReturn(cliente);
 
@@ -120,7 +129,8 @@ public class ClienteServiceTest {
   @Test
   public void testAgregarDosCuentaDistintaMonedaSuccess()
       throws TipoCuentaAlreadyExistsException, ClienteNoExistsException {
-    Cliente cliente = this.createCliente();
+
+    Cliente cliente = createCliente();
 
     when(clienteDao.find(dniCliente, true)).thenReturn(cliente);
 
@@ -167,6 +177,7 @@ public class ClienteServiceTest {
   @Test
   public void testClienteMenorDeEdadOnUpdateException() {
     Cliente clienteMenorDeEdad = createCliente();
+
     clienteMenorDeEdad.setFechaNacimiento(LocalDate.now().minusYears(17));
 
     when(clienteDao.find(dniCliente, false)).thenReturn(clienteMenorDeEdad);
@@ -209,14 +220,19 @@ public class ClienteServiceTest {
     verify(clienteDao, times(1)).save(cliente);
   }
 
+  private ClienteDto createClienteDto() {
+    ClienteDto clienteDto = new ClienteDto();
+    clienteDto.setDni(dniCliente);
+    clienteDto.setNombre("Nombre");
+    clienteDto.setApellido("Apellido");
+    clienteDto.setFechaNacimiento("1990-01-01");
+    clienteDto.setTipoPersona("F");
+    return clienteDto;
+  }
+
   private Cliente createCliente() {
-    Cliente cliente = new Cliente();
-    cliente.setDni(dniCliente);
-    cliente.setNombre("Nombre");
-    cliente.setApellido("Apellido");
-    cliente.setFechaNacimiento(LocalDate.of(1990, 1, 1));
-    cliente.setTipoPersona(TipoPersona.PERSONA_FISICA);
-    return cliente;
+    ClienteDto clienteDto = createClienteDto();
+    return new Cliente(clienteDto);
   }
 
   private Cuenta createCuenta() {
