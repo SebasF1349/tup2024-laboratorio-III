@@ -35,7 +35,7 @@ public class CuentaServiceTest {
   }
 
   @Test
-  public void testDarDeAltaCuentaExistenteException() {
+  public void testDarDeAltaCuentaAlreadExistsException() {
     Cuenta cuenta = createCuenta();
 
     when(cuentaDao.find(cuenta.getNumeroCuenta())).thenReturn(cuenta);
@@ -54,7 +54,7 @@ public class CuentaServiceTest {
   }
 
   @Test
-  public void testDarDeAltaCuentaDuplicadaException()
+  public void testDarDeAltaCuentaTipoCuentaAlreadyExistsException()
       throws TipoCuentaAlreadyExistsException, ClienteNoExistsException {
     Cuenta cuenta = createCuenta();
 
@@ -65,6 +65,17 @@ public class CuentaServiceTest {
     assertThrows(
         TipoCuentaAlreadyExistsException.class,
         () -> cuentaService.darDeAltaCuenta(cuenta, clienteDni));
+  }
+
+  @Test
+  public void testDarDeAltaCuentaClienteNoExistsException()
+      throws TipoCuentaAlreadyExistsException, ClienteNoExistsException {
+    Cuenta cuenta = createCuenta();
+
+    doThrow(ClienteNoExistsException.class).when(clienteService).agregarCuenta(cuenta, clienteDni);
+
+    assertThrows(
+        ClienteNoExistsException.class, () -> cuentaService.darDeAltaCuenta(cuenta, clienteDni));
   }
 
   @Test

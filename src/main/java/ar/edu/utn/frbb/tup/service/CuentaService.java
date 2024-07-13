@@ -36,6 +36,7 @@ public class CuentaService {
           CuentaNoSoportadaException,
           TipoCuentaAlreadyExistsException,
           ClienteNoExistsException {
+
     if (cuentaDao.find(cuenta.getNumeroCuenta()) != null) {
       throw new CuentaAlreadyExistsException(
           "La cuenta " + cuenta.getNumeroCuenta() + " ya existe.");
@@ -69,6 +70,7 @@ public class CuentaService {
     return true;
   }
 
+  // NOTE: missing tests
   public void agregarMovimiento(Cuenta cuenta, Movimiento movimiento) {
     double nuevoSaldo = movimiento.actualizarCuentaMonto(cuenta.getBalance());
     if (nuevoSaldo < 0) {
