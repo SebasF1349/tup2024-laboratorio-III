@@ -6,6 +6,7 @@ import ar.edu.utn.frbb.tup.model.TipoCuenta;
 import ar.edu.utn.frbb.tup.model.TipoMoneda;
 import ar.edu.utn.frbb.tup.model.exception.ClienteNoExistsException;
 import ar.edu.utn.frbb.tup.model.exception.CuentaAlreadyExistsException;
+import ar.edu.utn.frbb.tup.model.exception.CuentaNoSoportadaException;
 import ar.edu.utn.frbb.tup.model.exception.TipoCuentaAlreadyExistsException;
 import ar.edu.utn.frbb.tup.persistence.CuentaDao;
 import ar.edu.utn.frbb.tup.persistence.MovimientoDao;

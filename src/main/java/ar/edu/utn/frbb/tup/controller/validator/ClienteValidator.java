@@ -1,6 +1,8 @@
 package ar.edu.utn.frbb.tup.controller.validator;
 
 import ar.edu.utn.frbb.tup.controller.ClienteDto;
+import ar.edu.utn.frbb.tup.model.exception.WrongInputDataException;
+
 import java.time.LocalDate;
 import org.springframework.stereotype.Component;
 

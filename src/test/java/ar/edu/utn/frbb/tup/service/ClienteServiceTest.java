@@ -6,6 +6,7 @@ import static org.mockito.Mockito.*;
 import ar.edu.utn.frbb.tup.controller.ClienteDto;
 import ar.edu.utn.frbb.tup.model.*;
 import ar.edu.utn.frbb.tup.model.exception.ClienteAlreadyExistsException;
+import ar.edu.utn.frbb.tup.model.exception.ClienteMenorDeEdadException;
 import ar.edu.utn.frbb.tup.model.exception.ClienteNoExistsException;
 import ar.edu.utn.frbb.tup.model.exception.TipoCuentaAlreadyExistsException;
 import ar.edu.utn.frbb.tup.persistence.ClienteDao;
