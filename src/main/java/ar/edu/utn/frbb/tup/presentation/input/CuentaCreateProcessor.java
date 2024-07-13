@@ -7,11 +7,12 @@ import ar.edu.utn.frbb.tup.model.TipoMoneda;
 import ar.edu.utn.frbb.tup.model.exception.ClienteNoExistsException;
 import ar.edu.utn.frbb.tup.model.exception.CuentaAlreadyExistsException;
 import ar.edu.utn.frbb.tup.model.exception.TipoCuentaAlreadyExistsException;
+import ar.edu.utn.frbb.tup.service.CuentaNoSoportadaException;
 import org.springframework.stereotype.Component;
 
 @Component
 public class CuentaCreateProcessor extends CuentaProcessor {
-  public void createCuenta() {
+  public void createCuenta() throws CuentaNoSoportadaException {
     clearScreen();
 
     Cliente cliente;
@@ -38,7 +39,7 @@ public class CuentaCreateProcessor extends CuentaProcessor {
 
     // NOTE: Debo hacer algo si falla agregarCuenta pero no darDeAltaCuenta
     try {
-      cuentaService.darDeAltaCuenta(cuenta);
+      cuentaService.darDeAltaCuenta(cuenta, cliente.getDni());
       clienteService.agregarCuenta(cuenta, cliente.getDni());
     } catch (CuentaAlreadyExistsException e) {
       System.out.println();

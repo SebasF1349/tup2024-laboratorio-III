@@ -3,6 +3,7 @@ package ar.edu.utn.frbb.tup.presentation.input;
 import ar.edu.utn.frbb.tup.model.Cliente;
 import ar.edu.utn.frbb.tup.model.Cuenta;
 import ar.edu.utn.frbb.tup.model.exception.ClienteNoExistsException;
+import ar.edu.utn.frbb.tup.service.CuentaNoSoportadaException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -73,7 +74,11 @@ public class MenuInputProcessor extends BusinessProcessor {
           }
         case 4:
           {
-            cuentaCreateProcessor.createCuenta();
+            try {
+              cuentaCreateProcessor.createCuenta();
+            } catch (CuentaNoSoportadaException e) {
+              e.printStackTrace();
+            }
             break;
           }
         case 5:
