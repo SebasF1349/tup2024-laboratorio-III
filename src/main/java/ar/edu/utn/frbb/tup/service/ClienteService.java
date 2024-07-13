@@ -15,7 +15,7 @@ public class ClienteService {
   CuentaDao cuentaDao = new CuentaDao();
 
   public void darDeAltaCliente(Cliente cliente) throws ClienteAlreadyExistsException {
-    if (clienteDao.find(cliente.getDni()) != null) {
+    if (clienteDao.find(cliente.getDni(), false) != null) {
       throw new ClienteAlreadyExistsException("Ya existe un cliente con DNI " + cliente.getDni());
     }
 
@@ -43,7 +43,7 @@ public class ClienteService {
   }
 
   public Cliente buscarClientePorDni(String dni) throws ClienteNoExistsException {
-    Cliente cliente = clienteDao.find(dni);
+    Cliente cliente = clienteDao.find(dni, true);
 
     if (cliente == null) {
       throw new ClienteNoExistsException("El cliente no existe");
@@ -53,7 +53,7 @@ public class ClienteService {
   }
 
   public void actualizarCliente(Cliente cliente) throws ClienteNoExistsException {
-    if (clienteDao.find(cliente.getDni()) == null) {
+    if (clienteDao.find(cliente.getDni(), false) == null) {
       throw new ClienteNoExistsException("No existe un cliente con DNI " + cliente.getDni());
     }
 

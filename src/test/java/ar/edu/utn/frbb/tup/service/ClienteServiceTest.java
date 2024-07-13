@@ -69,7 +69,7 @@ public class ClienteServiceTest {
   public void testClienteAlreadyExistsException() throws ClienteAlreadyExistsException {
     Cliente cliente = createCliente();
 
-    when(clienteDao.find(dniCliente)).thenReturn(cliente);
+    when(clienteDao.find(dniCliente, false)).thenReturn(cliente);
 
     assertThrows(
         ClienteAlreadyExistsException.class, () -> clienteService.darDeAltaCliente(cliente));
@@ -81,7 +81,7 @@ public class ClienteServiceTest {
     Cliente cliente = createCliente();
     Cuenta cuenta = createCuenta();
 
-    when(clienteDao.find(dniCliente)).thenReturn(cliente);
+    when(clienteDao.find(dniCliente, true)).thenReturn(cliente);
 
     clienteService.agregarCuenta(cuenta, cliente.getDni());
 
@@ -97,7 +97,7 @@ public class ClienteServiceTest {
     Cliente cliente = createCliente();
     Cuenta cuenta = createCuenta();
 
-    when(clienteDao.find(dniCliente)).thenReturn(cliente);
+    when(clienteDao.find(dniCliente, true)).thenReturn(cliente);
 
     clienteService.agregarCuenta(cuenta, cliente.getDni());
 

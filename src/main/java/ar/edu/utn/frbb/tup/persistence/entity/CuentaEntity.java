@@ -48,7 +48,7 @@ public class CuentaEntity extends BaseEntity {
     cuenta.setFechaApertura(this.fechaCreacion);
 
     ClienteDao clienteDao = new ClienteDao();
-    Cliente titular = clienteDao.find(this.titular);
+    Cliente titular = clienteDao.find(this.titular, false);
     cuenta.setTitular(titular);
 
     if (!this.movimientos.isEmpty()) {
