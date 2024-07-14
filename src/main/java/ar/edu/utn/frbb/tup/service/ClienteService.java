@@ -52,14 +52,17 @@ public class ClienteService {
     Cliente cliente = clienteDao.find(dni, true);
 
     if (cliente == null) {
-      throw new ClienteNoExistsException("El cliente no existe");
+      throw new ClienteNoExistsException("No existe un cliente con DNI " + dni);
     }
 
     return cliente;
   }
 
-  public void actualizarCliente(Cliente cliente)
+  public Cliente actualizarCliente(ClienteDto clienteDto)
       throws ClienteNoExistsException, ClienteMenorDeEdadException {
+
+    Cliente cliente = new Cliente(clienteDto);
+
     if (clienteDao.find(cliente.getDni(), false) == null) {
       throw new ClienteNoExistsException("No existe un cliente con DNI " + cliente.getDni());
     }
@@ -69,13 +72,23 @@ public class ClienteService {
     }
 
     clienteDao.save(cliente);
+
+    return cliente;
   }
 
-  public void eliminarCliente(Cliente cliente) throws ClienteNoExistsException {
-    if (clienteDao.find(cliente.getDni(), false) == null) {
-      throw new ClienteNoExistsException("No existe un cliente con DNI " + cliente.getDni());
-    }
+  public Cliente eliminarCliente(String dni) throws ClienteNoExistsException {
+    Cliente cliente = buscarClientePorDni(dni);
     cliente.setActivo(false);
     clienteDao.save(cliente);
+    // FIX: Should set cuentas to inactive too
+    return cliente;
+  }
+
+  public Cliente activarCliente(String dni) throws ClienteNoExistsException {
+    Cliente cliente = buscarClientePorDni(dni);
+    cliente.setActivo(true);
+    clienteDao.save(cliente);
+    // FIX: Should set cuentas to active too
+    return cliente;
   }
 }
