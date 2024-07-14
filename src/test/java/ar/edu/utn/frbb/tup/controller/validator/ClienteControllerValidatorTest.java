@@ -15,9 +15,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class ClienteValidatorTest {
+public class ClienteControllerValidatorTest {
 
-  @InjectMocks private ClienteControllerValidator clienteValidator;
+  @InjectMocks private ClienteControllerValidator clienteControllerValidator;
 
   @BeforeAll
   public void setUp() {
@@ -30,7 +30,8 @@ public class ClienteValidatorTest {
     clienteDto.setTipoPersona("A");
 
     assertThrows(
-        WrongInputDataException.class, () -> clienteValidator.validateTipoPersona(clienteDto));
+        WrongInputDataException.class,
+        () -> clienteControllerValidator.validateTipoPersona(clienteDto));
   }
 
   @Test
@@ -38,7 +39,7 @@ public class ClienteValidatorTest {
     ClienteDto clienteDto = new ClienteDto();
     clienteDto.setTipoPersona("F");
 
-    assertDoesNotThrow(() -> clienteValidator.validateTipoPersona(clienteDto));
+    assertDoesNotThrow(() -> clienteControllerValidator.validateTipoPersona(clienteDto));
   }
 
   @Test
@@ -46,19 +47,20 @@ public class ClienteValidatorTest {
     ClienteDto clienteDto = new ClienteDto();
     clienteDto.setTipoPersona("J");
 
-    assertDoesNotThrow(() -> clienteValidator.validateTipoPersona(clienteDto));
+    assertDoesNotThrow(() -> clienteControllerValidator.validateTipoPersona(clienteDto));
   }
 
   @Test
   public void testValidateStringWithOnlyLettersFail() {
     assertThrows(
         WrongInputDataException.class,
-        () -> clienteValidator.validateStringWithOnlyLetters("abc123", ""));
+        () -> clienteControllerValidator.validateStringWithOnlyLetters("abc123", ""));
   }
 
   @Test
   public void testValidateStringWithOnlyLettersSuccess() {
-    assertDoesNotThrow(() -> clienteValidator.validateStringWithOnlyLetters("abcdef", ""));
+    assertDoesNotThrow(
+        () -> clienteControllerValidator.validateStringWithOnlyLetters("abcdef", ""));
   }
 
   @Test
@@ -67,14 +69,14 @@ public class ClienteValidatorTest {
 
     assertThrows(
         WrongInputDataException.class,
-        () -> clienteValidator.validateStringWithOnlyNumbers(dni, ""));
+        () -> clienteControllerValidator.validateStringWithOnlyNumbers(dni, ""));
   }
 
   @Test
   public void testValidateDniWithOnlyNumbersSuccess() {
     String dni = "123456";
 
-    assertDoesNotThrow(() -> clienteValidator.validateStringWithOnlyNumbers(dni, ""));
+    assertDoesNotThrow(() -> clienteControllerValidator.validateStringWithOnlyNumbers(dni, ""));
   }
 
   @Test
@@ -83,7 +85,8 @@ public class ClienteValidatorTest {
     clienteDto.setFechaNacimiento("90-01-01");
 
     assertThrows(
-        WrongInputDataException.class, () -> clienteValidator.validateFechaNacimiento(clienteDto));
+        WrongInputDataException.class,
+        () -> clienteControllerValidator.validateFechaNacimiento(clienteDto));
   }
 
   @Test
@@ -92,7 +95,8 @@ public class ClienteValidatorTest {
     clienteDto.setFechaNacimiento("1990-23-01");
 
     assertThrows(
-        WrongInputDataException.class, () -> clienteValidator.validateFechaNacimiento(clienteDto));
+        WrongInputDataException.class,
+        () -> clienteControllerValidator.validateFechaNacimiento(clienteDto));
   }
 
   @Test
@@ -101,7 +105,8 @@ public class ClienteValidatorTest {
     clienteDto.setFechaNacimiento("1990-1-01");
 
     assertThrows(
-        WrongInputDataException.class, () -> clienteValidator.validateFechaNacimiento(clienteDto));
+        WrongInputDataException.class,
+        () -> clienteControllerValidator.validateFechaNacimiento(clienteDto));
   }
 
   @Test
@@ -110,7 +115,8 @@ public class ClienteValidatorTest {
     clienteDto.setFechaNacimiento("01-01-1990");
 
     assertThrows(
-        WrongInputDataException.class, () -> clienteValidator.validateFechaNacimiento(clienteDto));
+        WrongInputDataException.class,
+        () -> clienteControllerValidator.validateFechaNacimiento(clienteDto));
   }
 
   @Test
@@ -118,6 +124,6 @@ public class ClienteValidatorTest {
     ClienteDto clienteDto = new ClienteDto();
     clienteDto.setFechaNacimiento("1990-12-30");
 
-    assertDoesNotThrow(() -> clienteValidator.validateFechaNacimiento(clienteDto));
+    assertDoesNotThrow(() -> clienteControllerValidator.validateFechaNacimiento(clienteDto));
   }
 }
