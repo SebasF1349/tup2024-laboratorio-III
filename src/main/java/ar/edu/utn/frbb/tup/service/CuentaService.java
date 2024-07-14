@@ -32,7 +32,7 @@ public class CuentaService {
 
   @Autowired ClienteService clienteService;
 
-  public void darDeAltaCuenta(Cuenta cuenta, String dniTitular)
+  public void darDeAltaCuenta(Cuenta cuenta, long dniTitular)
       throws CuentaAlreadyExistsException,
           CuentaNoSoportadaException,
           TipoCuentaAlreadyExistsException,
@@ -55,7 +55,7 @@ public class CuentaService {
     cuentaDao.save(cuenta);
   }
 
-  public Cuenta find(String numeroCuenta) {
+  public Cuenta find(long numeroCuenta) {
     return cuentaDao.find(numeroCuenta);
   }
 

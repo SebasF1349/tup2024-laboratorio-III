@@ -29,11 +29,9 @@ public class ClienteController {
 
   @Autowired private ClienteValidator clienteValidator;
 
-  // FIX: Change ids to long instead of String
   @GetMapping(value = "/{dni}")
-  public Cliente obtenerCliente(@PathVariable String dni)
+  public Cliente obtenerCliente(@PathVariable long dni)
       throws ClienteNoExistsException, WrongInputDataException {
-    clienteValidator.validateStringWithOnlyNumbers(dni, "DNI");
     return clienteService.buscarClientePorDni(dni);
   }
 
@@ -46,9 +44,8 @@ public class ClienteController {
   }
 
   @DeleteMapping(value = "/{dni}")
-  public Cliente eliminarCliente(@PathVariable String dni)
+  public Cliente eliminarCliente(@PathVariable long dni)
       throws ClienteNoExistsException, WrongInputDataException {
-    clienteValidator.validateStringWithOnlyNumbers(dni, "DNI");
     return clienteService.eliminarCliente(dni);
   }
 
@@ -60,9 +57,8 @@ public class ClienteController {
   }
 
   @PatchMapping(value = "/{dni}")
-  public Cliente activarCliente(@PathVariable String dni)
+  public Cliente activarCliente(@PathVariable long dni)
       throws ClienteNoExistsException, WrongInputDataException {
-    clienteValidator.validateStringWithOnlyNumbers(dni, "DNI");
     return clienteService.activarCliente(dni);
   }
 }

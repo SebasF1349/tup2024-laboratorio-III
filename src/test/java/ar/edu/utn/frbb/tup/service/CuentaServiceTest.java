@@ -26,7 +26,7 @@ public class CuentaServiceTest {
 
   @Mock private CuentaDao cuentaDao;
   @Mock private ClienteService clienteService;
-  private final String clienteDni = "12345678";
+  private final long clienteDni = 12345678;
 
   @InjectMocks private CuentaService cuentaService;
 

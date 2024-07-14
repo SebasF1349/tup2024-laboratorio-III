@@ -16,8 +16,8 @@ public class CuentaEntity extends BaseEntity {
   private LocalDateTime fechaCreacion;
   private double balance;
   private String tipoCuenta;
-  private String titular;
-  private List<String> movimientos;
+  private long titular;
+  private List<Long> movimientos;
 
   public CuentaEntity(Cuenta cuenta) {
     super(cuenta.getNumeroCuenta());
@@ -54,7 +54,7 @@ public class CuentaEntity extends BaseEntity {
     if (!this.movimientos.isEmpty()) {
       Set<Movimiento> m = new HashSet<>();
       MovimientoDao movimientoDao = new MovimientoDao();
-      for (String movimientoId : movimientos) {
+      for (long movimientoId : movimientos) {
         Movimiento movimiento = movimientoDao.find(movimientoId);
         m.add(movimiento);
       }
@@ -88,19 +88,19 @@ public class CuentaEntity extends BaseEntity {
     this.tipoCuenta = tipoCuenta;
   }
 
-  public String getTitular() {
+  public Long getTitular() {
     return titular;
   }
 
-  public void setTitular(String titular) {
+  public void setTitular(long titular) {
     this.titular = titular;
   }
 
-  public List<String> getMovimientos() {
+  public List<Long> getMovimientos() {
     return movimientos;
   }
 
-  public void setMovimientos(List<String> movimientos) {
+  public void setMovimientos(List<Long> movimientos) {
     this.movimientos = movimientos;
   }
 }

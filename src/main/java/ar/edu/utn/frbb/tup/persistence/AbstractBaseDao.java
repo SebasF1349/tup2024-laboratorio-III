@@ -4,11 +4,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 public abstract class AbstractBaseDao {
-  protected static Map<String, Map<String, Object>> poorMansDatabase = new HashMap<>();
+  protected static Map<String, Map<Long, Object>> poorMansDatabase = new HashMap<>();
 
   protected abstract String getEntityName();
 
-  protected Map<String, Object> getInMemoryDatabase() {
+  protected Map<Long, Object> getInMemoryDatabase() {
     if (poorMansDatabase.get(getEntityName()) == null) {
       poorMansDatabase.put(getEntityName(), new HashMap<>());
     }

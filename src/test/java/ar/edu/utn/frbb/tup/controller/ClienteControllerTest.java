@@ -36,7 +36,7 @@ public class ClienteControllerTest {
 
   @MockBean private ClienteService clienteService;
   @MockBean private ClienteValidator clienteValidator;
-  private final String dniCliente = "12345678";
+  private final long dniCliente = 12345678;
   private final String endpoint = "/cliente";
 
   @Autowired private MockMvc mockMvc;
@@ -47,19 +47,6 @@ public class ClienteControllerTest {
   @BeforeAll
   public void setUp() {
     MockitoAnnotations.openMocks(this);
-  }
-
-  @Test
-  public void testObtenerClienteIncorrectDniFail() throws Exception {
-    doThrow(new WrongInputDataException(""))
-        .when(clienteValidator)
-        .validateStringWithOnlyNumbers(dniCliente, "DNI");
-
-    mockMvc
-        .perform(get(createEndpoint(dniCliente)))
-        .andExpect(status().isBadRequest())
-        .andExpect(jsonPath("$", notNullValue()))
-        .andExpect(jsonPath("$.errorCode", is(400101)));
   }
 
   @Test
@@ -170,19 +157,6 @@ public class ClienteControllerTest {
   }
 
   @Test
-  public void testEliminarClienteIncorrectDniFail() throws Exception {
-    doThrow(new WrongInputDataException(""))
-        .when(clienteValidator)
-        .validateStringWithOnlyNumbers(dniCliente, "DNI");
-
-    mockMvc
-        .perform(delete(createEndpoint(dniCliente)))
-        .andExpect(status().isBadRequest())
-        .andExpect(jsonPath("$", notNullValue()))
-        .andExpect(jsonPath("$.errorCode", is(400101)));
-  }
-
-  @Test
   public void testEliminarClienteDoesntExistsFail() throws Exception {
     doThrow(new ClienteNoExistsException("")).when(clienteService).eliminarCliente(dniCliente);
 
@@ -288,19 +262,6 @@ public class ClienteControllerTest {
   }
 
   @Test
-  public void testActivarClienteIncorrectDniFail() throws Exception {
-    doThrow(new WrongInputDataException(""))
-        .when(clienteValidator)
-        .validateStringWithOnlyNumbers(dniCliente, "DNI");
-
-    mockMvc
-        .perform(patch(createEndpoint(dniCliente)))
-        .andExpect(status().isBadRequest())
-        .andExpect(jsonPath("$", notNullValue()))
-        .andExpect(jsonPath("$.errorCode", is(400101)));
-  }
-
-  @Test
   public void testActivarClienteDoesntExistsFail() throws Exception {
     doThrow(new ClienteNoExistsException("")).when(clienteService).activarCliente(dniCliente);
 
@@ -324,7 +285,7 @@ public class ClienteControllerTest {
         .andExpect(content().string(clienteMapped));
   }
 
-  private String createEndpoint(String end) {
+  private String createEndpoint(long end) {
     return endpoint + "/" + end;
   }
 

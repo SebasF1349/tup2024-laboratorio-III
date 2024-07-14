@@ -10,6 +10,7 @@ public class Cliente extends Persona {
   private LocalDate fechaAlta;
   private Set<Cuenta> cuentas = new HashSet<>();
   private boolean activo;
+  private String banco;
 
   public Cliente() {
     super();
@@ -77,13 +78,21 @@ public class Cliente extends Persona {
     return false;
   }
 
-  public Cuenta getCuentaById(String numeroCuenta) {
+  public Cuenta getCuentaById(long numeroCuenta) {
     for (Cuenta cuenta : cuentas) {
-      if (cuenta.getNumeroCuenta().equals(numeroCuenta)) {
+      if (cuenta.getNumeroCuenta() == numeroCuenta) {
         return cuenta;
       }
     }
     return null;
+  }
+
+  public String getBanco() {
+    return banco;
+  }
+
+  public void setBanco(String banco) {
+    this.banco = banco;
   }
 
   @Override

@@ -9,10 +9,10 @@ import org.springframework.stereotype.Component;
 public class ClienteValidator {
 
   public void validate(ClienteDto clienteDto) throws WrongInputDataException {
+    // validate dni???
     validateTipoPersona(clienteDto);
     validateStringWithOnlyLetters(clienteDto.getNombre(), "nombre");
     validateStringWithOnlyLetters(clienteDto.getApellido(), "apellido");
-    validateStringWithOnlyNumbers(clienteDto.getDni(), "DNI");
     validateFechaNacimiento(clienteDto);
   }
 

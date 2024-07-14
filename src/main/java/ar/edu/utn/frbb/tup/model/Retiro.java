@@ -7,7 +7,7 @@ public class Retiro extends Movimiento {
     super(monto, cuenta);
   }
 
-  public Retiro(double monto, LocalDateTime diaHora, String movimientoId, Cuenta cuenta) {
+  public Retiro(double monto, LocalDateTime diaHora, long movimientoId, Cuenta cuenta) {
     super(monto, diaHora, movimientoId, cuenta);
   }
 

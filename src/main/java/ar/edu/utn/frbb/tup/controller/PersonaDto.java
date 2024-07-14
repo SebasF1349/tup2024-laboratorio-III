@@ -3,7 +3,7 @@ package ar.edu.utn.frbb.tup.controller;
 public class PersonaDto {
   private String nombre;
   private String apellido;
-  private String dni;
+  private long dni;
   private String fechaNacimiento;
 
   public String getNombre() {
@@ -22,11 +22,11 @@ public class PersonaDto {
     this.apellido = apellido;
   }
 
-  public String getDni() {
+  public long getDni() {
     return dni;
   }
 
-  public void setDni(String dni) {
+  public void setDni(long dni) {
     this.dni = dni;
   }
 
@@ -44,7 +44,7 @@ public class PersonaDto {
     int result = 1;
     result = prime * result + ((nombre == null) ? 0 : nombre.hashCode());
     result = prime * result + ((apellido == null) ? 0 : apellido.hashCode());
-    result = prime * result + ((dni == null) ? 0 : dni.hashCode());
+    result = prime * result + (int) (dni ^ (dni >>> 32));
     result = prime * result + ((fechaNacimiento == null) ? 0 : fechaNacimiento.hashCode());
     return result;
   }
@@ -75,11 +75,7 @@ public class PersonaDto {
     } else if (!apellido.equals(other.apellido)) {
       return false;
     }
-    if (dni == null) {
-      if (other.dni != null) {
-        return false;
-      }
-    } else if (!dni.equals(other.dni)) {
+    if (dni != other.dni) {
       return false;
     }
     if (fechaNacimiento == null) {

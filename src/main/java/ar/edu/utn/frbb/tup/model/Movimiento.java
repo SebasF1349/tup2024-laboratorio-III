@@ -1,22 +1,20 @@
 package ar.edu.utn.frbb.tup.model;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 public abstract class Movimiento extends Operacion {
   private Cuenta cuenta;
-  private String movimientoId;
+  private long movimientoId;
   private LocalDateTime diaHora;
   private double monto;
 
   public Movimiento(double monto, Cuenta cuenta) {
-    this.movimientoId = UUID.randomUUID().toString();
     this.diaHora = LocalDateTime.now();
     this.monto = monto;
     this.cuenta = cuenta;
   }
 
-  public Movimiento(double monto, LocalDateTime diaHora, String movimientoId, Cuenta cuenta) {
+  public Movimiento(double monto, LocalDateTime diaHora, long movimientoId, Cuenta cuenta) {
     this.movimientoId = movimientoId;
     this.diaHora = diaHora;
     this.monto = monto;
@@ -31,7 +29,7 @@ public abstract class Movimiento extends Operacion {
     this.cuenta = cuenta;
   }
 
-  public String getMovimientoId() {
+  public Long getMovimientoId() {
     return movimientoId;
   }
 

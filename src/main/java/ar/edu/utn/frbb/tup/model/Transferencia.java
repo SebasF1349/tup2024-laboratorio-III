@@ -25,7 +25,7 @@ public class Transferencia extends Movimiento {
       String numeroCuentaDestino,
       boolean esDestinatario,
       LocalDateTime diaHora,
-      String movimientoId,
+      long movimientoId,
       Cuenta cuenta) {
     super(monto, diaHora, movimientoId, cuenta);
     this.esCuentaPropia = esCuentaPropia;

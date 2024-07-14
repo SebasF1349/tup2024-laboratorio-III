@@ -3,10 +3,9 @@ package ar.edu.utn.frbb.tup.model;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.UUID;
 
 public class Cuenta {
-  private String numeroCuenta;
+  private long numeroCuenta;
   private LocalDateTime fechaApertura;
   private double balance;
   private TipoCuenta tipoCuenta;
@@ -15,7 +14,6 @@ public class Cuenta {
   private Set<Movimiento> movimientos;
 
   public Cuenta() {
-    this.numeroCuenta = this.getRandomId();
     this.fechaApertura = LocalDateTime.now();
     this.balance = 0;
     this.movimientos = new HashSet<>();
@@ -23,7 +21,6 @@ public class Cuenta {
   }
 
   public Cuenta(TipoCuenta tipoCuenta, TipoMoneda tipoMoneda, Cliente titular) {
-    this.numeroCuenta = this.getRandomId();
     this.fechaApertura = LocalDateTime.now();
     this.balance = 0;
     this.tipoCuenta = tipoCuenta;
@@ -32,11 +29,11 @@ public class Cuenta {
     this.titular = titular;
   }
 
-  public String getNumeroCuenta() {
+  public long getNumeroCuenta() {
     return numeroCuenta;
   }
 
-  public Cuenta setNumeroCuenta(String numeroCuenta) {
+  public Cuenta setNumeroCuenta(long numeroCuenta) {
     this.numeroCuenta = numeroCuenta;
     return this;
   }
@@ -97,10 +94,6 @@ public class Cuenta {
 
   public void addMovimiento(Movimiento movimiento) throws IllegalArgumentException {
     this.movimientos.add(movimiento);
-  }
-
-  private String getRandomId() {
-    return UUID.randomUUID().toString();
   }
 
   @Override

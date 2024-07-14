@@ -11,7 +11,7 @@ public class ClienteDao extends AbstractBaseDao {
 
   @Autowired CuentaDao cuentaDao;
 
-  public Cliente find(String dni, boolean loadComplete) {
+  public Cliente find(long dni, boolean loadComplete) {
     if (getInMemoryDatabase().get(dni) == null) return null;
     Cliente cliente = ((ClienteEntity) getInMemoryDatabase().get(dni)).toCliente();
     if (loadComplete) {

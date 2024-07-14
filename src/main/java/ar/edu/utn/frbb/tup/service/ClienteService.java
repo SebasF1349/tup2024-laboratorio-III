@@ -36,7 +36,7 @@ public class ClienteService {
     return cliente;
   }
 
-  public void agregarCuenta(Cuenta cuenta, String dniTitular)
+  public void agregarCuenta(Cuenta cuenta, long dniTitular)
       throws TipoCuentaAlreadyExistsException, ClienteNoExistsException {
     Cliente titular = buscarClientePorDni(dniTitular);
     cuenta.setTitular(titular);
@@ -48,7 +48,7 @@ public class ClienteService {
     clienteDao.save(titular);
   }
 
-  public Cliente buscarClientePorDni(String dni) throws ClienteNoExistsException {
+  public Cliente buscarClientePorDni(long dni) throws ClienteNoExistsException {
     Cliente cliente = clienteDao.find(dni, true);
 
     if (cliente == null) {
@@ -76,7 +76,7 @@ public class ClienteService {
     return cliente;
   }
 
-  public Cliente eliminarCliente(String dni) throws ClienteNoExistsException {
+  public Cliente eliminarCliente(long dni) throws ClienteNoExistsException {
     Cliente cliente = buscarClientePorDni(dni);
     cliente.setActivo(false);
     clienteDao.save(cliente);
@@ -84,7 +84,7 @@ public class ClienteService {
     return cliente;
   }
 
-  public Cliente activarCliente(String dni) throws ClienteNoExistsException {
+  public Cliente activarCliente(long dni) throws ClienteNoExistsException {
     Cliente cliente = buscarClientePorDni(dni);
     cliente.setActivo(true);
     clienteDao.save(cliente);

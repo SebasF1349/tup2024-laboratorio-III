@@ -25,7 +25,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 public class ClienteServiceTest {
 
   @Mock private ClienteDao clienteDao;
-  private final String dniCliente = "12345678";
+  private final long dniCliente = 12345678;
 
   @InjectMocks private ClienteService clienteService;
 

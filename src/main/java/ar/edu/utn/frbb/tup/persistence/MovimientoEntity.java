@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 
 public class MovimientoEntity extends BaseEntity {
   private String movimiento;
-  private String numeroCuenta;
+  private long numeroCuenta;
   private LocalDateTime diaHora;
   private double monto;
   private boolean esCuentaPropia;

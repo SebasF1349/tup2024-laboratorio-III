@@ -13,7 +13,7 @@ public class CuentaDao extends AbstractBaseDao {
     return "CUENTA";
   }
 
-  public Cuenta find(String numeroCuenta) {
+  public Cuenta find(long numeroCuenta) {
     if (getInMemoryDatabase().get(numeroCuenta) == null) return null;
     return ((CuentaEntity) getInMemoryDatabase().get(numeroCuenta)).toCuenta();
   }
@@ -23,7 +23,7 @@ public class CuentaDao extends AbstractBaseDao {
     getInMemoryDatabase().put(entity.getId(), entity);
   }
 
-  public List<Cuenta> getCuentasByCliente(String dni) {
+  public List<Cuenta> getCuentasByCliente(long dni) {
     List<Cuenta> cuentasDelCliente = new ArrayList<>();
     for (Object object : getInMemoryDatabase().values()) {
       CuentaEntity cuenta = ((CuentaEntity) object);
