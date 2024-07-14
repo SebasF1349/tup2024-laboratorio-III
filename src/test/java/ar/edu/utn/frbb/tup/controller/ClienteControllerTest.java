@@ -5,7 +5,7 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import ar.edu.utn.frbb.tup.controller.validator.ClienteValidator;
+import ar.edu.utn.frbb.tup.controller.validator.ClienteControllerValidator;
 import ar.edu.utn.frbb.tup.model.Cliente;
 import ar.edu.utn.frbb.tup.model.exception.ClienteAlreadyExistsException;
 import ar.edu.utn.frbb.tup.model.exception.ClienteMenorDeEdadException;
@@ -35,7 +35,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 public class ClienteControllerTest {
 
   @MockBean private ClienteService clienteService;
-  @MockBean private ClienteValidator clienteValidator;
+  @MockBean private ClienteControllerValidator clienteControllerValidator;
   private final long dniCliente = 12345678;
   private final String endpoint = "/cliente";
 
@@ -78,7 +78,7 @@ public class ClienteControllerTest {
     ClienteDto clienteDto = createClienteDto();
     String clienteDtoMapped = objectMapper.writeValueAsString(clienteDto);
 
-    doThrow(new WrongInputDataException("")).when(clienteValidator).validate(clienteDto);
+    doThrow(new WrongInputDataException("")).when(clienteControllerValidator).validate(clienteDto);
 
     MockHttpServletRequestBuilder mockRequest =
         MockMvcRequestBuilders.post(getEndpoint())
@@ -185,7 +185,7 @@ public class ClienteControllerTest {
     ClienteDto clienteDto = createClienteDto();
     String clienteDtoMapped = objectMapper.writeValueAsString(clienteDto);
 
-    doThrow(new WrongInputDataException("")).when(clienteValidator).validate(clienteDto);
+    doThrow(new WrongInputDataException("")).when(clienteControllerValidator).validate(clienteDto);
 
     MockHttpServletRequestBuilder mockRequest =
         MockMvcRequestBuilders.put(getEndpoint())

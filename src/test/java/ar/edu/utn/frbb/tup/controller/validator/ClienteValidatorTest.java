@@ -17,7 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class ClienteValidatorTest {
 
-  @InjectMocks private ClienteValidator clienteValidator;
+  @InjectMocks private ClienteControllerValidator clienteValidator;
 
   @BeforeAll
   public void setUp() {

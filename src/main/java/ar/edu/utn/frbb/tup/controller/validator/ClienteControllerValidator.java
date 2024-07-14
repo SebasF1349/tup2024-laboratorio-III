@@ -6,7 +6,7 @@ import java.time.LocalDate;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ClienteValidator {
+public class ClienteControllerValidator {
 
   public void validate(ClienteDto clienteDto) throws WrongInputDataException {
     // validate dni???

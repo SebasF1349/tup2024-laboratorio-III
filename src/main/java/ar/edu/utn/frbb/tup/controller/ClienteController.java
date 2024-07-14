@@ -1,6 +1,6 @@
 package ar.edu.utn.frbb.tup.controller;
 
-import ar.edu.utn.frbb.tup.controller.validator.ClienteValidator;
+import ar.edu.utn.frbb.tup.controller.validator.ClienteControllerValidator;
 import ar.edu.utn.frbb.tup.model.Cliente;
 import ar.edu.utn.frbb.tup.model.exception.ClienteAlreadyExistsException;
 import ar.edu.utn.frbb.tup.model.exception.ClienteMenorDeEdadException;
@@ -27,7 +27,7 @@ public class ClienteController {
 
   @Autowired private ClienteService clienteService;
 
-  @Autowired private ClienteValidator clienteValidator;
+  @Autowired private ClienteControllerValidator clienteValidator;
 
   @GetMapping(value = "/{dni}")
   public Cliente obtenerCliente(@PathVariable long dni)

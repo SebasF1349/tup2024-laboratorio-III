@@ -8,12 +8,16 @@ import ar.edu.utn.frbb.tup.model.exception.ClienteMenorDeEdadException;
 import ar.edu.utn.frbb.tup.model.exception.ClienteNoExistsException;
 import ar.edu.utn.frbb.tup.model.exception.TipoCuentaAlreadyExistsException;
 import ar.edu.utn.frbb.tup.persistence.ClienteDao;
+import ar.edu.utn.frbb.tup.service.vaildator.ClienteServiceValidator;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class ClienteService {
 
   ClienteDao clienteDao;
+
+  @Autowired ClienteServiceValidator clienteServiceValidator;
 
   public ClienteService(ClienteDao clienteDao) {
     this.clienteDao = clienteDao;
@@ -24,13 +28,8 @@ public class ClienteService {
 
     Cliente cliente = new Cliente(clienteDto);
 
-    if (clienteDao.find(cliente.getDni(), false) != null) {
-      throw new ClienteAlreadyExistsException("Ya existe un cliente con DNI " + cliente.getDni());
-    }
-
-    if (cliente.getEdad() < 18) {
-      throw new ClienteMenorDeEdadException("El cliente debe ser mayor a 18 años");
-    }
+    clienteServiceValidator.validateClienteNoExists(cliente);
+    clienteServiceValidator.validateClienteMayorDeEdad(cliente);
 
     clienteDao.save(cliente);
     return cliente;
@@ -40,10 +39,9 @@ public class ClienteService {
       throws TipoCuentaAlreadyExistsException, ClienteNoExistsException {
     Cliente titular = buscarClientePorDni(dniTitular);
     cuenta.setTitular(titular);
-    if (titular.hasCuenta(cuenta.getTipoCuenta(), cuenta.getMoneda())) {
-      throw new TipoCuentaAlreadyExistsException(
-          "El cliente ya posee una cuenta de ese tipo y moneda");
-    }
+
+    clienteServiceValidator.validateTipoCuentaUnica(titular, cuenta);
+
     titular.addCuenta(cuenta);
     clienteDao.save(titular);
   }
@@ -63,13 +61,8 @@ public class ClienteService {
 
     Cliente cliente = new Cliente(clienteDto);
 
-    if (clienteDao.find(cliente.getDni(), false) == null) {
-      throw new ClienteNoExistsException("No existe un cliente con DNI " + cliente.getDni());
-    }
-
-    if (cliente.getEdad() < 18) {
-      throw new ClienteMenorDeEdadException("El cliente debe ser mayor a 18 años");
-    }
+    clienteServiceValidator.validateClienteExists(cliente);
+    clienteServiceValidator.validateClienteMayorDeEdad(cliente);
 
     clienteDao.save(cliente);
 
@@ -78,6 +71,7 @@ public class ClienteService {
 
   public Cliente eliminarCliente(long dni) throws ClienteNoExistsException {
     Cliente cliente = buscarClientePorDni(dni);
+
     cliente.setActivo(false);
     clienteDao.save(cliente);
     // FIX: Should set cuentas to inactive too
@@ -86,6 +80,7 @@ public class ClienteService {
 
   public Cliente activarCliente(long dni) throws ClienteNoExistsException {
     Cliente cliente = buscarClientePorDni(dni);
+
     cliente.setActivo(true);
     clienteDao.save(cliente);
     // FIX: Should set cuentas to active too
