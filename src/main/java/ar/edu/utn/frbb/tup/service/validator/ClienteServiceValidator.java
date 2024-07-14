@@ -1,4 +1,4 @@
-package ar.edu.utn.frbb.tup.service.vaildator;
+package ar.edu.utn.frbb.tup.service.validator;
 
 import ar.edu.utn.frbb.tup.model.Cliente;
 import ar.edu.utn.frbb.tup.model.Cuenta;
