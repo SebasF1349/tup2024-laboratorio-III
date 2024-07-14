@@ -23,6 +23,7 @@ public class Cliente extends Persona {
         clienteDto.getFechaNacimiento());
     fechaAlta = LocalDate.now();
     tipoPersona = TipoPersona.fromString(clienteDto.getTipoPersona());
+    activo = true;
   }
 
   public TipoPersona getTipoPersona() {

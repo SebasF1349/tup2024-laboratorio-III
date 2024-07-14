@@ -16,6 +16,7 @@ public class ClienteEntity extends BaseEntity {
   private final String apellido;
   private final LocalDate fechaAlta;
   private final LocalDate fechaNacimiento;
+  private final boolean activo;
   private List<String> cuentas;
 
   public ClienteEntity(Cliente cliente) {
@@ -26,6 +27,7 @@ public class ClienteEntity extends BaseEntity {
     this.apellido = cliente.getApellido();
     this.fechaAlta = cliente.getFechaAlta();
     this.fechaNacimiento = cliente.getFechaNacimiento();
+    this.activo = cliente.isActivo();
     this.cuentas = new ArrayList<>();
     if (cliente.getCuentas() != null && !cliente.getCuentas().isEmpty()) {
       for (Cuenta c : cliente.getCuentas()) {
@@ -49,6 +51,7 @@ public class ClienteEntity extends BaseEntity {
     cliente.setTipoPersona(TipoPersona.fromString(this.tipoPersona));
     cliente.setFechaAlta(this.fechaAlta);
     cliente.setFechaNacimiento(this.fechaNacimiento);
+    cliente.setActivo(this.activo);
 
     if (!this.cuentas.isEmpty()) {
       Set<Cuenta> c = new HashSet<>();
