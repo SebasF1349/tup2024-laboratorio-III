@@ -8,6 +8,9 @@ import ar.edu.utn.frbb.tup.model.exception.ClienteNoExistsException;
 import ar.edu.utn.frbb.tup.model.exception.WrongInputDataException;
 import ar.edu.utn.frbb.tup.service.ClienteService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -35,10 +38,11 @@ public class ClienteController {
   }
 
   @PostMapping
-  public Cliente crearCliente(@RequestBody ClienteDto clienteDto)
+  public ResponseEntity<Cliente> crearCliente(@RequestBody ClienteDto clienteDto)
       throws ClienteAlreadyExistsException, ClienteMenorDeEdadException, WrongInputDataException {
     clienteValidator.validate(clienteDto);
-    return clienteService.darDeAltaCliente(clienteDto);
+    Cliente clienteResponse = clienteService.darDeAltaCliente(clienteDto);
+    return new ResponseEntity<Cliente>(clienteResponse, new HttpHeaders(), HttpStatus.CREATED);
   }
 
   @DeleteMapping(value = "/{dni}")
