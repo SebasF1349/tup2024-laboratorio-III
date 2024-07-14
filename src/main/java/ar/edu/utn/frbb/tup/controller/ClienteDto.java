@@ -19,4 +19,42 @@ public class ClienteDto extends PersonaDto {
   public void setBanco(String banco) {
     this.banco = banco;
   }
+
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + ((tipoPersona == null) ? 0 : tipoPersona.hashCode());
+    result = prime * result + ((banco == null) ? 0 : banco.hashCode());
+    return result;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
+    ClienteDto other = (ClienteDto) obj;
+    if (tipoPersona == null) {
+      if (other.tipoPersona != null) {
+        return false;
+      }
+    } else if (!tipoPersona.equals(other.tipoPersona)) {
+      return false;
+    }
+    if (banco == null) {
+      if (other.banco != null) {
+        return false;
+      }
+    } else if (!banco.equals(other.banco)) {
+      return false;
+    }
+    return true;
+  }
 }
