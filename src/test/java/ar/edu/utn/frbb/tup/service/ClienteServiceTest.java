@@ -10,7 +10,7 @@ import ar.edu.utn.frbb.tup.model.exception.ClienteMenorDeEdadException;
 import ar.edu.utn.frbb.tup.model.exception.ClienteNoExistsException;
 import ar.edu.utn.frbb.tup.model.exception.TipoCuentaAlreadyExistsException;
 import ar.edu.utn.frbb.tup.persistence.ClienteDao;
-import java.time.LocalDate;
+import ar.edu.utn.frbb.tup.service.validator.ClienteServiceValidator;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -25,6 +25,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 public class ClienteServiceTest {
 
   @Mock private ClienteDao clienteDao;
+  @Mock private ClienteServiceValidator clienteServiceValidator;
   private final long dniCliente = 12345678;
 
   @InjectMocks private ClienteService clienteService;
@@ -39,20 +40,26 @@ public class ClienteServiceTest {
     ClienteDto clienteDto = createClienteDto();
     Cliente cliente = new Cliente(clienteDto);
 
-    when(clienteDao.find(dniCliente, false)).thenReturn(cliente);
+    doThrow(ClienteAlreadyExistsException.class)
+        .when(clienteServiceValidator)
+        .validateClienteNoExists(cliente);
 
     assertThrows(
         ClienteAlreadyExistsException.class, () -> clienteService.darDeAltaCliente(clienteDto));
   }
 
   @Test
-  public void testClienteMenorDeEdadException() {
-    ClienteDto clienteMenorDeEdad = createClienteDto();
-    String seventeenBirthday = LocalDate.now().minusYears(17).toString();
-    clienteMenorDeEdad.setFechaNacimiento(seventeenBirthday);
+  public void testClienteMenorDeEdadException() throws ClienteMenorDeEdadException {
+    ClienteDto clienteDtoMenorDeEdad = createClienteDto();
+    Cliente clienteMenorDeEdad = new Cliente(clienteDtoMenorDeEdad);
+
+    doThrow(ClienteMenorDeEdadException.class)
+        .when(clienteServiceValidator)
+        .validateClienteMayorDeEdad(clienteMenorDeEdad);
+
     assertThrows(
         ClienteMenorDeEdadException.class,
-        () -> clienteService.darDeAltaCliente(clienteMenorDeEdad));
+        () -> clienteService.darDeAltaCliente(clienteDtoMenorDeEdad));
   }
 
   @Test
@@ -68,7 +75,7 @@ public class ClienteServiceTest {
   }
 
   @Test
-  public void testTipoCuentaAlreadExistsException()
+  public void testAgregarCuentaTipoCuentaAlreadExistsException()
       throws TipoCuentaAlreadyExistsException, ClienteNoExistsException {
 
     Cliente cliente = createCliente();
@@ -76,17 +83,13 @@ public class ClienteServiceTest {
 
     when(clienteDao.find(dniCliente, true)).thenReturn(cliente);
 
-    clienteService.agregarCuenta(cuenta, cliente.getDni());
-
-    verify(clienteDao, times(1)).save(cliente);
-    assertEquals(1, cliente.getCuentas().size());
-    assertEquals(cliente, cuenta.getTitular());
-
-    Cuenta cuentaDuplicada = createCuenta();
+    doThrow(TipoCuentaAlreadyExistsException.class)
+        .when(clienteServiceValidator)
+        .validateTipoCuentaUnica(cliente, cuenta);
 
     assertThrows(
         TipoCuentaAlreadyExistsException.class,
-        () -> clienteService.agregarCuenta(cuentaDuplicada, cliente.getDni()));
+        () -> clienteService.agregarCuenta(cuenta, dniCliente));
   }
 
   @Test
@@ -149,8 +152,7 @@ public class ClienteServiceTest {
   }
 
   @Test
-  public void testClienteNoExisteException() throws TipoCuentaAlreadyExistsException {
-    when(clienteDao.find(dniCliente, true)).thenReturn(null);
+  public void testBuscarClientePorDniClienteNoExistsException() throws ClienteNoExistsException {
 
     assertThrows(
         ClienteNoExistsException.class, () -> clienteService.buscarClientePorDni(dniCliente));
@@ -167,24 +169,26 @@ public class ClienteServiceTest {
   }
 
   @Test
-  public void testClienteNoExistsOnUpdateException() {
+  public void testClienteNoExistsOnUpdateException() throws ClienteNoExistsException {
     ClienteDto clienteDto = createClienteDto();
+    Cliente cliente = new Cliente(clienteDto);
 
-    when(clienteDao.find(dniCliente, false)).thenReturn(null);
+    doThrow(ClienteNoExistsException.class)
+        .when(clienteServiceValidator)
+        .validateClienteExists(cliente);
 
     assertThrows(
         ClienteNoExistsException.class, () -> clienteService.actualizarCliente(clienteDto));
   }
 
   @Test
-  public void testClienteMenorDeEdadOnUpdateException() {
+  public void testClienteMenorDeEdadOnUpdateException() throws ClienteMenorDeEdadException {
     ClienteDto clienteDtoMenorDeEdad = createClienteDto();
     Cliente clienteMenorDeEdad = new Cliente(clienteDtoMenorDeEdad);
 
-    clienteMenorDeEdad.setFechaNacimiento(LocalDate.now().minusYears(17));
-    clienteDtoMenorDeEdad.setFechaNacimiento(clienteMenorDeEdad.getFechaNacimiento().toString());
-
-    when(clienteDao.find(dniCliente, false)).thenReturn(clienteMenorDeEdad);
+    doThrow(ClienteMenorDeEdadException.class)
+        .when(clienteServiceValidator)
+        .validateClienteMayorDeEdad(clienteMenorDeEdad);
 
     assertThrows(
         ClienteMenorDeEdadException.class,
@@ -197,17 +201,13 @@ public class ClienteServiceTest {
     ClienteDto clienteDto = createClienteDto();
     Cliente cliente = new Cliente(clienteDto);
 
-    when(clienteDao.find(dniCliente, false)).thenReturn(cliente);
-
-    clienteService.actualizarCliente(clienteDto);
+    assertEquals(cliente, clienteService.actualizarCliente(clienteDto));
 
     verify(clienteDao, times(1)).save(cliente);
   }
 
   @Test
-  public void testClienteNoExistsExceptionOnDelete() {
-    // when(clienteDao.find(dniCliente, false)).thenReturn(null);
-
+  public void testClienteNoExistsOnDeleteException() throws ClienteNoExistsException {
     assertThrows(ClienteNoExistsException.class, () -> clienteService.eliminarCliente(dniCliente));
   }
 
