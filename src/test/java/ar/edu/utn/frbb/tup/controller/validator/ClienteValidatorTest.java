@@ -63,20 +63,18 @@ public class ClienteValidatorTest {
 
   @Test
   public void testValidateDniWithOnlyNumbersFail() {
-    ClienteDto clienteDto = new ClienteDto();
-    clienteDto.setDni("abc123");
+    String dni = "abc123";
 
     assertThrows(
         WrongInputDataException.class,
-        () -> clienteValidator.validateDniWithOnlyNumbers(clienteDto));
+        () -> clienteValidator.validateStringWithOnlyNumbers(dni, ""));
   }
 
   @Test
   public void testValidateDniWithOnlyNumbersSuccess() {
-    ClienteDto clienteDto = new ClienteDto();
-    clienteDto.setDni("123456");
+    String dni = "123456";
 
-    assertDoesNotThrow(() -> clienteValidator.validateDniWithOnlyNumbers(clienteDto));
+    assertDoesNotThrow(() -> clienteValidator.validateStringWithOnlyNumbers(dni, ""));
   }
 
   @Test

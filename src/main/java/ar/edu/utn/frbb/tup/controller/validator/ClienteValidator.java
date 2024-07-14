@@ -2,7 +2,6 @@ package ar.edu.utn.frbb.tup.controller.validator;
 
 import ar.edu.utn.frbb.tup.controller.ClienteDto;
 import ar.edu.utn.frbb.tup.model.exception.WrongInputDataException;
-
 import java.time.LocalDate;
 import org.springframework.stereotype.Component;
 
@@ -13,7 +12,7 @@ public class ClienteValidator {
     validateTipoPersona(clienteDto);
     validateStringWithOnlyLetters(clienteDto.getNombre(), "nombre");
     validateStringWithOnlyLetters(clienteDto.getApellido(), "apellido");
-    validateDniWithOnlyNumbers(clienteDto);
+    validateStringWithOnlyNumbers(clienteDto.getDni(), "DNI");
     validateFechaNacimiento(clienteDto);
   }
 
@@ -29,9 +28,9 @@ public class ClienteValidator {
     }
   }
 
-  public void validateDniWithOnlyNumbers(ClienteDto clienteDto) throws WrongInputDataException {
-    if (!clienteDto.getDni().matches("\\d+")) {
-      throw new WrongInputDataException("Error en el formato del DNI");
+  public void validateStringWithOnlyNumbers(String str, String msg) throws WrongInputDataException {
+    if (!str.matches("\\d+")) {
+      throw new WrongInputDataException("Error en el formato del " + msg);
     }
   }
 
