@@ -7,6 +7,7 @@ import ar.edu.utn.frbb.tup.model.exception.ClienteMenorDeEdadException;
 import ar.edu.utn.frbb.tup.model.exception.ClienteNoExistsException;
 import ar.edu.utn.frbb.tup.model.exception.WrongInputDataException;
 import ar.edu.utn.frbb.tup.service.ClienteService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -36,7 +37,7 @@ public class ClienteController {
   }
 
   @PostMapping
-  public ResponseEntity<Cliente> crearCliente(@RequestBody ClienteDto clienteDto)
+  public ResponseEntity<Cliente> crearCliente(@Valid @RequestBody ClienteDto clienteDto)
       throws ClienteAlreadyExistsException, ClienteMenorDeEdadException, WrongInputDataException {
     clienteValidator.validate(clienteDto);
     Cliente clienteResponse = clienteService.darDeAltaCliente(clienteDto);
@@ -50,7 +51,7 @@ public class ClienteController {
   }
 
   @PutMapping
-  public Cliente actualizarCliente(@RequestBody ClienteDto clienteDto)
+  public Cliente actualizarCliente(@Valid @RequestBody ClienteDto clienteDto)
       throws ClienteNoExistsException, ClienteMenorDeEdadException, WrongInputDataException {
     clienteValidator.validate(clienteDto);
     return clienteService.actualizarCliente(clienteDto);

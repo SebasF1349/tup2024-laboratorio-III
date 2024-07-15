@@ -1,8 +1,10 @@
 package ar.edu.utn.frbb.tup.controller;
 
+import jakarta.validation.constraints.NotNull;
+
 public class ClienteDto extends PersonaDto {
-  private String tipoPersona;
-  private String banco;
+  @NotNull private String tipoPersona;
+  @NotNull private String banco;
 
   public String getTipoPersona() {
     return tipoPersona;

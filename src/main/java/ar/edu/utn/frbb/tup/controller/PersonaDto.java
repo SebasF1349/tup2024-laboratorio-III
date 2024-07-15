@@ -1,10 +1,13 @@
 package ar.edu.utn.frbb.tup.controller;
 
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+
 public class PersonaDto {
-  private String nombre;
-  private String apellido;
-  private long dni;
-  private String fechaNacimiento;
+  @NotNull @Positive private long dni;
+  @NotNull private String nombre;
+  @NotNull private String apellido;
+  @NotNull private String fechaNacimiento;
 
   public String getNombre() {
     return nombre;

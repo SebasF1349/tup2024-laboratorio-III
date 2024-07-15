@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 public class ClienteControllerValidator {
 
   public void validate(ClienteDto clienteDto) throws WrongInputDataException {
-    // validate dni???
+    // NOTE: validate dni???
     validateTipoPersona(clienteDto);
     validateStringWithOnlyLetters(clienteDto.getNombre(), "nombre");
     validateStringWithOnlyLetters(clienteDto.getApellido(), "apellido");
@@ -23,7 +23,7 @@ public class ClienteControllerValidator {
   }
 
   public void validateStringWithOnlyLetters(String str, String msg) throws WrongInputDataException {
-    if (!str.matches("[a-zA-Z]+")) {
+    if (!str.matches("[a-zA-Z \\-']+")) {
       throw new WrongInputDataException("Error en el formato del " + msg);
     }
   }
