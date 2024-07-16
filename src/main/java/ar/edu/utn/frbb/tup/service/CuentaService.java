@@ -1,19 +1,18 @@
 package ar.edu.utn.frbb.tup.service;
 
+import ar.edu.utn.frbb.tup.controller.CuentaDto;
 import ar.edu.utn.frbb.tup.model.Cuenta;
 import ar.edu.utn.frbb.tup.model.Movimiento;
-import ar.edu.utn.frbb.tup.model.TipoCuenta;
-import ar.edu.utn.frbb.tup.model.TipoMoneda;
 import ar.edu.utn.frbb.tup.model.exception.ClienteNoExistsException;
 import ar.edu.utn.frbb.tup.model.exception.CuentaAlreadyExistsException;
+import ar.edu.utn.frbb.tup.model.exception.CuentaNoExistsException;
+import ar.edu.utn.frbb.tup.model.exception.CuentaNoExistsInClienteException;
 import ar.edu.utn.frbb.tup.model.exception.CuentaNoSoportadaException;
 import ar.edu.utn.frbb.tup.model.exception.TipoCuentaAlreadyExistsException;
 import ar.edu.utn.frbb.tup.persistence.CuentaDao;
 import ar.edu.utn.frbb.tup.persistence.MovimientoDao;
-import java.util.AbstractMap;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import ar.edu.utn.frbb.tup.service.validator.CuentaServiceValidator;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,63 +21,74 @@ public class CuentaService {
   CuentaDao cuentaDao = new CuentaDao();
   MovimientoDao movimientoDao = new MovimientoDao();
 
-  private final Map<TipoCuenta, List<TipoMoneda>> cuentasSoportadas =
-      Map.ofEntries(
-          new AbstractMap.SimpleEntry<TipoCuenta, List<TipoMoneda>>(
-              TipoCuenta.CAJA_AHORROS,
-              Arrays.asList(TipoMoneda.PESOS_ARGENTINOS, TipoMoneda.DOLARES_AMERICANOS)),
-          new AbstractMap.SimpleEntry<TipoCuenta, List<TipoMoneda>>(
-              TipoCuenta.CUENTA_CORRIENTE, Arrays.asList(TipoMoneda.PESOS_ARGENTINOS)));
-
   @Autowired ClienteService clienteService;
+  @Autowired CuentaServiceValidator cuentaServiceValidator;
 
-  public void darDeAltaCuenta(Cuenta cuenta, long dniTitular)
+  public Cuenta darDeAltaCuenta(CuentaDto cuentaDto)
       throws CuentaAlreadyExistsException,
           CuentaNoSoportadaException,
           TipoCuentaAlreadyExistsException,
           ClienteNoExistsException {
 
-    if (cuentaDao.find(cuenta.getNumeroCuenta()) != null) {
-      throw new CuentaAlreadyExistsException(
-          "La cuenta " + cuenta.getNumeroCuenta() + " ya existe.");
-    }
+    Cuenta cuenta = new Cuenta(cuentaDto);
 
-    if (!tipoCuentaEstaSoportada(cuenta)) {
-      throw new CuentaNoSoportadaException(
-          "El tipo de cuenta "
-              + cuenta.getTipoCuenta()
-              + " no soporta la moneda "
-              + cuenta.getMoneda());
-    }
+    cuentaServiceValidator.validateCuentaNoExists(cuenta);
+    cuentaServiceValidator.validateTipoCuentaEstaSoportada(cuenta);
 
-    clienteService.agregarCuenta(cuenta, dniTitular);
+    clienteService.agregarCuenta(cuenta, cuentaDto.getTitular());
     cuentaDao.save(cuenta);
+    return cuenta;
   }
 
-  public Cuenta find(long numeroCuenta) {
-    return cuentaDao.find(numeroCuenta);
+  public Cuenta buscarCuentaPorId(long numeroCuenta) throws CuentaNoExistsException {
+    Cuenta cuenta = cuentaDao.find(numeroCuenta);
+
+    cuentaServiceValidator.validateCuentaExists(cuenta);
+
+    return cuenta;
   }
 
-  public boolean tipoCuentaEstaSoportada(Cuenta cuenta) {
-    TipoMoneda moneda = cuenta.getMoneda();
-    TipoCuenta tipoCuenta = cuenta.getTipoCuenta();
-    if (!cuentasSoportadas.containsKey(tipoCuenta)) {
-      return false;
-    }
-    if (!cuentasSoportadas.get(tipoCuenta).contains(moneda)) {
-      return false;
-    }
-    return true;
-  }
-
-  // NOTE: missing tests
+  // TODO: missing tests
   public void agregarMovimiento(Cuenta cuenta, Movimiento movimiento) {
     double nuevoSaldo = movimiento.actualizarCuentaMonto(cuenta.getBalance());
+    // TODO: move to validation?
     if (nuevoSaldo < 0) {
       throw new IllegalArgumentException("Saldo insuficiente");
     }
     cuenta.setBalance(nuevoSaldo);
     cuenta.addMovimiento(movimiento);
     movimientoDao.save(movimiento);
+  }
+
+  public Cuenta actualizarCuenta(@Valid CuentaDto cuentaDto)
+      throws CuentaNoExistsException,
+          ClienteNoExistsException,
+          CuentaNoExistsInClienteException,
+          CuentaNoSoportadaException {
+    Cuenta cuenta = new Cuenta(cuentaDto);
+
+    cuentaServiceValidator.validateCuentaExists(cuenta);
+    cuentaServiceValidator.validateTipoCuentaEstaSoportada(cuenta);
+
+    clienteService.actualizarCuenta(cuenta, cuentaDto.getTitular());
+    cuentaDao.save(cuenta);
+    return cuenta;
+  }
+
+  public Cuenta eliminarCuenta(long dni) throws CuentaNoExistsException {
+    Cuenta cuenta = buscarCuentaPorId(dni);
+
+    cuenta.setActivo(false);
+    cuentaDao.save(cuenta);
+    // TODO: Should set movimientos to inactive too
+    return cuenta;
+  }
+
+  public Cuenta activarCuenta(long id) throws CuentaNoExistsException {
+    Cuenta cuenta = buscarCuentaPorId(id);
+
+    cuenta.setActivo(true);
+    cuentaDao.save(cuenta);
+    return cuenta;
   }
 }

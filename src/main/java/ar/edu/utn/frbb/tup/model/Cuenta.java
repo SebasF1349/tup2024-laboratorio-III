@@ -1,5 +1,6 @@
 package ar.edu.utn.frbb.tup.model;
 
+import ar.edu.utn.frbb.tup.controller.CuentaDto;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -12,6 +13,7 @@ public class Cuenta {
   private TipoMoneda moneda;
   private Cliente titular;
   private Set<Movimiento> movimientos;
+  private boolean activo;
 
   public Cuenta() {
     this.fechaApertura = LocalDateTime.now();
@@ -27,6 +29,15 @@ public class Cuenta {
     this.moneda = tipoMoneda;
     this.movimientos = new HashSet<>();
     this.titular = titular;
+  }
+
+  public Cuenta(CuentaDto cuentaDto) {
+    this.fechaApertura = LocalDateTime.now();
+    this.balance = cuentaDto.getBalance();
+    this.movimientos = new HashSet<>();
+    this.titular = null;
+    this.tipoCuenta = TipoCuenta.fromString(cuentaDto.getTipoCuenta());
+    this.moneda = TipoMoneda.fromString(cuentaDto.getMoneda());
   }
 
   public long getNumeroCuenta() {
@@ -96,8 +107,77 @@ public class Cuenta {
     this.movimientos.add(movimiento);
   }
 
+  public boolean isActivo() {
+    return activo;
+  }
+
+  public void setActivo(boolean activo) {
+    this.activo = activo;
+  }
+
   @Override
   public String toString() {
     return "ID: " + numeroCuenta + ", Tipo de cuenta: " + tipoCuenta + ", Moneda: " + moneda;
+  }
+
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + (int) (numeroCuenta ^ (numeroCuenta >>> 32));
+    result = prime * result + ((fechaApertura == null) ? 0 : fechaApertura.hashCode());
+    long temp;
+    temp = Double.doubleToLongBits(balance);
+    result = prime * result + (int) (temp ^ (temp >>> 32));
+    result = prime * result + ((tipoCuenta == null) ? 0 : tipoCuenta.hashCode());
+    result = prime * result + ((moneda == null) ? 0 : moneda.hashCode());
+    result = prime * result + ((titular == null) ? 0 : titular.hashCode());
+    result = prime * result + ((movimientos == null) ? 0 : movimientos.hashCode());
+    result = prime * result + (activo ? 1231 : 1237);
+    return result;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
+    Cuenta other = (Cuenta) obj;
+    if (numeroCuenta != other.numeroCuenta) {
+      return false;
+    }
+    if (Double.doubleToLongBits(balance) != Double.doubleToLongBits(other.balance)) {
+      return false;
+    }
+    if (tipoCuenta != other.tipoCuenta) {
+      return false;
+    }
+    if (moneda != other.moneda) {
+      return false;
+    }
+    if (titular == null) {
+      if (other.titular != null) {
+        return false;
+      }
+    } else if (!titular.equals(other.titular)) {
+      return false;
+    }
+    if (movimientos == null) {
+      if (other.movimientos != null) {
+        return false;
+      }
+    } else if (!movimientos.equals(other.movimientos)) {
+      return false;
+    }
+    if (activo != other.activo) {
+      return false;
+    }
+    return true;
   }
 }

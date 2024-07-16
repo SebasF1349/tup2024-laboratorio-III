@@ -13,6 +13,7 @@ public class CuentaDao extends AbstractBaseDao {
     return "CUENTA";
   }
 
+  // TODO: Add second argument to get movimientos or not
   public Cuenta find(long numeroCuenta) {
     if (getInMemoryDatabase().get(numeroCuenta) == null) return null;
     return ((CuentaEntity) getInMemoryDatabase().get(numeroCuenta)).toCuenta();

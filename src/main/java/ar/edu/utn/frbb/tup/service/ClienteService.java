@@ -6,6 +6,7 @@ import ar.edu.utn.frbb.tup.model.Cuenta;
 import ar.edu.utn.frbb.tup.model.exception.ClienteAlreadyExistsException;
 import ar.edu.utn.frbb.tup.model.exception.ClienteMenorDeEdadException;
 import ar.edu.utn.frbb.tup.model.exception.ClienteNoExistsException;
+import ar.edu.utn.frbb.tup.model.exception.CuentaNoExistsInClienteException;
 import ar.edu.utn.frbb.tup.model.exception.TipoCuentaAlreadyExistsException;
 import ar.edu.utn.frbb.tup.persistence.ClienteDao;
 import ar.edu.utn.frbb.tup.service.validator.ClienteServiceValidator;
@@ -46,6 +47,22 @@ public class ClienteService {
     clienteDao.save(titular);
   }
 
+  public void actualizarCuenta(Cuenta cuenta, long dniTitular)
+      throws ClienteNoExistsException, CuentaNoExistsInClienteException {
+    Cliente titular = buscarClientePorDni(dniTitular);
+
+    Cuenta cuentaOriginal = titular.getCuenta(cuenta.getNumeroCuenta());
+
+    if (cuentaOriginal == null) {
+      throw new CuentaNoExistsInClienteException(
+          "El cliente " + dniTitular + " no tiene cuenta " + cuenta.getNumeroCuenta());
+    }
+
+    titular.deleteCuenta(cuentaOriginal);
+    titular.addCuenta(cuenta);
+    clienteDao.save(titular);
+  }
+
   public Cliente buscarClientePorDni(long dni) throws ClienteNoExistsException {
     Cliente cliente = clienteDao.find(dni, true);
 
@@ -73,8 +90,8 @@ public class ClienteService {
     Cliente cliente = buscarClientePorDni(dni);
 
     cliente.setActivo(false);
+
     clienteDao.save(cliente);
-    // FIX: Should set cuentas to inactive too
     return cliente;
   }
 
@@ -83,7 +100,6 @@ public class ClienteService {
 
     cliente.setActivo(true);
     clienteDao.save(cliente);
-    // FIX: Should set cuentas to active too
     return cliente;
   }
 }

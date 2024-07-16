@@ -37,7 +37,7 @@ public class ClienteServiceValidator {
 
   public void validateTipoCuentaUnica(Cliente titular, Cuenta cuenta)
       throws TipoCuentaAlreadyExistsException {
-    if (titular.hasCuenta(cuenta.getTipoCuenta(), cuenta.getMoneda())) {
+    if (titular.hasCuentaSameTipo(cuenta.getTipoCuenta(), cuenta.getMoneda())) {
       throw new TipoCuentaAlreadyExistsException(
           "El cliente ya posee una cuenta de ese tipo y moneda");
     }

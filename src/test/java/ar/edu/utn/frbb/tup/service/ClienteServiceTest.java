@@ -8,6 +8,7 @@ import ar.edu.utn.frbb.tup.model.*;
 import ar.edu.utn.frbb.tup.model.exception.ClienteAlreadyExistsException;
 import ar.edu.utn.frbb.tup.model.exception.ClienteMenorDeEdadException;
 import ar.edu.utn.frbb.tup.model.exception.ClienteNoExistsException;
+import ar.edu.utn.frbb.tup.model.exception.CuentaNoExistsInClienteException;
 import ar.edu.utn.frbb.tup.model.exception.TipoCuentaAlreadyExistsException;
 import ar.edu.utn.frbb.tup.persistence.ClienteDao;
 import ar.edu.utn.frbb.tup.service.validator.ClienteServiceValidator;
@@ -75,6 +76,18 @@ public class ClienteServiceTest {
   }
 
   @Test
+  public void testAgregarCuentaClienteNoExistsException()
+      throws TipoCuentaAlreadyExistsException, ClienteNoExistsException {
+
+    when(clienteDao.find(dniCliente, true)).thenReturn(null);
+
+    Cuenta cuenta = createCuenta();
+
+    assertThrows(
+        ClienteNoExistsException.class, () -> clienteService.agregarCuenta(cuenta, dniCliente));
+  }
+
+  @Test
   public void testAgregarCuentaTipoCuentaAlreadExistsException()
       throws TipoCuentaAlreadyExistsException, ClienteNoExistsException {
 
@@ -110,49 +123,52 @@ public class ClienteServiceTest {
   }
 
   @Test
-  public void testAgregarDosCuentaDistintoTipoSuccess()
+  public void testActualizarCuentaClienteNoExistsException() {
+
+    when(clienteDao.find(dniCliente, true)).thenReturn(null);
+
+    Cuenta cuenta = createCuenta();
+
+    assertThrows(
+        ClienteNoExistsException.class, () -> clienteService.actualizarCuenta(cuenta, dniCliente));
+  }
+
+  @Test
+  public void testActualizarCuentaCuentaNoExistsException()
       throws TipoCuentaAlreadyExistsException, ClienteNoExistsException {
 
     Cliente cliente = createCliente();
 
     when(clienteDao.find(dniCliente, true)).thenReturn(cliente);
 
-    Cuenta cuentaAhorro = this.createCuenta(TipoMoneda.PESOS_ARGENTINOS, TipoCuenta.CAJA_AHORROS);
-    clienteService.agregarCuenta(cuentaAhorro, cliente.getDni());
+    Cuenta cuenta = createCuenta();
 
-    Cuenta cuentaCorriente =
-        this.createCuenta(TipoMoneda.PESOS_ARGENTINOS, TipoCuenta.CUENTA_CORRIENTE);
-    clienteService.agregarCuenta(cuentaCorriente, cliente.getDni());
-
-    verify(clienteDao, times(2)).save(cliente);
-    assertEquals(2, cliente.getCuentas().size());
-    assertEquals(cliente, cuentaAhorro.getTitular());
-    assertEquals(cliente, cuentaCorriente.getTitular());
+    assertThrows(
+        CuentaNoExistsInClienteException.class,
+        () -> clienteService.actualizarCuenta(cuenta, dniCliente));
   }
 
   @Test
-  public void testAgregarDosCuentaDistintaMonedaSuccess()
+  public void testActualizarCuentaSuccess()
       throws TipoCuentaAlreadyExistsException, ClienteNoExistsException {
 
     Cliente cliente = createCliente();
+    Cuenta cuenta = createCuenta();
+    cliente.addCuenta(cuenta);
 
     when(clienteDao.find(dniCliente, true)).thenReturn(cliente);
 
-    Cuenta cuentaPesos = this.createCuenta(TipoMoneda.PESOS_ARGENTINOS, TipoCuenta.CAJA_AHORROS);
-    clienteService.agregarCuenta(cuentaPesos, cliente.getDni());
+    Cuenta cuentaToReplaceWith = createCuenta();
+    cuentaToReplaceWith.setMoneda(TipoMoneda.DOLARES_AMERICANOS);
 
-    Cuenta cuentaDolares =
-        this.createCuenta(TipoMoneda.DOLARES_AMERICANOS, TipoCuenta.CAJA_AHORROS);
-    clienteService.agregarCuenta(cuentaDolares, cliente.getDni());
-
-    verify(clienteDao, times(2)).save(cliente);
-    assertEquals(2, cliente.getCuentas().size());
-    assertEquals(cliente, cuentaPesos.getTitular());
-    assertEquals(cliente, cuentaDolares.getTitular());
+    assertDoesNotThrow(() -> clienteService.actualizarCuenta(cuentaToReplaceWith, dniCliente));
+    verify(clienteDao, times(1)).save(cliente);
+    assertEquals(1, cliente.getCuentas().size());
+    assertEquals(cuentaToReplaceWith, cliente.getCuenta(cuenta.getNumeroCuenta()));
   }
 
   @Test
-  public void testBuscarClientePorDniClienteNoExistsException() throws ClienteNoExistsException {
+  public void testBuscarClientePorDniClienteNoExistsException() {
 
     assertThrows(
         ClienteNoExistsException.class, () -> clienteService.buscarClientePorDni(dniCliente));
@@ -223,6 +239,23 @@ public class ClienteServiceTest {
     verify(clienteDao, times(1)).save(cliente);
   }
 
+  @Test
+  public void testActivarClienteNoExistsException() throws ClienteNoExistsException {
+    assertThrows(ClienteNoExistsException.class, () -> clienteService.activarCliente(dniCliente));
+  }
+
+  @Test
+  public void testActivarClienteSuccess() throws ClienteNoExistsException {
+    Cliente cliente = createCliente();
+
+    when(clienteDao.find(dniCliente, true)).thenReturn(cliente);
+
+    clienteService.activarCliente(dniCliente);
+
+    assertEquals(true, cliente.isActivo());
+    verify(clienteDao, times(1)).save(cliente);
+  }
+
   private ClienteDto createClienteDto() {
     ClienteDto clienteDto = new ClienteDto();
     clienteDto.setDni(dniCliente);
@@ -240,12 +273,9 @@ public class ClienteServiceTest {
 
   private Cuenta createCuenta() {
     return new Cuenta()
+        .setNumeroCuenta(1)
         .setMoneda(TipoMoneda.PESOS_ARGENTINOS)
         .setBalance(500000)
         .setTipoCuenta(TipoCuenta.CAJA_AHORROS);
-  }
-
-  private Cuenta createCuenta(TipoMoneda moneda, TipoCuenta cuenta) {
-    return new Cuenta().setMoneda(moneda).setBalance(500000).setTipoCuenta(cuenta);
   }
 }

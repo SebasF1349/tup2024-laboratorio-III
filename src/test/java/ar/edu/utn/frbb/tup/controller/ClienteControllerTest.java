@@ -1,9 +1,15 @@
 package ar.edu.utn.frbb.tup.controller;
 
-import static org.hamcrest.Matchers.*;
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import ar.edu.utn.frbb.tup.controller.validator.ClienteControllerValidator;
 import ar.edu.utn.frbb.tup.model.Cliente;
@@ -12,6 +18,7 @@ import ar.edu.utn.frbb.tup.model.exception.ClienteMenorDeEdadException;
 import ar.edu.utn.frbb.tup.model.exception.ClienteNoExistsException;
 import ar.edu.utn.frbb.tup.model.exception.WrongInputDataException;
 import ar.edu.utn.frbb.tup.service.ClienteService;
+import ar.edu.utn.frbb.tup.service.CuentaService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -36,6 +43,7 @@ public class ClienteControllerTest {
 
   @MockBean private ClienteService clienteService;
   @MockBean private ClienteControllerValidator clienteControllerValidator;
+  @MockBean private CuentaService cuentaService;
   private final long dniCliente = 12345678;
   private final String endpoint = "/cliente";
 
@@ -300,6 +308,7 @@ public class ClienteControllerTest {
     clienteDto.setApellido("Apellido");
     clienteDto.setFechaNacimiento("1990-01-01");
     clienteDto.setTipoPersona("F");
+    clienteDto.setBanco("");
     return clienteDto;
   }
 

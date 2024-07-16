@@ -25,6 +25,8 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @ControllerAdvice
 public class ApiResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
 
+  // TODO: Improve error messages
+
   @ExceptionHandler(value = {NotFoundException.class})
   protected ResponseEntity<Object> handleClienteNotFound(NotFoundException ex, WebRequest request) {
     ApiError error = new ApiError(ex.getCode(), ex.getMessage());
@@ -114,13 +116,14 @@ public class ApiResponseEntityExceptionHandler extends ResponseEntityExceptionHa
       HttpStatusCode status,
       WebRequest request) {
     ApiError error = new ApiError(400003, ex.getMessage());
-    return handleExceptionInternal(ex, error, headers, HttpStatus.NOT_FOUND, request);
+    return handleExceptionInternal(ex, error, headers, HttpStatus.BAD_REQUEST, request);
   }
 
   @ExceptionHandler(value = {Exception.class})
   protected ResponseEntity<Object> handleAllExceptions(Exception ex, WebRequest request) {
     ApiError error = new ApiError(500000, ex.getMessage());
-    return handleExceptionInternal(ex, error, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
+    return handleExceptionInternal(
+        ex, error, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, request);
   }
 
   @Override

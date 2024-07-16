@@ -61,6 +61,15 @@ public class Cliente extends Persona {
     return cuentasFiltrada;
   }
 
+  public Cuenta getCuenta(long numeroCuenta) {
+    for (Cuenta cuenta : cuentas) {
+      if (cuenta.getNumeroCuenta() == numeroCuenta) {
+        return cuenta;
+      }
+    }
+    return null;
+  }
+
   public void setCuentas(Set<Cuenta> cuentas) {
     this.cuentas = cuentas;
   }
@@ -69,7 +78,7 @@ public class Cliente extends Persona {
     this.cuentas.add(cuenta);
   }
 
-  public boolean hasCuenta(TipoCuenta tipoCuenta, TipoMoneda moneda) {
+  public boolean hasCuentaSameTipo(TipoCuenta tipoCuenta, TipoMoneda moneda) {
     for (Cuenta cuenta : cuentas) {
       if (tipoCuenta.equals(cuenta.getTipoCuenta()) && moneda.equals(cuenta.getMoneda())) {
         return true;
@@ -85,6 +94,10 @@ public class Cliente extends Persona {
       }
     }
     return null;
+  }
+
+  public void deleteCuenta(Cuenta cuenta) {
+    cuentas.remove(cuenta);
   }
 
   public String getBanco() {
