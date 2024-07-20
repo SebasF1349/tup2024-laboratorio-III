@@ -93,4 +93,23 @@ public class ClienteEntity extends BaseEntity {
   public void setCuentas(List<Long> cuentas) {
     this.cuentas = cuentas;
   }
+
+  @Override
+  public String toString() {
+    return "ClienteEntity{tipoPersona="
+        + tipoPersona
+        + ", nombre="
+        + nombre
+        + ", apellido="
+        + apellido
+        + ", fechaAlta="
+        + fechaAlta
+        + ", fechaNacimiento="
+        + fechaNacimiento
+        + ", activo="
+        + activo
+        + ", cuentas="
+        + cuentas
+        + "}";
+  }
 }

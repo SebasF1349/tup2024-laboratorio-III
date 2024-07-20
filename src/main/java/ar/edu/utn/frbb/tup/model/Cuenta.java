@@ -19,7 +19,6 @@ public class Cuenta {
     this.fechaApertura = LocalDateTime.now();
     this.balance = 0;
     this.movimientos = new HashSet<>();
-    this.titular = null;
   }
 
   public Cuenta(TipoCuenta tipoCuenta, TipoMoneda tipoMoneda, Cliente titular) {
@@ -117,7 +116,23 @@ public class Cuenta {
 
   @Override
   public String toString() {
-    return "ID: " + numeroCuenta + ", Tipo de cuenta: " + tipoCuenta + ", Moneda: " + moneda;
+    return "Cuenta{numeroCuenta="
+        + numeroCuenta
+        + ", fechaApertura="
+        + fechaApertura
+        + ", balance="
+        + balance
+        + ", tipoCuenta="
+        + tipoCuenta
+        + ", moneda="
+        + moneda
+        + ", titular="
+        + titular
+        + ", movimientos="
+        + movimientos
+        + ", activo="
+        + activo
+        + "}";
   }
 
   @Override
@@ -150,6 +165,13 @@ public class Cuenta {
     }
     Cuenta other = (Cuenta) obj;
     if (numeroCuenta != other.numeroCuenta) {
+      return false;
+    }
+    if (fechaApertura == null) {
+      if (other.fechaApertura != null) {
+        return false;
+      }
+    } else if (!fechaApertura.equals(other.fechaApertura)) {
       return false;
     }
     if (Double.doubleToLongBits(balance) != Double.doubleToLongBits(other.balance)) {

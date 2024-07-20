@@ -109,25 +109,6 @@ public class Cliente extends Persona {
   }
 
   @Override
-  public String toString() {
-    return "---------------------------------------"
-        + "\nCliente\nApellido y nombre: "
-        + this.getApellido()
-        + ", "
-        + this.getNombre()
-        + "\nDNI: "
-        + this.getDni()
-        + "\nFecha de Nacimiento: "
-        + this.getFechaNacimiento()
-        + "\n"
-        + this.tipoPersona
-        + "\nFecha de Alta: "
-        + this.fechaAlta
-        + "\nCuentas: "
-        + this.cuentas;
-  }
-
-  @Override
   public int hashCode() {
     final int prime = 31;
     int result = 1;
@@ -171,5 +152,26 @@ public class Cliente extends Persona {
       return false;
     }
     return true;
+  }
+
+  @Override
+  public String toString() {
+    return "Cliente{tipoPersona="
+        + tipoPersona
+        + ", fechaAlta="
+        + fechaAlta
+        + ", cuentas="
+        + cuentas
+        + ", activo="
+        + activo
+        + ", banco="
+        + banco
+        + ", getTipoPersona()="
+        + getTipoPersona()
+        + ", getFechaAlta()="
+        + getFechaAlta()
+        + ", isActivo()="
+        + isActivo()
+        + "}";
   }
 }

@@ -103,4 +103,71 @@ public class CuentaEntity extends BaseEntity {
   public void setMovimientos(List<Long> movimientos) {
     this.movimientos = movimientos;
   }
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + ((fechaCreacion == null) ? 0 : fechaCreacion.hashCode());
+    long temp;
+    temp = Double.doubleToLongBits(balance);
+    result = prime * result + (int) (temp ^ (temp >>> 32));
+    result = prime * result + ((tipoCuenta == null) ? 0 : tipoCuenta.hashCode());
+    result = prime * result + ((moneda == null) ? 0 : moneda.hashCode());
+    result = prime * result + (int) (titular ^ (titular >>> 32));
+    result = prime * result + ((movimientos == null) ? 0 : movimientos.hashCode());
+    result = prime * result + (activo ? 1231 : 1237);
+    return result;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
+    CuentaEntity other = (CuentaEntity) obj;
+    if (fechaCreacion == null) {
+      if (other.fechaCreacion != null) {
+        return false;
+      }
+    } else if (!fechaCreacion.equals(other.fechaCreacion)) {
+      return false;
+    }
+    if (Double.doubleToLongBits(balance) != Double.doubleToLongBits(other.balance)) {
+      return false;
+    }
+    if (tipoCuenta == null) {
+      if (other.tipoCuenta != null) {
+        return false;
+      }
+    } else if (!tipoCuenta.equals(other.tipoCuenta)) {
+      return false;
+    }
+    if (moneda == null) {
+      if (other.moneda != null) {
+        return false;
+      }
+    } else if (!moneda.equals(other.moneda)) {
+      return false;
+    }
+    if (titular != other.titular) {
+      return false;
+    }
+    if (movimientos == null) {
+      if (other.movimientos != null) {
+        return false;
+      }
+    } else if (!movimientos.equals(other.movimientos)) {
+      return false;
+    }
+    if (activo != other.activo) {
+      return false;
+    }
+    return true;
+  }
 }
