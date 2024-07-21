@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 @ControllerAdvice
@@ -116,6 +117,18 @@ public class ApiResponseEntityExceptionHandler extends ResponseEntityExceptionHa
       HttpStatusCode status,
       WebRequest request) {
     ApiError error = new ApiError(400003, ex.getMessage());
+    return handleExceptionInternal(ex, error, headers, HttpStatus.BAD_REQUEST, request);
+  }
+
+  @Override
+  protected ResponseEntity<Object> handleNoHandlerFoundException(
+      NoHandlerFoundException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+
+    String msg =
+        String.format(
+            "No se encontró el método %s para el endpoint %s",
+            ex.getHttpMethod(), ex.getRequestURL());
+    ApiError error = new ApiError(404001, msg);
     return handleExceptionInternal(ex, error, headers, HttpStatus.BAD_REQUEST, request);
   }
 
