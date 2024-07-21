@@ -8,7 +8,6 @@ import ar.edu.utn.frbb.tup.model.*;
 import ar.edu.utn.frbb.tup.model.exception.ClienteAlreadyExistsException;
 import ar.edu.utn.frbb.tup.model.exception.ClienteMenorDeEdadException;
 import ar.edu.utn.frbb.tup.model.exception.ClienteNoExistsException;
-import ar.edu.utn.frbb.tup.model.exception.CuentaNoExistsInClienteException;
 import ar.edu.utn.frbb.tup.model.exception.TipoCuentaAlreadyExistsException;
 import ar.edu.utn.frbb.tup.persistence.ClienteDao;
 import ar.edu.utn.frbb.tup.service.validator.ClienteServiceValidator;
@@ -37,7 +36,7 @@ public class ClienteServiceTest {
   }
 
   @Test
-  public void testClienteAlreadyExistsException() throws ClienteAlreadyExistsException {
+  public void testDarDeAltaClienteAlreadyExistsException() throws ClienteAlreadyExistsException {
     ClienteDto clienteDto = createClienteDto();
     Cliente cliente = new Cliente(clienteDto);
 
@@ -50,7 +49,7 @@ public class ClienteServiceTest {
   }
 
   @Test
-  public void testClienteMenorDeEdadException() throws ClienteMenorDeEdadException {
+  public void testDarDeAltaClienteMenorDeEdadException() throws ClienteMenorDeEdadException {
     ClienteDto clienteDtoMenorDeEdad = createClienteDto();
     Cliente clienteMenorDeEdad = new Cliente(clienteDtoMenorDeEdad);
 
@@ -123,48 +122,51 @@ public class ClienteServiceTest {
   }
 
   @Test
-  public void testActualizarCuentaClienteNoExistsException() {
+  public void testObtenerTitularConCuentaClienteNoExistsException() {
+
+    Cuenta cuenta = createCuenta();
 
     when(clienteDao.find(dniCliente, true)).thenReturn(null);
 
-    Cuenta cuenta = createCuenta();
-
     assertThrows(
-        ClienteNoExistsException.class, () -> clienteService.actualizarCuenta(cuenta, dniCliente));
+        ClienteNoExistsException.class,
+        () -> clienteService.obtenerTitularConCuenta(cuenta, dniCliente));
   }
 
   @Test
-  public void testActualizarCuentaCuentaNoExistsException()
-      throws TipoCuentaAlreadyExistsException, ClienteNoExistsException {
+  public void testObtenerTitularConCuentaTipoCuentaAlreadyExistsException()
+      throws TipoCuentaAlreadyExistsException {
 
     Cliente cliente = createCliente();
-
-    when(clienteDao.find(dniCliente, true)).thenReturn(cliente);
-
     Cuenta cuenta = createCuenta();
 
+    when(clienteDao.find(dniCliente, true)).thenReturn(cliente);
+    doThrow(TipoCuentaAlreadyExistsException.class)
+        .when(clienteServiceValidator)
+        .validateTipoCuentaUnica(cliente, cuenta);
+
     assertThrows(
-        CuentaNoExistsInClienteException.class,
-        () -> clienteService.actualizarCuenta(cuenta, dniCliente));
+        TipoCuentaAlreadyExistsException.class,
+        () -> clienteService.obtenerTitularConCuenta(cuenta, dniCliente));
   }
 
   @Test
-  public void testActualizarCuentaSuccess()
-      throws TipoCuentaAlreadyExistsException, ClienteNoExistsException {
+  public void testObtenerTitularConCuentaSuccess()
+      throws ClienteNoExistsException, TipoCuentaAlreadyExistsException {
 
     Cliente cliente = createCliente();
     Cuenta cuenta = createCuenta();
-    cliente.addCuenta(cuenta);
 
     when(clienteDao.find(dniCliente, true)).thenReturn(cliente);
 
-    Cuenta cuentaToReplaceWith = createCuenta();
-    cuentaToReplaceWith.setMoneda(TipoMoneda.DOLARES_AMERICANOS);
-
-    assertDoesNotThrow(() -> clienteService.actualizarCuenta(cuentaToReplaceWith, dniCliente));
-    verify(clienteDao, times(1)).save(cliente);
-    assertEquals(1, cliente.getCuentas().size());
-    assertEquals(cuentaToReplaceWith, cliente.getCuenta(cuenta.getNumeroCuenta()));
+    Cliente clienteResult = clienteService.obtenerTitularConCuenta(cuenta, cliente.getDni());
+    assertEquals(cuenta, clienteResult.getCuentaById(cuenta.getNumeroCuenta()));
+    assertEquals(cliente.getDni(), clienteResult.getDni());
+    assertEquals(cliente.getEdad(), clienteResult.getEdad());
+    assertEquals(cliente.getNombre(), clienteResult.getNombre());
+    assertEquals(cliente.getApellido(), clienteResult.getApellido());
+    assertEquals(cliente.getTipoPersona(), clienteResult.getTipoPersona());
+    assertEquals(cliente.getBanco(), clienteResult.getBanco());
   }
 
   @Test
@@ -185,7 +187,7 @@ public class ClienteServiceTest {
   }
 
   @Test
-  public void testClienteNoExistsOnUpdateException() throws ClienteNoExistsException {
+  public void testActualizarClienteNoExistsOnUpdateException() throws ClienteNoExistsException {
     ClienteDto clienteDto = createClienteDto();
     Cliente cliente = new Cliente(clienteDto);
 
@@ -198,7 +200,8 @@ public class ClienteServiceTest {
   }
 
   @Test
-  public void testClienteMenorDeEdadOnUpdateException() throws ClienteMenorDeEdadException {
+  public void testActualizarClienteMenorDeEdadOnUpdateException()
+      throws ClienteMenorDeEdadException {
     ClienteDto clienteDtoMenorDeEdad = createClienteDto();
     Cliente clienteMenorDeEdad = new Cliente(clienteDtoMenorDeEdad);
 
@@ -223,7 +226,7 @@ public class ClienteServiceTest {
   }
 
   @Test
-  public void testClienteNoExistsOnDeleteException() throws ClienteNoExistsException {
+  public void testEliminarClienteNoExistsException() throws ClienteNoExistsException {
     assertThrows(ClienteNoExistsException.class, () -> clienteService.eliminarCliente(dniCliente));
   }
 

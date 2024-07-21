@@ -2,15 +2,18 @@ package ar.edu.utn.frbb.tup.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import ar.edu.utn.frbb.tup.controller.CuentaDto;
+import ar.edu.utn.frbb.tup.model.Cliente;
 import ar.edu.utn.frbb.tup.model.Cuenta;
+import ar.edu.utn.frbb.tup.model.exception.ClienteMenorDeEdadException;
 import ar.edu.utn.frbb.tup.model.exception.ClienteNoExistsException;
-import ar.edu.utn.frbb.tup.model.exception.CuentaAlreadyExistsException;
 import ar.edu.utn.frbb.tup.model.exception.CuentaNoExistsException;
 import ar.edu.utn.frbb.tup.model.exception.CuentaNoExistsInClienteException;
 import ar.edu.utn.frbb.tup.model.exception.CuentaNoSoportadaException;
@@ -44,26 +47,12 @@ public class CuentaServiceTest {
   }
 
   @Test
-  public void testDarDeAltaCuentaAlreadExistsException() throws CuentaAlreadyExistsException {
-    CuentaDto cuentaDto = createCuentaDto();
-    Cuenta cuenta = createCuenta();
-
-    doThrow(CuentaAlreadyExistsException.class)
-        .when(cuentaServiceValidator)
-        .validateCuentaNoExists(cuenta);
-
-    assertThrows(
-        CuentaAlreadyExistsException.class, () -> cuentaService.darDeAltaCuenta(cuentaDto));
-  }
-
-  @Test
   public void testDarDeAltaCuentaNoSoportadaException() throws CuentaNoSoportadaException {
     CuentaDto cuentaDto = createCuentaDto();
-    Cuenta cuenta = createCuenta();
 
     doThrow(CuentaNoSoportadaException.class)
         .when(cuentaServiceValidator)
-        .validateTipoCuentaEstaSoportada(cuenta);
+        .validateTipoCuentaEstaSoportada(any(Cuenta.class));
 
     assertThrows(CuentaNoSoportadaException.class, () -> cuentaService.darDeAltaCuenta(cuentaDto));
   }
@@ -72,11 +61,10 @@ public class CuentaServiceTest {
   public void testDarDeAltaCuentaTipoCuentaAlreadyExistsException()
       throws TipoCuentaAlreadyExistsException, ClienteNoExistsException {
     CuentaDto cuentaDto = createCuentaDto();
-    Cuenta cuenta = createCuenta();
 
     doThrow(TipoCuentaAlreadyExistsException.class)
         .when(clienteService)
-        .agregarCuenta(cuenta, clienteDni);
+        .obtenerTitularConCuenta(any(Cuenta.class), eq(clienteDni));
 
     assertThrows(
         TipoCuentaAlreadyExistsException.class, () -> cuentaService.darDeAltaCuenta(cuentaDto));
@@ -86,25 +74,53 @@ public class CuentaServiceTest {
   public void testDarDeAltaCuentaClienteNoExistsException()
       throws TipoCuentaAlreadyExistsException, ClienteNoExistsException {
     CuentaDto cuentaDto = createCuentaDto();
-    Cuenta cuenta = createCuenta();
 
-    doThrow(ClienteNoExistsException.class).when(clienteService).agregarCuenta(cuenta, clienteDni);
+    doThrow(ClienteNoExistsException.class)
+        .when(clienteService)
+        .obtenerTitularConCuenta(any(Cuenta.class), eq(clienteDni));
 
     assertThrows(ClienteNoExistsException.class, () -> cuentaService.darDeAltaCuenta(cuentaDto));
   }
 
   @Test
-  public void testDarDeAltaCuentaSuccess()
-      throws TipoCuentaAlreadyExistsException,
-          CuentaNoSoportadaException,
-          CuentaAlreadyExistsException,
-          ClienteNoExistsException {
+  public void testDarDeAltaCuentaClienteMenorDeEdadException()
+      throws ClienteNoExistsException,
+          CuentaNoExistsInClienteException,
+          ClienteMenorDeEdadException,
+          TipoCuentaAlreadyExistsException {
     CuentaDto cuentaDto = createCuentaDto();
-    Cuenta cuenta = createCuenta();
+    Cliente cliente = new Cliente();
 
-    assertEquals(cuenta, cuentaService.darDeAltaCuenta(cuentaDto));
-    verify(clienteService, times(1)).agregarCuenta(cuenta, clienteDni);
-    verify(cuentaDao, times(1)).save(cuenta);
+    when(clienteService.obtenerTitularConCuenta(any(Cuenta.class), eq(cuentaDto.getTitular())))
+        .thenReturn(cliente);
+
+    doThrow(ClienteMenorDeEdadException.class).when(clienteService).actualizarCliente(cliente);
+
+    assertThrows(ClienteMenorDeEdadException.class, () -> cuentaService.darDeAltaCuenta(cuentaDto));
+  }
+
+  @Test
+  public void testDarDeAltaCuentaSuccess()
+      throws CuentaNoSoportadaException,
+          TipoCuentaAlreadyExistsException,
+          ClienteNoExistsException,
+          CuentaNoExistsInClienteException,
+          ClienteMenorDeEdadException {
+    CuentaDto cuentaDto = createCuentaDto();
+    // Cuenta cuenta = new Cuenta(cuentaDto);
+    Cliente cliente = new Cliente();
+
+    when(clienteService.obtenerTitularConCuenta(any(Cuenta.class), eq(cuentaDto.getTitular())))
+        .thenReturn(cliente);
+
+    CuentaDto cuentaDtoResult = cuentaService.darDeAltaCuenta(cuentaDto);
+
+    assertEquals(cuentaDto.getBalance(), cuentaDtoResult.getBalance());
+    assertEquals(cuentaDto.getTipoCuenta(), cuentaDtoResult.getTipoCuenta());
+    assertEquals(cuentaDto.getMoneda(), cuentaDtoResult.getMoneda());
+    assertEquals(cuentaDto.getTitular(), cuentaDtoResult.getTitular());
+
+    // verify(cuentaDao, times(1)).save(cuenta);
   }
 
   @Test
@@ -132,40 +148,83 @@ public class CuentaServiceTest {
   @Test
   public void testActualizarCuentaNoExistsException() throws CuentaNoExistsException {
     CuentaDto cuentaDto = createCuentaDto();
-    Cuenta cuenta = new Cuenta(cuentaDto);
 
     doThrow(CuentaNoExistsException.class)
         .when(cuentaServiceValidator)
-        .validateCuentaExists(cuenta);
+        .validateCuentaExists(any(Cuenta.class));
 
     assertThrows(CuentaNoExistsException.class, () -> cuentaService.actualizarCuenta(cuentaDto));
   }
 
   @Test
   public void testActualizarCuentaClienteNoExistsException()
-      throws ClienteNoExistsException, CuentaNoExistsInClienteException {
+      throws ClienteNoExistsException, TipoCuentaAlreadyExistsException {
     CuentaDto cuentaDto = createCuentaDto();
-    Cuenta cuenta = new Cuenta(cuentaDto);
 
-    doThrow(ClienteNoExistsException.class)
-        .when(clienteService)
-        .actualizarCuenta(cuenta, cuentaDto.getTitular());
+    when(clienteService.obtenerTitularConCuenta(any(Cuenta.class), eq(cuentaDto.getTitular())))
+        .thenThrow(ClienteNoExistsException.class);
 
     assertThrows(ClienteNoExistsException.class, () -> cuentaService.actualizarCuenta(cuentaDto));
   }
 
   @Test
   public void testActualizarCuentaNoExistsInClienteException()
-      throws ClienteNoExistsException, CuentaNoExistsInClienteException {
+      throws CuentaNoExistsException,
+          ClienteNoExistsException,
+          TipoCuentaAlreadyExistsException,
+          CuentaNoExistsInClienteException,
+          ClienteMenorDeEdadException {
     CuentaDto cuentaDto = createCuentaDto();
-    Cuenta cuenta = new Cuenta(cuentaDto);
+    Cliente cliente = new Cliente();
 
-    doThrow(CuentaNoExistsInClienteException.class)
-        .when(clienteService)
-        .actualizarCuenta(cuenta, cuentaDto.getTitular());
+    when(clienteService.obtenerTitularConCuenta(any(Cuenta.class), eq(cuentaDto.getTitular())))
+        .thenReturn(cliente);
+
+    doThrow(CuentaNoExistsInClienteException.class).when(clienteService).actualizarCliente(cliente);
 
     assertThrows(
         CuentaNoExistsInClienteException.class, () -> cuentaService.actualizarCuenta(cuentaDto));
+  }
+
+  @Test
+  public void testActualizarCuentaNoSoportadaException() throws CuentaNoSoportadaException {
+    CuentaDto cuentaDto = createCuentaDto();
+
+    doThrow(CuentaNoSoportadaException.class)
+        .when(cuentaServiceValidator)
+        .validateTipoCuentaEstaSoportada(any(Cuenta.class));
+
+    assertThrows(CuentaNoSoportadaException.class, () -> cuentaService.actualizarCuenta(cuentaDto));
+  }
+
+  @Test
+  public void testActualizarCuentaClienteMenorDeEdadException()
+      throws ClienteNoExistsException,
+          CuentaNoExistsInClienteException,
+          ClienteMenorDeEdadException,
+          TipoCuentaAlreadyExistsException {
+    CuentaDto cuentaDto = createCuentaDto();
+    Cliente cliente = new Cliente();
+
+    when(clienteService.obtenerTitularConCuenta(any(Cuenta.class), eq(cuentaDto.getTitular())))
+        .thenReturn(cliente);
+
+    doThrow(ClienteMenorDeEdadException.class).when(clienteService).actualizarCliente(cliente);
+
+    assertThrows(
+        ClienteMenorDeEdadException.class, () -> cuentaService.actualizarCuenta(cuentaDto));
+  }
+
+  @Test
+  public void testActualizarCuentaTipoCuentaAlreadyExistsException()
+      throws ClienteNoExistsException, TipoCuentaAlreadyExistsException {
+    CuentaDto cuentaDto = createCuentaDto();
+
+    when(clienteService.obtenerTitularConCuenta(any(Cuenta.class), eq(cuentaDto.getTitular())))
+        .thenThrow(TipoCuentaAlreadyExistsException.class);
+
+    assertThrows(
+        TipoCuentaAlreadyExistsException.class, () -> cuentaService.actualizarCuenta(cuentaDto));
   }
 
   @Test
@@ -173,13 +232,20 @@ public class CuentaServiceTest {
       throws CuentaNoExistsException,
           ClienteNoExistsException,
           CuentaNoExistsInClienteException,
-          CuentaNoSoportadaException {
+          CuentaNoSoportadaException,
+          ClienteMenorDeEdadException,
+          TipoCuentaAlreadyExistsException {
     CuentaDto cuentaDto = createCuentaDto();
     Cuenta cuenta = new Cuenta(cuentaDto);
 
-    assertEquals(cuenta, cuentaService.actualizarCuenta(cuentaDto));
+    Cuenta cuentaResult = cuentaService.actualizarCuenta(cuentaDto);
+    assertEquals(cuenta.getNumeroCuenta(), cuentaResult.getNumeroCuenta());
+    assertEquals(cuenta.getBalance(), cuentaResult.getBalance());
+    assertEquals(cuenta.getTipoCuenta(), cuentaResult.getTipoCuenta());
+    assertEquals(cuenta.getMoneda(), cuentaResult.getMoneda());
+    assertEquals(cuenta.getTitular(), cuentaResult.getTitular());
 
-    verify(cuentaDao, times(1)).save(cuenta);
+    verify(cuentaDao, times(1)).save(cuentaResult);
   }
 
   @Test

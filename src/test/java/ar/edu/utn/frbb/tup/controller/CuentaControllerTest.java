@@ -13,7 +13,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import ar.edu.utn.frbb.tup.controller.validator.CuentaControllerValidator;
 import ar.edu.utn.frbb.tup.model.Cuenta;
 import ar.edu.utn.frbb.tup.model.exception.ClienteNoExistsException;
-import ar.edu.utn.frbb.tup.model.exception.CuentaAlreadyExistsException;
 import ar.edu.utn.frbb.tup.model.exception.CuentaNoExistsException;
 import ar.edu.utn.frbb.tup.model.exception.CuentaNoExistsInClienteException;
 import ar.edu.utn.frbb.tup.model.exception.CuentaNoSoportadaException;
@@ -102,26 +101,6 @@ public class CuentaControllerTest {
   }
 
   @Test
-  public void testCrearCuentaAlreadyExistsFail() throws Exception {
-    CuentaDto cuentaDto = createCuentaDto();
-    String cuentaDtoMapped = objectMapper.writeValueAsString(cuentaDto);
-
-    doThrow(new CuentaAlreadyExistsException("")).when(cuentaService).darDeAltaCuenta(cuentaDto);
-
-    MockHttpServletRequestBuilder mockRequest =
-        MockMvcRequestBuilders.post(getEndpoint())
-            .contentType(MediaType.APPLICATION_JSON)
-            .accept(MediaType.APPLICATION_JSON)
-            .content(cuentaDtoMapped);
-
-    mockMvc
-        .perform(mockRequest)
-        .andExpect(status().isBadRequest())
-        .andExpect(jsonPath("$", notNullValue()))
-        .andExpect(jsonPath("$.errorCode", is(400120)));
-  }
-
-  @Test
   public void testCrearCuentaNoSoportadaException() throws Exception {
     CuentaDto cuentaDto = createCuentaDto();
     String cuentaDtoMapped = objectMapper.writeValueAsString(cuentaDto);
@@ -187,10 +166,8 @@ public class CuentaControllerTest {
   public void testCrearCuentaSuccess() throws Exception {
     CuentaDto cuentaDto = createCuentaDto();
     String cuentaDtoMapped = objectMapper.writeValueAsString(cuentaDto);
-    Cuenta cuenta = createCuenta();
-    String cuentaMapped = objectMapper.writeValueAsString(cuenta);
 
-    when(cuentaService.darDeAltaCuenta(cuentaDto)).thenReturn(cuenta);
+    when(cuentaService.darDeAltaCuenta(cuentaDto)).thenReturn(cuentaDto);
 
     MockHttpServletRequestBuilder mockRequest =
         MockMvcRequestBuilders.post(getEndpoint())
@@ -201,7 +178,7 @@ public class CuentaControllerTest {
     mockMvc
         .perform(mockRequest)
         .andExpect(status().isCreated())
-        .andExpect(content().string(cuentaMapped));
+        .andExpect(content().string(cuentaDtoMapped));
   }
 
   @Test
