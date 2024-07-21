@@ -1,10 +1,9 @@
 package ar.edu.utn.frbb.tup.persistence.entity;
 
-import ar.edu.utn.frbb.tup.model.Cliente;
 import ar.edu.utn.frbb.tup.model.Cuenta;
 import ar.edu.utn.frbb.tup.model.Movimiento;
 import ar.edu.utn.frbb.tup.model.TipoCuenta;
-import ar.edu.utn.frbb.tup.persistence.ClienteDao;
+import ar.edu.utn.frbb.tup.model.TipoMoneda;
 import ar.edu.utn.frbb.tup.persistence.MovimientoDao;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -16,15 +15,19 @@ public class CuentaEntity extends BaseEntity {
   private LocalDateTime fechaCreacion;
   private double balance;
   private String tipoCuenta;
+  private String moneda;
   private long titular;
   private List<Long> movimientos;
+  private boolean activo;
 
   public CuentaEntity(Cuenta cuenta) {
     super(cuenta.getNumeroCuenta());
     this.balance = cuenta.getBalance();
     this.tipoCuenta = cuenta.getTipoCuenta().toString();
+    this.moneda = cuenta.getMoneda().toString();
     this.titular = cuenta.getTitular().getDni();
     this.fechaCreacion = cuenta.getFechaApertura();
+    this.activo = cuenta.isActivo();
     this.movimientos = new ArrayList<>();
     if (cuenta.getMovimientos() != null && !cuenta.getMovimientos().isEmpty()) {
       for (Movimiento m : cuenta.getMovimientos()) {
@@ -44,12 +47,14 @@ public class CuentaEntity extends BaseEntity {
     Cuenta cuenta = new Cuenta();
     cuenta.setBalance(this.balance);
     cuenta.setNumeroCuenta(this.getId());
-    cuenta.setTipoCuenta(TipoCuenta.valueOf(this.tipoCuenta));
+    cuenta.setTipoCuenta(TipoCuenta.fromString(this.tipoCuenta));
+    cuenta.setMoneda(TipoMoneda.fromString(this.moneda));
     cuenta.setFechaApertura(this.fechaCreacion);
+    cuenta.setActivo(this.activo);
 
-    ClienteDao clienteDao = new ClienteDao();
-    Cliente titular = clienteDao.find(this.titular, false);
-    cuenta.setTitular(titular);
+    // ClienteDao clienteDao = new ClienteDao();
+    // Cliente titular = clienteDao.find(this.titular, false);
+    // cuenta.setTitular(titular);
 
     if (!this.movimientos.isEmpty()) {
       Set<Movimiento> m = new HashSet<>();
@@ -88,6 +93,14 @@ public class CuentaEntity extends BaseEntity {
     this.tipoCuenta = tipoCuenta;
   }
 
+  public String getMoneda() {
+    return moneda;
+  }
+
+  public void setMoneda(String moneda) {
+    this.moneda = moneda;
+  }
+
   public Long getTitular() {
     return titular;
   }
@@ -103,6 +116,15 @@ public class CuentaEntity extends BaseEntity {
   public void setMovimientos(List<Long> movimientos) {
     this.movimientos = movimientos;
   }
+
+  public boolean isActivo() {
+    return activo;
+  }
+
+  public void setActivo(boolean activo) {
+    this.activo = activo;
+  }
+
   @Override
   public int hashCode() {
     final int prime = 31;

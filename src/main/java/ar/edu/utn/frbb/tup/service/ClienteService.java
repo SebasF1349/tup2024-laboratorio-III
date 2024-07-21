@@ -36,7 +36,7 @@ public class ClienteService {
     return cliente;
   }
 
-  public void agregarCuenta(Cuenta cuenta, long dniTitular)
+  public Cliente agregarCuenta(Cuenta cuenta, long dniTitular)
       throws TipoCuentaAlreadyExistsException, ClienteNoExistsException {
     Cliente titular = buscarClientePorDni(dniTitular);
     cuenta.setTitular(titular);
@@ -45,22 +45,23 @@ public class ClienteService {
 
     titular.addCuenta(cuenta);
     clienteDao.save(titular);
+    return titular;
   }
 
-  public void actualizarCuenta(Cuenta cuenta, long dniTitular)
-      throws ClienteNoExistsException, CuentaNoExistsInClienteException {
+  public Cliente obtenerTitularConCuenta(Cuenta cuenta, long dniTitular)
+      throws ClienteNoExistsException, TipoCuentaAlreadyExistsException {
     Cliente titular = buscarClientePorDni(dniTitular);
+
+    clienteServiceValidator.validateTipoCuentaUnica(titular, cuenta);
 
     Cuenta cuentaOriginal = titular.getCuenta(cuenta.getNumeroCuenta());
 
-    if (cuentaOriginal == null) {
-      throw new CuentaNoExistsInClienteException(
-          "El cliente " + dniTitular + " no tiene cuenta " + cuenta.getNumeroCuenta());
+    if (cuentaOriginal != null) {
+      titular.deleteCuenta(cuentaOriginal);
     }
 
-    titular.deleteCuenta(cuentaOriginal);
     titular.addCuenta(cuenta);
-    clienteDao.save(titular);
+    return titular;
   }
 
   public Cliente buscarClientePorDni(long dni) throws ClienteNoExistsException {
@@ -84,6 +85,17 @@ public class ClienteService {
     clienteDao.save(cliente);
 
     return cliente;
+  }
+
+  public void actualizarCliente(Cliente cliente)
+      throws ClienteNoExistsException,
+          CuentaNoExistsInClienteException,
+          ClienteMenorDeEdadException {
+
+    clienteServiceValidator.validateClienteExists(cliente);
+    clienteServiceValidator.validateClienteMayorDeEdad(cliente);
+
+    clienteDao.save(cliente);
   }
 
   public Cliente eliminarCliente(long dni) throws ClienteNoExistsException {

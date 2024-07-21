@@ -1,10 +1,11 @@
 package ar.edu.utn.frbb.tup.service;
 
 import ar.edu.utn.frbb.tup.controller.CuentaDto;
+import ar.edu.utn.frbb.tup.model.Cliente;
 import ar.edu.utn.frbb.tup.model.Cuenta;
 import ar.edu.utn.frbb.tup.model.Movimiento;
+import ar.edu.utn.frbb.tup.model.exception.ClienteMenorDeEdadException;
 import ar.edu.utn.frbb.tup.model.exception.ClienteNoExistsException;
-import ar.edu.utn.frbb.tup.model.exception.CuentaAlreadyExistsException;
 import ar.edu.utn.frbb.tup.model.exception.CuentaNoExistsException;
 import ar.edu.utn.frbb.tup.model.exception.CuentaNoExistsInClienteException;
 import ar.edu.utn.frbb.tup.model.exception.CuentaNoSoportadaException;
@@ -24,20 +25,24 @@ public class CuentaService {
   @Autowired ClienteService clienteService;
   @Autowired CuentaServiceValidator cuentaServiceValidator;
 
-  public Cuenta darDeAltaCuenta(CuentaDto cuentaDto)
-      throws CuentaAlreadyExistsException,
-          CuentaNoSoportadaException,
+  public CuentaDto darDeAltaCuenta(CuentaDto cuentaDto)
+      throws CuentaNoSoportadaException,
           TipoCuentaAlreadyExistsException,
-          ClienteNoExistsException {
+          ClienteNoExistsException,
+          CuentaNoExistsInClienteException,
+          ClienteMenorDeEdadException {
 
     Cuenta cuenta = new Cuenta(cuentaDto);
 
-    cuentaServiceValidator.validateCuentaNoExists(cuenta);
     cuentaServiceValidator.validateTipoCuentaEstaSoportada(cuenta);
 
-    clienteService.agregarCuenta(cuenta, cuentaDto.getTitular());
+    Cliente titular = clienteService.obtenerTitularConCuenta(cuenta, cuentaDto.getTitular());
+
+    cuenta.setTitular(titular);
     cuentaDao.save(cuenta);
-    return cuenta;
+    clienteService.actualizarCliente(titular);
+    cuentaDto.setTitular(titular.getDni());
+    return cuentaDto;
   }
 
   public Cuenta buscarCuentaPorId(long numeroCuenta) throws CuentaNoExistsException {
@@ -64,13 +69,16 @@ public class CuentaService {
       throws CuentaNoExistsException,
           ClienteNoExistsException,
           CuentaNoExistsInClienteException,
-          CuentaNoSoportadaException {
+          CuentaNoSoportadaException,
+          ClienteMenorDeEdadException,
+          TipoCuentaAlreadyExistsException {
     Cuenta cuenta = new Cuenta(cuentaDto);
 
     cuentaServiceValidator.validateCuentaExists(cuenta);
     cuentaServiceValidator.validateTipoCuentaEstaSoportada(cuenta);
 
-    clienteService.actualizarCuenta(cuenta, cuentaDto.getTitular());
+    Cliente titular = clienteService.obtenerTitularConCuenta(cuenta, cuentaDto.getTitular());
+    clienteService.actualizarCliente(titular);
     cuentaDao.save(cuenta);
     return cuenta;
   }

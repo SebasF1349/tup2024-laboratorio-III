@@ -2,6 +2,7 @@ package ar.edu.utn.frbb.tup.controller;
 
 import ar.edu.utn.frbb.tup.controller.validator.CuentaControllerValidator;
 import ar.edu.utn.frbb.tup.model.Cuenta;
+import ar.edu.utn.frbb.tup.model.exception.ClienteMenorDeEdadException;
 import ar.edu.utn.frbb.tup.model.exception.ClienteNoExistsException;
 import ar.edu.utn.frbb.tup.model.exception.CuentaAlreadyExistsException;
 import ar.edu.utn.frbb.tup.model.exception.CuentaNoExistsException;
@@ -38,15 +39,17 @@ public class CuentaController {
   }
 
   @PostMapping
-  public ResponseEntity<Cuenta> crearCuenta(@Valid @RequestBody CuentaDto cuentaDto)
+  public ResponseEntity<CuentaDto> crearCuenta(@Valid @RequestBody CuentaDto cuentaDto)
       throws WrongInputDataException,
           CuentaAlreadyExistsException,
           CuentaNoSoportadaException,
           TipoCuentaAlreadyExistsException,
-          ClienteNoExistsException {
+          ClienteNoExistsException,
+          CuentaNoExistsInClienteException,
+          ClienteMenorDeEdadException {
     cuentaValidator.validate(cuentaDto);
-    Cuenta cuentaResponse = cuentaService.darDeAltaCuenta(cuentaDto);
-    return new ResponseEntity<Cuenta>(cuentaResponse, new HttpHeaders(), HttpStatus.CREATED);
+    CuentaDto cuentaResponse = cuentaService.darDeAltaCuenta(cuentaDto);
+    return new ResponseEntity<CuentaDto>(cuentaResponse, new HttpHeaders(), HttpStatus.CREATED);
   }
 
   @DeleteMapping(value = "/{id}")
@@ -60,7 +63,9 @@ public class CuentaController {
           CuentaNoExistsException,
           ClienteNoExistsException,
           CuentaNoExistsInClienteException,
-          CuentaNoSoportadaException {
+          CuentaNoSoportadaException,
+          ClienteMenorDeEdadException,
+          TipoCuentaAlreadyExistsException {
     cuentaValidator.validate(cuentaDto);
     return cuentaService.actualizarCuenta(cuentaDto);
   }
