@@ -16,7 +16,7 @@ public enum TipoMoneda {
 
   public static TipoMoneda fromString(String text) {
     for (TipoMoneda tipo : TipoMoneda.values()) {
-      if (tipo.descripcion.equalsIgnoreCase(text)) {
+      if (tipo.descripcion.equalsIgnoreCase(text) || tipo.toString().equals(text)) {
         return tipo;
       }
     }
