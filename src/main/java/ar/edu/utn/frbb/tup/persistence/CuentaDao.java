@@ -20,7 +20,7 @@ public class CuentaDao extends AbstractBaseDao {
   }
 
   public void save(Cuenta cuenta) {
-    // cuenta.setNumeroCuenta(getInMemoryDatabase().size() + 1);
+    cuenta.setNumeroCuenta(getInMemoryDatabase().size() + 1);
     CuentaEntity entity = new CuentaEntity(cuenta);
     getInMemoryDatabase().put(entity.getId(), entity);
   }
