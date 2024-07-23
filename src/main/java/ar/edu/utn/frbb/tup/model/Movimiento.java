@@ -2,7 +2,7 @@ package ar.edu.utn.frbb.tup.model;
 
 import java.time.LocalDateTime;
 
-public abstract class Movimiento extends Operacion {
+public abstract class Movimiento {
   private Cuenta cuenta;
   private long movimientoId;
   private LocalDateTime diaHora;
@@ -33,26 +33,69 @@ public abstract class Movimiento extends Operacion {
     return movimientoId;
   }
 
+  public void setMovimientoId(long movimientoId) {
+    this.movimientoId = movimientoId;
+  }
+
   public LocalDateTime getDiaHora() {
     return diaHora;
+  }
+
+  public void setMonto(double monto) {
+    this.monto = monto;
   }
 
   public double getMonto() {
     return monto;
   }
 
-  public abstract TipoTransaccion getTipoTransaccion();
+  public abstract String getTipoMovimiento();
 
-  public double actualizarCuentaMonto(double montoCuenta) {
-    switch (getTipoTransaccion()) {
-      case DEBITO:
-        return montoCuenta + this.getMonto();
-      case CREDITO:
-        return montoCuenta - this.getMonto();
-      default:
-        throw new IllegalArgumentException("Unhandled TipoTransaccion");
-    }
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + ((cuenta == null) ? 0 : cuenta.hashCode());
+    result = prime * result + (int) (movimientoId ^ (movimientoId >>> 32));
+    result = prime * result + ((diaHora == null) ? 0 : diaHora.hashCode());
+    long temp;
+    temp = Double.doubleToLongBits(monto);
+    result = prime * result + (int) (temp ^ (temp >>> 32));
+    return result;
   }
 
-  public abstract String getTipoMovimiento();
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
+    Movimiento other = (Movimiento) obj;
+    if (cuenta == null) {
+      if (other.cuenta != null) {
+        return false;
+      }
+    } else if (!cuenta.equals(other.cuenta)) {
+      return false;
+    }
+    if (movimientoId != other.movimientoId) {
+      return false;
+    }
+    if (diaHora == null) {
+      if (other.diaHora != null) {
+        return false;
+      }
+    } else if (!diaHora.equals(other.diaHora)) {
+      return false;
+    }
+    if (Double.doubleToLongBits(monto) != Double.doubleToLongBits(other.monto)) {
+      return false;
+    }
+    return true;
+  }
 }

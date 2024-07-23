@@ -2,7 +2,7 @@ package ar.edu.utn.frbb.tup.model;
 
 import java.time.LocalDateTime;
 
-public class Deposito extends Movimiento {
+public class Deposito extends MovimientoUnidireccional {
   public Deposito(double monto, Cuenta cuenta) {
     super(monto, cuenta);
   }
@@ -11,7 +11,8 @@ public class Deposito extends Movimiento {
     super(monto, diaHora, movimientoId, cuenta);
   }
 
-  public TipoTransaccion getTipoTransaccion() {
+  @Override
+  protected TipoTransaccion getTipoTransaccion() {
     return TipoTransaccion.DEBITO;
   }
 
