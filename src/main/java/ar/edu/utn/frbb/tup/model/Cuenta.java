@@ -97,6 +97,15 @@ public class Cuenta {
     return movimientos;
   }
 
+  public Movimiento getMovimiento(long movimientoId) {
+    for (Movimiento movimiento : movimientos) {
+      if (movimiento.getMovimientoId() == movimientoId) {
+        return movimiento;
+      }
+    }
+    return null;
+  }
+
   public Cuenta setMovimientos(Set<Movimiento> movimientos) {
     this.movimientos = movimientos;
     return this;

@@ -1,6 +1,7 @@
 package ar.edu.utn.frbb.tup.persistence;
 
 import ar.edu.utn.frbb.tup.model.Movimiento;
+import ar.edu.utn.frbb.tup.persistence.entity.MovimientoEntity;
 import org.springframework.stereotype.Service;
 
 @Service

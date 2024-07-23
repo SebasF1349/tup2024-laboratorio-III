@@ -1,11 +1,11 @@
-package ar.edu.utn.frbb.tup.persistence;
+package ar.edu.utn.frbb.tup.persistence.entity;
 
 import ar.edu.utn.frbb.tup.model.Cuenta;
 import ar.edu.utn.frbb.tup.model.Deposito;
 import ar.edu.utn.frbb.tup.model.Movimiento;
 import ar.edu.utn.frbb.tup.model.Retiro;
 import ar.edu.utn.frbb.tup.model.Transferencia;
-import ar.edu.utn.frbb.tup.persistence.entity.BaseEntity;
+import ar.edu.utn.frbb.tup.persistence.CuentaDao;
 import java.time.LocalDateTime;
 
 public class MovimientoEntity extends BaseEntity {
@@ -13,9 +13,7 @@ public class MovimientoEntity extends BaseEntity {
   private long numeroCuenta;
   private LocalDateTime diaHora;
   private double monto;
-  private boolean esCuentaPropia;
-  private String numeroCuentaDestino;
-  private boolean esDestinatario;
+  private long numeroCuentaDestino;
 
   public MovimientoEntity(Movimiento movimiento) {
     super(movimiento.getMovimientoId());
@@ -24,9 +22,7 @@ public class MovimientoEntity extends BaseEntity {
     this.monto = movimiento.getMonto();
     this.movimiento = movimiento.getTipoMovimiento();
     if (movimiento instanceof Transferencia) {
-      this.esCuentaPropia = ((Transferencia) movimiento).isEsCuentaPropia();
-      this.numeroCuentaDestino = ((Transferencia) movimiento).getNumeroCuentaDestino();
-      this.esDestinatario = ((Transferencia) movimiento).isEsDestinatario();
+      this.numeroCuentaDestino = ((Transferencia) movimiento).getCuentaDestino().getNumeroCuenta();
     }
   }
 
@@ -36,15 +32,9 @@ public class MovimientoEntity extends BaseEntity {
     Movimiento movimiento;
     switch (this.movimiento) {
       case "TRANSFERENCIA":
+        Cuenta cuentaDestino = cuentaDao.find(this.numeroCuentaDestino);
         movimiento =
-            new Transferencia(
-                this.monto,
-                this.esCuentaPropia,
-                this.numeroCuentaDestino,
-                this.esDestinatario,
-                this.diaHora,
-                this.getId(),
-                cuenta);
+            new Transferencia(this.monto, cuentaDestino, this.diaHora, this.getId(), cuenta);
         break;
       case "RETIRO":
         movimiento = new Retiro(this.monto, this.diaHora, this.getId(), cuenta);

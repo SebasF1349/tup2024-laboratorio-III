@@ -1,6 +1,7 @@
 package ar.edu.utn.frbb.tup.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -12,6 +13,9 @@ import static org.mockito.Mockito.when;
 import ar.edu.utn.frbb.tup.controller.CuentaDto;
 import ar.edu.utn.frbb.tup.model.Cliente;
 import ar.edu.utn.frbb.tup.model.Cuenta;
+import ar.edu.utn.frbb.tup.model.Deposito;
+import ar.edu.utn.frbb.tup.model.Retiro;
+import ar.edu.utn.frbb.tup.model.Transferencia;
 import ar.edu.utn.frbb.tup.model.exception.ClienteMenorDeEdadException;
 import ar.edu.utn.frbb.tup.model.exception.ClienteNoExistsException;
 import ar.edu.utn.frbb.tup.model.exception.CuentaNoExistsException;
@@ -107,7 +111,6 @@ public class CuentaServiceTest {
           CuentaNoExistsInClienteException,
           ClienteMenorDeEdadException {
     CuentaDto cuentaDto = createCuentaDto();
-    // Cuenta cuenta = new Cuenta(cuentaDto);
     Cliente cliente = new Cliente();
 
     when(clienteService.obtenerTitularConCuenta(any(Cuenta.class), eq(cuentaDto.getTitular())))
@@ -120,7 +123,7 @@ public class CuentaServiceTest {
     assertEquals(cuentaDto.getMoneda(), cuentaDtoResult.getMoneda());
     assertEquals(cuentaDto.getTitular(), cuentaDtoResult.getTitular());
 
-    // verify(cuentaDao, times(1)).save(cuenta);
+    verify(cuentaDao, times(1)).save(any(Cuenta.class));
   }
 
   @Test
@@ -295,6 +298,77 @@ public class CuentaServiceTest {
 
     assertEquals(true, cuenta.isActivo());
     verify(cuentaDao, times(1)).save(cuenta);
+  }
+
+  @Test
+  public void testAgregarMovimientoACuentasRetiroSuccess() {
+    double balance = 1500;
+    double monto = 1000;
+    Cuenta cuenta = createCuenta();
+    cuenta.setBalance(balance);
+    Retiro retiro = new Retiro(monto, cuenta);
+    retiro.setMovimientoId(123);
+
+    cuentaService.agregarMovimientoACuentas(retiro);
+
+    assertEquals(cuenta.getBalance(), balance - monto);
+    assertEquals(cuenta.getMovimiento(retiro.getMovimientoId()), retiro);
+  }
+
+  @Test
+  public void testAgregarMovimientoACuentasDepositoSuccess() {
+    double balance = 1500;
+    double monto = 1000;
+    Cuenta cuenta = createCuenta();
+    cuenta.setBalance(balance);
+    Deposito deposito = new Deposito(monto, cuenta);
+    deposito.setMovimientoId(123);
+
+    cuentaService.agregarMovimientoACuentas(deposito);
+
+    assertEquals(cuenta.getBalance(), balance + monto);
+    assertEquals(cuenta.getMovimiento(deposito.getMovimientoId()), deposito);
+  }
+
+  @Test
+  public void testAgregarTransferenciaACuentasDistintoBancoSuccess() {
+    double balance = 1500;
+    double monto = 1000;
+    Cuenta cuentaOrigen = createCuenta();
+    cuentaOrigen.setBalance(balance);
+    // Cuenta cuentaDestino = createCuenta();
+    Transferencia transferencia = new Transferencia(monto, null, cuentaOrigen);
+    transferencia.setMovimientoId(123);
+    transferencia.setMontoDebitado(monto);
+
+    cuentaService.agregarTransferenciaACuentas(transferencia);
+
+    assertEquals(transferencia.getMontoDebitado(), monto);
+    assertEquals(cuentaOrigen.getBalance(), balance - monto);
+    assertEquals(cuentaOrigen.getMovimiento(transferencia.getMovimientoId()), transferencia);
+    assertNull(transferencia.getCuentaDestino());
+  }
+
+  @Test
+  public void testAgregarTransferenciaACuentasMismoBancoSuccess() {
+    double balance1 = 1500;
+    double balance2 = 2000;
+    double monto = 1000;
+    Cuenta cuentaOrigen = createCuenta();
+    cuentaOrigen.setBalance(balance1);
+    Cuenta cuentaDestino = createCuenta();
+    cuentaDestino.setBalance(balance2);
+    Transferencia transferencia = new Transferencia(monto, cuentaDestino, cuentaOrigen);
+    transferencia.setMovimientoId(123);
+    transferencia.setMontoDebitado(monto);
+
+    cuentaService.agregarTransferenciaACuentas(transferencia);
+
+    assertEquals(transferencia.getMontoDebitado(), monto);
+    assertEquals(cuentaOrigen.getBalance(), balance1 - monto);
+    assertEquals(cuentaOrigen.getMovimiento(transferencia.getMovimientoId()), transferencia);
+    assertEquals(cuentaDestino.getBalance(), balance2 + monto);
+    assertEquals(cuentaDestino.getMovimiento(transferencia.getMovimientoId()), transferencia);
   }
 
   private CuentaDto createCuentaDto() {

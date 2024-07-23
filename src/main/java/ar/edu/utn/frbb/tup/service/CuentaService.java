@@ -3,7 +3,8 @@ package ar.edu.utn.frbb.tup.service;
 import ar.edu.utn.frbb.tup.controller.CuentaDto;
 import ar.edu.utn.frbb.tup.model.Cliente;
 import ar.edu.utn.frbb.tup.model.Cuenta;
-import ar.edu.utn.frbb.tup.model.Movimiento;
+import ar.edu.utn.frbb.tup.model.MovimientoUnidireccional;
+import ar.edu.utn.frbb.tup.model.Transferencia;
 import ar.edu.utn.frbb.tup.model.exception.ClienteMenorDeEdadException;
 import ar.edu.utn.frbb.tup.model.exception.ClienteNoExistsException;
 import ar.edu.utn.frbb.tup.model.exception.CuentaNoExistsException;
@@ -53,18 +54,6 @@ public class CuentaService {
     return cuenta;
   }
 
-  // TODO: missing tests
-  public void agregarMovimiento(Cuenta cuenta, Movimiento movimiento) {
-    double nuevoSaldo = movimiento.actualizarCuentaMonto(cuenta.getBalance());
-    // TODO: move to validation?
-    if (nuevoSaldo < 0) {
-      throw new IllegalArgumentException("Saldo insuficiente");
-    }
-    cuenta.setBalance(nuevoSaldo);
-    cuenta.addMovimiento(movimiento);
-    movimientoDao.save(movimiento);
-  }
-
   public Cuenta actualizarCuenta(@Valid CuentaDto cuentaDto)
       throws CuentaNoExistsException,
           ClienteNoExistsException,
@@ -98,5 +87,31 @@ public class CuentaService {
     cuenta.setActivo(true);
     cuentaDao.save(cuenta);
     return cuenta;
+  }
+
+  protected void agregarMovimientoACuentas(MovimientoUnidireccional movimiento) {
+    Cuenta cuentaOrigen = movimiento.getCuenta();
+
+    double nuevoSaldoOrigen = movimiento.actualizarCuentaMonto(cuentaOrigen);
+    // TODO: is validation needed if it doesn't interact with the client?
+    cuentaOrigen.setBalance(nuevoSaldoOrigen);
+    cuentaOrigen.addMovimiento(movimiento);
+  }
+
+  protected void agregarTransferenciaACuentas(Transferencia transferencia) {
+    Cuenta cuentaOrigen = transferencia.getCuenta();
+
+    // TODO: is validation needed if it doesn't interact with the client?
+    cuentaOrigen.setBalance(transferencia.getNuevoMontoCuentaOrigen());
+    cuentaOrigen.addMovimiento(transferencia);
+
+    Cuenta cuentaDestino = transferencia.getCuentaDestino();
+
+    if (cuentaDestino == null) {
+      return;
+    }
+
+    cuentaDestino.setBalance(transferencia.getNuevoMontoCuentaDestino());
+    cuentaDestino.addMovimiento(transferencia);
   }
 }

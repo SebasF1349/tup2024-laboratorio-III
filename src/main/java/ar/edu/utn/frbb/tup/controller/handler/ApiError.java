@@ -7,6 +7,7 @@ import java.util.Map;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ApiError {
+  // TODO: PDF pide devolver errores con keys 'estado' y 'mensaje'
   private Integer errorCode;
   private String errorMessage;
   private Map<String, String> errors;
