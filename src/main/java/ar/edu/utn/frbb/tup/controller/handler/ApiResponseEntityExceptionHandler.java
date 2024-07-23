@@ -1,6 +1,7 @@
 package ar.edu.utn.frbb.tup.controller.handler;
 
 import ar.edu.utn.frbb.tup.model.exception.BadRequestException;
+import ar.edu.utn.frbb.tup.model.exception.BanelcoErrorException;
 import ar.edu.utn.frbb.tup.model.exception.NotFoundException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
@@ -39,6 +40,13 @@ public class ApiResponseEntityExceptionHandler extends ResponseEntityExceptionHa
       BadRequestException ex, WebRequest request) {
     ApiError error = new ApiError(ex.getCode(), ex.getMessage());
     return handleExceptionInternal(ex, error, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
+  }
+
+  @ExceptionHandler(value = {BanelcoErrorException.class})
+  protected ResponseEntity<Object> handleBanelcoError(BanelcoErrorException ex, WebRequest request) {
+    ApiError error = new ApiError(ex.getCode(), ex.getMessage());
+    return handleExceptionInternal(
+        ex, error, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, request);
   }
 
   @ExceptionHandler({MethodArgumentTypeMismatchException.class})
