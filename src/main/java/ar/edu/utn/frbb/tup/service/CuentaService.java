@@ -16,15 +16,21 @@ import ar.edu.utn.frbb.tup.persistence.MovimientoDao;
 import ar.edu.utn.frbb.tup.service.validator.CuentaServiceValidator;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 @Service
 public class CuentaService {
   CuentaDao cuentaDao = new CuentaDao();
   MovimientoDao movimientoDao = new MovimientoDao();
+  ClienteService clienteService;
 
-  @Autowired ClienteService clienteService;
   @Autowired CuentaServiceValidator cuentaServiceValidator;
+
+  @Autowired
+  public void setClienteService(@Lazy ClienteService clienteService) {
+    this.clienteService = clienteService;
+  }
 
   public CuentaDto darDeAltaCuenta(CuentaDto cuentaDto)
       throws CuentaNoSoportadaException,

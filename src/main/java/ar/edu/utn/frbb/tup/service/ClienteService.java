@@ -11,17 +11,24 @@ import ar.edu.utn.frbb.tup.model.exception.TipoCuentaAlreadyExistsException;
 import ar.edu.utn.frbb.tup.persistence.ClienteDao;
 import ar.edu.utn.frbb.tup.service.validator.ClienteServiceValidator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 @Service
 public class ClienteService {
 
   ClienteDao clienteDao;
+  CuentaService cuentaService;
 
   @Autowired ClienteServiceValidator clienteServiceValidator;
 
   public ClienteService(ClienteDao clienteDao) {
     this.clienteDao = clienteDao;
+  }
+
+  @Autowired
+  public void setCuentaService(@Lazy CuentaService cuentaService) {
+    this.cuentaService = cuentaService;
   }
 
   public Cliente darDeAltaCliente(ClienteDto clienteDto)
@@ -98,10 +105,24 @@ public class ClienteService {
     clienteDao.save(cliente);
   }
 
-  public Cliente eliminarCliente(long dni) throws ClienteNoExistsException {
+  public Cliente eliminarCliente(long dni)
+      throws CorruptedDataInDbException, ClienteNoExistsException {
     Cliente cliente = buscarClientePorDni(dni);
 
     cliente.setActivo(false);
+
+    for (Cuenta cuenta : cliente.getCuentas()) {
+      try {
+        cuentaService.eliminarCuenta(cuenta.getNumeroCuenta());
+      } catch (CuentaNoExistsException ex) {
+        System.out.printf(
+            "Cuenta "
+                + cuenta.getNumeroCuenta()
+                + " de Cliente con DNI "
+                + cliente.getDni()
+                + " no existe");
+      }
+    }
 
     clienteDao.save(cliente);
     return cliente;

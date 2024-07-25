@@ -2,14 +2,12 @@ package ar.edu.utn.frbb.tup.controller;
 
 import ar.edu.utn.frbb.tup.controller.validator.ClienteControllerValidator;
 import ar.edu.utn.frbb.tup.model.Cliente;
-import ar.edu.utn.frbb.tup.model.Cuenta;
 import ar.edu.utn.frbb.tup.model.exception.ClienteAlreadyExistsException;
 import ar.edu.utn.frbb.tup.model.exception.ClienteMenorDeEdadException;
 import ar.edu.utn.frbb.tup.model.exception.ClienteNoExistsException;
-import ar.edu.utn.frbb.tup.model.exception.CuentaNoExistsException;
+import ar.edu.utn.frbb.tup.model.exception.CorruptedDataInDbException;
 import ar.edu.utn.frbb.tup.model.exception.WrongInputDataException;
 import ar.edu.utn.frbb.tup.service.ClienteService;
-import ar.edu.utn.frbb.tup.service.CuentaService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -30,7 +28,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class ClienteController {
 
   @Autowired private ClienteService clienteService;
-  @Autowired private CuentaService cuentaService;
 
   @Autowired private ClienteControllerValidator clienteControllerValidator;
 
@@ -50,21 +47,8 @@ public class ClienteController {
 
   @DeleteMapping(value = "/{dni}")
   public Cliente eliminarCliente(@PathVariable long dni)
-      throws ClienteNoExistsException, WrongInputDataException {
-    Cliente cliente = clienteService.eliminarCliente(dni);
-    for (Cuenta cuenta : cliente.getCuentas()) {
-      try {
-        cuentaService.eliminarCuenta(cuenta.getNumeroCuenta());
-      } catch (CuentaNoExistsException ex) {
-        System.out.printf(
-            "Cuenta "
-                + cuenta.getNumeroCuenta()
-                + " de Cliente con DNI "
-                + cliente.getDni()
-                + " no existe");
-      }
-    }
-    return cliente;
+      throws CorruptedDataInDbException, ClienteNoExistsException {
+    return clienteService.eliminarCliente(dni);
   }
 
   @PutMapping
@@ -75,21 +59,7 @@ public class ClienteController {
   }
 
   @PatchMapping(value = "/{dni}")
-  public Cliente activarCliente(@PathVariable long dni)
-      throws ClienteNoExistsException, WrongInputDataException {
-    Cliente cliente = clienteService.activarCliente(dni);
-    for (Cuenta cuenta : cliente.getCuentas()) {
-      try {
-        cuentaService.activarCuenta(cuenta.getNumeroCuenta());
-      } catch (CuentaNoExistsException ex) {
-        System.out.printf(
-            "Cuenta "
-                + cuenta.getNumeroCuenta()
-                + " de Cliente con DNI "
-                + cliente.getDni()
-                + " no existe");
-      }
-    }
-    return cliente;
+  public Cliente activarCliente(@PathVariable long dni) throws ClienteNoExistsException {
+    return clienteService.activarCliente(dni);
   }
 }
