@@ -18,6 +18,7 @@ import ar.edu.utn.frbb.tup.model.Retiro;
 import ar.edu.utn.frbb.tup.model.Transferencia;
 import ar.edu.utn.frbb.tup.model.exception.ClienteMenorDeEdadException;
 import ar.edu.utn.frbb.tup.model.exception.ClienteNoExistsException;
+import ar.edu.utn.frbb.tup.model.exception.CorruptedDataInDbException;
 import ar.edu.utn.frbb.tup.model.exception.CuentaNoExistsException;
 import ar.edu.utn.frbb.tup.model.exception.CuentaNoExistsInClienteException;
 import ar.edu.utn.frbb.tup.model.exception.CuentaNoSoportadaException;
@@ -87,11 +88,26 @@ public class CuentaServiceTest {
   }
 
   @Test
-  public void testDarDeAltaCuentaClienteMenorDeEdadException()
+  public void testDarDeAltaCuentaClienteNoExistsCorruptedDataInDbException()
       throws ClienteNoExistsException,
-          CuentaNoExistsInClienteException,
-          ClienteMenorDeEdadException,
-          TipoCuentaAlreadyExistsException {
+          TipoCuentaAlreadyExistsException,
+          ClienteMenorDeEdadException {
+    CuentaDto cuentaDto = createCuentaDto();
+    Cliente cliente = new Cliente();
+
+    when(clienteService.obtenerTitularConCuenta(any(Cuenta.class), eq(cuentaDto.getTitular())))
+        .thenReturn(cliente);
+
+    doThrow(ClienteNoExistsException.class).when(clienteService).actualizarCliente(cliente);
+
+    assertThrows(CorruptedDataInDbException.class, () -> cuentaService.darDeAltaCuenta(cuentaDto));
+  }
+
+  @Test
+  public void testDarDeAltaCuentaClienteMenorDeEdadCorruptedDataInDbException()
+      throws ClienteNoExistsException,
+          TipoCuentaAlreadyExistsException,
+          ClienteMenorDeEdadException {
     CuentaDto cuentaDto = createCuentaDto();
     Cliente cliente = new Cliente();
 
@@ -100,7 +116,7 @@ public class CuentaServiceTest {
 
     doThrow(ClienteMenorDeEdadException.class).when(clienteService).actualizarCliente(cliente);
 
-    assertThrows(ClienteMenorDeEdadException.class, () -> cuentaService.darDeAltaCuenta(cuentaDto));
+    assertThrows(CorruptedDataInDbException.class, () -> cuentaService.darDeAltaCuenta(cuentaDto));
   }
 
   @Test
@@ -109,7 +125,8 @@ public class CuentaServiceTest {
           TipoCuentaAlreadyExistsException,
           ClienteNoExistsException,
           CuentaNoExistsInClienteException,
-          ClienteMenorDeEdadException {
+          ClienteMenorDeEdadException,
+          CorruptedDataInDbException {
     CuentaDto cuentaDto = createCuentaDto();
     Cliente cliente = new Cliente();
 
@@ -127,7 +144,7 @@ public class CuentaServiceTest {
   }
 
   @Test
-  public void testBuscarCuentaPorIdClienteNoExistsException() throws CuentaNoExistsException {
+  public void testBuscarCuentaPorIdCuentaNoExistsException() throws CuentaNoExistsException {
     Cuenta cuenta = createCuenta();
 
     when(cuentaDao.find(numeroCuenta)).thenReturn(cuenta);
@@ -140,7 +157,21 @@ public class CuentaServiceTest {
   }
 
   @Test
-  public void testBuscarCuentaPorIdSuccess() throws CuentaNoExistsException {
+  public void testBuscarCuentaPorIdCorruptedDataInDbException() throws ClienteNoExistsException {
+    Cuenta cuenta = createCuenta();
+
+    when(cuentaDao.find(numeroCuenta)).thenReturn(cuenta);
+    doThrow(ClienteNoExistsException.class)
+        .when(clienteService)
+        .getClienteByCuenta(cuenta.getNumeroCuenta());
+
+    assertThrows(
+        CorruptedDataInDbException.class, () -> cuentaService.buscarCuentaPorId(numeroCuenta));
+  }
+
+  @Test
+  public void testBuscarCuentaPorIdSuccess()
+      throws CuentaNoExistsException, CorruptedDataInDbException {
     Cuenta cuenta = createCuenta();
 
     when(cuentaDao.find(numeroCuenta)).thenReturn(cuenta);
@@ -171,25 +202,6 @@ public class CuentaServiceTest {
   }
 
   @Test
-  public void testActualizarCuentaNoExistsInClienteException()
-      throws CuentaNoExistsException,
-          ClienteNoExistsException,
-          TipoCuentaAlreadyExistsException,
-          CuentaNoExistsInClienteException,
-          ClienteMenorDeEdadException {
-    CuentaDto cuentaDto = createCuentaDto();
-    Cliente cliente = new Cliente();
-
-    when(clienteService.obtenerTitularConCuenta(any(Cuenta.class), eq(cuentaDto.getTitular())))
-        .thenReturn(cliente);
-
-    doThrow(CuentaNoExistsInClienteException.class).when(clienteService).actualizarCliente(cliente);
-
-    assertThrows(
-        CuentaNoExistsInClienteException.class, () -> cuentaService.actualizarCuenta(cuentaDto));
-  }
-
-  @Test
   public void testActualizarCuentaNoSoportadaException() throws CuentaNoSoportadaException {
     CuentaDto cuentaDto = createCuentaDto();
 
@@ -201,7 +213,25 @@ public class CuentaServiceTest {
   }
 
   @Test
-  public void testActualizarCuentaClienteMenorDeEdadException()
+  public void testActualizarCuentaNoExistsInClienteCorruptedDataInDbException()
+      throws CuentaNoExistsException,
+          ClienteNoExistsException,
+          TipoCuentaAlreadyExistsException,
+          CuentaNoExistsInClienteException,
+          ClienteMenorDeEdadException {
+    CuentaDto cuentaDto = createCuentaDto();
+    Cliente cliente = new Cliente();
+
+    when(clienteService.obtenerTitularConCuenta(any(Cuenta.class), eq(cuentaDto.getTitular())))
+        .thenReturn(cliente);
+
+    doThrow(ClienteNoExistsException.class).when(clienteService).actualizarCliente(cliente);
+
+    assertThrows(CorruptedDataInDbException.class, () -> cuentaService.actualizarCuenta(cuentaDto));
+  }
+
+  @Test
+  public void testActualizarCuentaClienteMenorDeEdadCorruptedDataInDbException()
       throws ClienteNoExistsException,
           CuentaNoExistsInClienteException,
           ClienteMenorDeEdadException,
@@ -214,8 +244,7 @@ public class CuentaServiceTest {
 
     doThrow(ClienteMenorDeEdadException.class).when(clienteService).actualizarCliente(cliente);
 
-    assertThrows(
-        ClienteMenorDeEdadException.class, () -> cuentaService.actualizarCuenta(cuentaDto));
+    assertThrows(CorruptedDataInDbException.class, () -> cuentaService.actualizarCuenta(cuentaDto));
   }
 
   @Test
@@ -237,7 +266,8 @@ public class CuentaServiceTest {
           CuentaNoExistsInClienteException,
           CuentaNoSoportadaException,
           ClienteMenorDeEdadException,
-          TipoCuentaAlreadyExistsException {
+          TipoCuentaAlreadyExistsException,
+          CorruptedDataInDbException {
     CuentaDto cuentaDto = createCuentaDto();
     Cuenta cuenta = new Cuenta(cuentaDto);
 
@@ -252,7 +282,7 @@ public class CuentaServiceTest {
   }
 
   @Test
-  public void testEliminarCuentaNoExists() throws CuentaNoExistsException {
+  public void testEliminarCuentaNoExistsException() throws CuentaNoExistsException {
     Cuenta cuenta = createCuenta();
 
     when(cuentaDao.find(clienteDni)).thenReturn(cuenta);
@@ -264,7 +294,20 @@ public class CuentaServiceTest {
   }
 
   @Test
-  public void testEliminarCuentaSuccess() throws CuentaNoExistsException {
+  public void testEliminarCuentaCorruptedDataInDbException() throws ClienteNoExistsException {
+    Cuenta cuenta = createCuenta();
+
+    when(cuentaDao.find(clienteDni)).thenReturn(cuenta);
+    doThrow(ClienteNoExistsException.class)
+        .when(clienteService)
+        .getClienteByCuenta(cuenta.getNumeroCuenta());
+
+    assertThrows(CorruptedDataInDbException.class, () -> cuentaService.eliminarCuenta(clienteDni));
+  }
+
+  @Test
+  public void testEliminarCuentaSuccess()
+      throws CuentaNoExistsException, CorruptedDataInDbException {
     Cuenta cuenta = createCuenta();
 
     when(cuentaDao.find(clienteDni)).thenReturn(cuenta);
@@ -289,7 +332,20 @@ public class CuentaServiceTest {
   }
 
   @Test
-  public void testActivarCuentaSuccess() throws CuentaNoExistsException {
+  public void testActivarCuentaCorruptedDataInDbException() throws ClienteNoExistsException {
+    Cuenta cuenta = createCuenta();
+
+    when(cuentaDao.find(clienteDni)).thenReturn(cuenta);
+    doThrow(ClienteNoExistsException.class)
+        .when(clienteService)
+        .getClienteByCuenta(cuenta.getNumeroCuenta());
+
+    assertThrows(CorruptedDataInDbException.class, () -> cuentaService.activarCuenta(clienteDni));
+  }
+
+  @Test
+  public void testActivarCuentaSuccess()
+      throws CuentaNoExistsException, CorruptedDataInDbException {
     Cuenta cuenta = createCuenta();
 
     when(cuentaDao.find(clienteDni)).thenReturn(cuenta);
@@ -336,7 +392,7 @@ public class CuentaServiceTest {
     double monto = 1000;
     Cuenta cuentaOrigen = createCuenta();
     cuentaOrigen.setBalance(balance);
-    // Cuenta cuentaDestino = createCuenta();
+
     Transferencia transferencia = new Transferencia(monto, null, cuentaOrigen);
     transferencia.setMovimientoId(123);
     transferencia.setMontoDebitado(monto);

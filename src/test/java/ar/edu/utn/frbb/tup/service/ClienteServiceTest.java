@@ -8,6 +8,8 @@ import ar.edu.utn.frbb.tup.model.*;
 import ar.edu.utn.frbb.tup.model.exception.ClienteAlreadyExistsException;
 import ar.edu.utn.frbb.tup.model.exception.ClienteMenorDeEdadException;
 import ar.edu.utn.frbb.tup.model.exception.ClienteNoExistsException;
+import ar.edu.utn.frbb.tup.model.exception.CorruptedDataInDbException;
+import ar.edu.utn.frbb.tup.model.exception.CuentaNoExistsException;
 import ar.edu.utn.frbb.tup.model.exception.TipoCuentaAlreadyExistsException;
 import ar.edu.utn.frbb.tup.persistence.ClienteDao;
 import ar.edu.utn.frbb.tup.service.validator.ClienteServiceValidator;
@@ -25,6 +27,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 public class ClienteServiceTest {
 
   @Mock private ClienteDao clienteDao;
+  @Mock private CuentaService cuentaService;
   @Mock private ClienteServiceValidator clienteServiceValidator;
   private final long dniCliente = 12345678;
 
@@ -226,12 +229,50 @@ public class ClienteServiceTest {
   }
 
   @Test
+  public void testEliminarClienteCorruptedDataInDbException()
+      throws CorruptedDataInDbException, CuentaNoExistsException {
+    Cliente cliente = createCliente();
+    Cuenta cuenta = createCuenta();
+    cliente.addCuenta(cuenta);
+
+    when(clienteDao.find(dniCliente, true)).thenReturn(cliente);
+
+    doThrow(CorruptedDataInDbException.class)
+        .when(cuentaService)
+        .eliminarCuenta(cuenta.getNumeroCuenta());
+
+    assertThrows(
+        CorruptedDataInDbException.class, () -> clienteService.eliminarCliente(dniCliente));
+  }
+
+  @Test
   public void testEliminarClienteNoExistsException() throws ClienteNoExistsException {
     assertThrows(ClienteNoExistsException.class, () -> clienteService.eliminarCliente(dniCliente));
   }
 
   @Test
-  public void testEliminarClienteSuccess() throws ClienteNoExistsException {
+  public void testEliminarClienteCuentaNoExistsSuccess()
+      throws CorruptedDataInDbException, ClienteNoExistsException, CuentaNoExistsException {
+    Cliente cliente = createCliente();
+    Cuenta cuenta = createCuenta();
+    cliente.addCuenta(cuenta);
+    Cliente clienteRes = createCliente();
+    clienteRes.setActivo(false);
+    clienteRes.addCuenta(cuenta);
+
+    when(clienteDao.find(dniCliente, true)).thenReturn(cliente);
+
+    doThrow(CuentaNoExistsException.class)
+        .when(cuentaService)
+        .eliminarCuenta(cuenta.getNumeroCuenta());
+
+    assertEquals(clienteRes, clienteService.eliminarCliente(dniCliente));
+    verify(clienteDao, times(1)).save(cliente);
+  }
+
+  @Test
+  public void testEliminarClienteSuccess()
+      throws CorruptedDataInDbException, ClienteNoExistsException {
     Cliente cliente = createCliente();
 
     when(clienteDao.find(dniCliente, true)).thenReturn(cliente);
@@ -257,6 +298,21 @@ public class ClienteServiceTest {
 
     assertEquals(true, cliente.isActivo());
     verify(clienteDao, times(1)).save(cliente);
+  }
+
+  @Test
+  public void testGetClienteByCuentaClienteNoExistsException() {
+    assertThrows(
+        ClienteNoExistsException.class, () -> clienteService.getClienteByCuenta(dniCliente));
+  }
+
+  @Test
+  public void testGetClienteByCuentaSucess() throws ClienteNoExistsException {
+    Cliente cliente = createCliente();
+
+    when(clienteDao.getClienteByCuenta(dniCliente)).thenReturn(cliente);
+
+    assertEquals(cliente, clienteService.getClienteByCuenta(dniCliente));
   }
 
   private ClienteDto createClienteDto() {

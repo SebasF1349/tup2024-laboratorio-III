@@ -13,8 +13,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import ar.edu.utn.frbb.tup.controller.validator.CuentaControllerValidator;
 import ar.edu.utn.frbb.tup.model.Cuenta;
 import ar.edu.utn.frbb.tup.model.exception.ClienteNoExistsException;
+import ar.edu.utn.frbb.tup.model.exception.CorruptedDataInDbException;
 import ar.edu.utn.frbb.tup.model.exception.CuentaNoExistsException;
-import ar.edu.utn.frbb.tup.model.exception.CuentaNoExistsInClienteException;
 import ar.edu.utn.frbb.tup.model.exception.CuentaNoSoportadaException;
 import ar.edu.utn.frbb.tup.model.exception.TipoCuentaAlreadyExistsException;
 import ar.edu.utn.frbb.tup.model.exception.WrongInputDataException;
@@ -81,7 +81,7 @@ public class CuentaControllerTest {
   }
 
   @Test
-  public void testCrearCuentaIncorrectDataFail() throws Exception {
+  public void testCrearCuentaWrongInputDataFail() throws Exception {
     CuentaDto cuentaDto = createCuentaDto();
     String cuentaDtoMapped = objectMapper.writeValueAsString(cuentaDto);
 
@@ -147,6 +147,26 @@ public class CuentaControllerTest {
     CuentaDto cuentaDto = createCuentaDto();
     String cuentaDtoMapped = objectMapper.writeValueAsString(cuentaDto);
 
+    doThrow(new CorruptedDataInDbException("")).when(cuentaService).darDeAltaCuenta(cuentaDto);
+
+    MockHttpServletRequestBuilder mockRequest =
+        MockMvcRequestBuilders.post(getEndpoint())
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON)
+            .content(cuentaDtoMapped);
+
+    mockMvc
+        .perform(mockRequest)
+        .andExpect(status().isInternalServerError())
+        .andExpect(jsonPath("$", notNullValue()))
+        .andExpect(jsonPath("$.errorCode", is(500101)));
+  }
+
+  @Test
+  public void testCrearCuentaCorruptedDataInDBException() throws Exception {
+    CuentaDto cuentaDto = createCuentaDto();
+    String cuentaDtoMapped = objectMapper.writeValueAsString(cuentaDto);
+
     doThrow(new ClienteNoExistsException("")).when(cuentaService).darDeAltaCuenta(cuentaDto);
 
     MockHttpServletRequestBuilder mockRequest =
@@ -190,6 +210,17 @@ public class CuentaControllerTest {
         .andExpect(status().isNotFound())
         .andExpect(jsonPath("$", notNullValue()))
         .andExpect(jsonPath("$.errorCode", is(404102)));
+  }
+
+  @Test
+  public void testEliminarCuentaCorruptedDataInDbException() throws Exception {
+    doThrow(new CorruptedDataInDbException("")).when(cuentaService).eliminarCuenta(clienteDni);
+
+    mockMvc
+        .perform(delete(createEndpoint(clienteDni)))
+        .andExpect(status().isInternalServerError())
+        .andExpect(jsonPath("$", notNullValue()))
+        .andExpect(jsonPath("$.errorCode", is(500101)));
   }
 
   @Test
@@ -266,11 +297,31 @@ public class CuentaControllerTest {
   }
 
   @Test
-  public void testActualizarCuentaNoExistsInClienteException() throws Exception {
+  public void testActualizarCuentaNoSoportadaException() throws Exception {
     CuentaDto cuentaDto = createCuentaDto();
     String cuentaDtoMapped = objectMapper.writeValueAsString(cuentaDto);
 
-    doThrow(new CuentaNoExistsInClienteException(""))
+    doThrow(new CuentaNoSoportadaException("")).when(cuentaService).actualizarCuenta(cuentaDto);
+
+    MockHttpServletRequestBuilder mockRequest =
+        MockMvcRequestBuilders.put(getEndpoint())
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON)
+            .content(cuentaDtoMapped);
+
+    mockMvc
+        .perform(mockRequest)
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$", notNullValue()))
+        .andExpect(jsonPath("$.errorCode", is(400121)));
+  }
+
+  @Test
+  public void testActualizarCuentaTipoCuentaAlreadyExistsException() throws Exception {
+    CuentaDto cuentaDto = createCuentaDto();
+    String cuentaDtoMapped = objectMapper.writeValueAsString(cuentaDto);
+
+    doThrow(new TipoCuentaAlreadyExistsException(""))
         .when(cuentaService)
         .actualizarCuenta(cuentaDto);
 
@@ -282,9 +333,29 @@ public class CuentaControllerTest {
 
     mockMvc
         .perform(mockRequest)
-        .andExpect(status().isNotFound())
+        .andExpect(status().isBadRequest())
         .andExpect(jsonPath("$", notNullValue()))
-        .andExpect(jsonPath("$.errorCode", is(404103)));
+        .andExpect(jsonPath("$.errorCode", is(400123)));
+  }
+
+  @Test
+  public void testActualizarCuentaCorruptedDataInDbException() throws Exception {
+    CuentaDto cuentaDto = createCuentaDto();
+    String cuentaDtoMapped = objectMapper.writeValueAsString(cuentaDto);
+
+    doThrow(new CorruptedDataInDbException("")).when(cuentaService).actualizarCuenta(cuentaDto);
+
+    MockHttpServletRequestBuilder mockRequest =
+        MockMvcRequestBuilders.put(getEndpoint())
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON)
+            .content(cuentaDtoMapped);
+
+    mockMvc
+        .perform(mockRequest)
+        .andExpect(status().isInternalServerError())
+        .andExpect(jsonPath("$", notNullValue()))
+        .andExpect(jsonPath("$.errorCode", is(500101)));
   }
 
   @Test

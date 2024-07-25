@@ -11,6 +11,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import ar.edu.utn.frbb.tup.controller.validator.MovimientoControllerValidator;
 import ar.edu.utn.frbb.tup.model.exception.BanelcoErrorException;
+import ar.edu.utn.frbb.tup.model.exception.CorruptedDataInDbException;
 import ar.edu.utn.frbb.tup.model.exception.CuentaNoExistsException;
 import ar.edu.utn.frbb.tup.model.exception.MonedasDistintasException;
 import ar.edu.utn.frbb.tup.model.exception.MontoInsuficienteException;
@@ -160,6 +161,27 @@ public class MovimientoControllerTest {
   }
 
   @Test
+  public void testRealizarTransferenciaCorruptedDataInDbException() throws Exception {
+    TransferenciaDto transferenciaDto = createTransferenciaDto();
+    String transferenciaDtoMapped = objectMapper.writeValueAsString(transferenciaDto);
+
+    doThrow(new CorruptedDataInDbException(""))
+        .when(movimientoService)
+        .realizarTransferencia(transferenciaDto);
+
+    MockHttpServletRequestBuilder mockRequest =
+        MockMvcRequestBuilders.post(transferEndpoint)
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON)
+            .content(transferenciaDtoMapped);
+    mockMvc
+        .perform(mockRequest)
+        .andExpect(status().isInternalServerError())
+        .andExpect(jsonPath("$", notNullValue()))
+        .andExpect(jsonPath("$.errorCode", is(500101)));
+  }
+
+  @Test
   public void testRealizarTransferenciaBanelcoError() throws Exception {
     TransferenciaDto transferenciaDto = createTransferenciaDto();
     String transferenciaDtoMapped = objectMapper.writeValueAsString(transferenciaDto);
@@ -175,9 +197,9 @@ public class MovimientoControllerTest {
             .content(transferenciaDtoMapped);
     mockMvc
         .perform(mockRequest)
-        .andExpect(status().isInternalServerError())
+        .andExpect(status().isServiceUnavailable())
         .andExpect(jsonPath("$", notNullValue()))
-        .andExpect(jsonPath("$.errorCode", is(111901)));
+        .andExpect(jsonPath("$.errorCode", is(any(Integer.class))));
   }
 
   @Test

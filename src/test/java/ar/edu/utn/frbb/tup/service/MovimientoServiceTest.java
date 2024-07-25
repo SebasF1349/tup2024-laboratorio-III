@@ -14,6 +14,8 @@ import ar.edu.utn.frbb.tup.model.TipoCuenta;
 import ar.edu.utn.frbb.tup.model.TipoMoneda;
 import ar.edu.utn.frbb.tup.model.Transferencia;
 import ar.edu.utn.frbb.tup.model.exception.BanelcoErrorException;
+import ar.edu.utn.frbb.tup.model.exception.ClienteNoExistsException;
+import ar.edu.utn.frbb.tup.model.exception.CorruptedDataInDbException;
 import ar.edu.utn.frbb.tup.model.exception.CuentaNoExistsException;
 import ar.edu.utn.frbb.tup.model.exception.MonedasDistintasException;
 import ar.edu.utn.frbb.tup.model.exception.MontoInsuficienteException;
@@ -45,7 +47,8 @@ public class MovimientoServiceTest {
   }
 
   @Test
-  public void testRealizarTransferenciaCuentaNoExistsException() throws CuentaNoExistsException {
+  public void testRealizarTransferenciaCuentaNoExistsException()
+      throws CuentaNoExistsException, CorruptedDataInDbException {
     TransferenciaDto transferenciaDto = createTransferenciaDto();
 
     doThrow(CuentaNoExistsException.class)
@@ -59,7 +62,7 @@ public class MovimientoServiceTest {
 
   @Test
   public void testRealizarTransferenciaMontoInsuficienteException()
-      throws CuentaNoExistsException, MontoInsuficienteException {
+      throws CuentaNoExistsException, MontoInsuficienteException, CorruptedDataInDbException {
     TransferenciaDto transferenciaDto = createTransferenciaDto();
     Cuenta cuentaOrigen = createCuenta(1);
 
@@ -77,7 +80,7 @@ public class MovimientoServiceTest {
 
   @Test
   public void testRealizarTransferenciaMonedasDistintasAMonedaIngresadaException()
-      throws MonedasDistintasException, CuentaNoExistsException {
+      throws MonedasDistintasException, CuentaNoExistsException, CorruptedDataInDbException {
     TransferenciaDto transferenciaDto = createTransferenciaDto();
     Cuenta cuentaOrigen = createCuenta(1);
 
@@ -95,15 +98,13 @@ public class MovimientoServiceTest {
 
   @Test
   public void testRealizarTransferenciaMonedasDistintasBetweenCuentasException()
-      throws MonedasDistintasException, CuentaNoExistsException {
+      throws MonedasDistintasException, CuentaNoExistsException, CorruptedDataInDbException {
     TransferenciaDto transferenciaDto = createTransferenciaDto();
     Cuenta cuentaOrigen = createCuenta(1);
 
     when(cuentaService.buscarCuentaPorId(transferenciaDto.getCuentaOrigen()))
         .thenReturn(cuentaOrigen);
 
-    // TODO: create factory to avoid any
-    // https://stackoverflow.com/questions/5920153/test-class-with-a-new-call-in-it-with-mockito/5920394#5920394
     doThrow(MonedasDistintasException.class)
         .when(movimientoServiceValidator)
         .validateSameMonedaBetweenCuentas(any(Transferencia.class));
@@ -114,8 +115,43 @@ public class MovimientoServiceTest {
   }
 
   @Test
+  public void testRealizarTransferenciaCuentaOrigenCorruptedDataInDbException()
+      throws CuentaNoExistsException, CorruptedDataInDbException {
+    TransferenciaDto transferenciaDto = createTransferenciaDto();
+
+    doThrow(CorruptedDataInDbException.class)
+        .when(cuentaService)
+        .buscarCuentaPorId(transferenciaDto.getCuentaOrigen());
+
+    assertThrows(
+        CorruptedDataInDbException.class,
+        () -> movimientoService.realizarTransferencia(transferenciaDto));
+  }
+
+  @Test
+  public void testRealizarTransferenciaCuentaDestinoCorruptedDataInDbException()
+      throws MonedasDistintasException, CuentaNoExistsException, CorruptedDataInDbException {
+    TransferenciaDto transferenciaDto = createTransferenciaDto();
+    Cuenta cuentaOrigen = createCuenta(1);
+
+    when(cuentaService.buscarCuentaPorId(transferenciaDto.getCuentaOrigen()))
+        .thenReturn(cuentaOrigen);
+
+    doThrow(CorruptedDataInDbException.class)
+        .when(cuentaService)
+        .buscarCuentaPorId(transferenciaDto.getCuentaDestino());
+
+    assertThrows(
+        CorruptedDataInDbException.class,
+        () -> movimientoService.realizarTransferencia(transferenciaDto));
+  }
+
+  @Test
   public void testRealizarTransferenciaBanelcoMonedasDistintasException()
-      throws CuentaNoExistsException, MonedasDistintasException, BanelcoErrorException {
+      throws CuentaNoExistsException,
+          MonedasDistintasException,
+          BanelcoErrorException,
+          CorruptedDataInDbException {
     TransferenciaDto transferenciaDto = createTransferenciaDto();
     Cuenta cuentaOrigen = createCuenta(1);
     BanelcoResponseDto banelcoResponse = createBanelcoResponse();
@@ -142,7 +178,10 @@ public class MovimientoServiceTest {
 
   @Test
   public void testRealizarTransferenciaBanelcoCuentaNoExistsException()
-      throws CuentaNoExistsException, MonedasDistintasException, BanelcoErrorException {
+      throws CuentaNoExistsException,
+          MonedasDistintasException,
+          BanelcoErrorException,
+          CorruptedDataInDbException {
     TransferenciaDto transferenciaDto = createTransferenciaDto();
     Cuenta cuentaOrigen = createCuenta(1);
     BanelcoResponseDto banelcoResponse = createBanelcoResponse();
@@ -169,7 +208,10 @@ public class MovimientoServiceTest {
 
   @Test
   public void testRealizarTransferenciaBanelcoErrorException()
-      throws CuentaNoExistsException, MonedasDistintasException, BanelcoErrorException {
+      throws CuentaNoExistsException,
+          MonedasDistintasException,
+          BanelcoErrorException,
+          CorruptedDataInDbException {
     TransferenciaDto transferenciaDto = createTransferenciaDto();
     Cuenta cuentaOrigen = createCuenta(1);
     BanelcoResponseDto banelcoResponse = createBanelcoResponse();
@@ -199,7 +241,9 @@ public class MovimientoServiceTest {
       throws CuentaNoExistsException,
           MontoInsuficienteException,
           MonedasDistintasException,
-          BanelcoErrorException {
+          BanelcoErrorException,
+          CorruptedDataInDbException,
+          ClienteNoExistsException {
 
     TransferenciaDto transferenciaDto = createTransferenciaDto();
     Cuenta cuentaOrigen = createCuenta(1);
@@ -218,7 +262,9 @@ public class MovimientoServiceTest {
       throws CuentaNoExistsException,
           MontoInsuficienteException,
           MonedasDistintasException,
-          BanelcoErrorException {
+          BanelcoErrorException,
+          CorruptedDataInDbException,
+          ClienteNoExistsException {
 
     TransferenciaDto transferenciaDto = createTransferenciaDto();
     Cuenta cuentaOrigen = createCuenta(1);

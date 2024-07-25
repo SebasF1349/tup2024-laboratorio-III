@@ -16,9 +16,9 @@ import ar.edu.utn.frbb.tup.model.Cliente;
 import ar.edu.utn.frbb.tup.model.exception.ClienteAlreadyExistsException;
 import ar.edu.utn.frbb.tup.model.exception.ClienteMenorDeEdadException;
 import ar.edu.utn.frbb.tup.model.exception.ClienteNoExistsException;
+import ar.edu.utn.frbb.tup.model.exception.CorruptedDataInDbException;
 import ar.edu.utn.frbb.tup.model.exception.WrongInputDataException;
 import ar.edu.utn.frbb.tup.service.ClienteService;
-import ar.edu.utn.frbb.tup.service.CuentaService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -43,7 +43,6 @@ public class ClienteControllerTest {
 
   @MockBean private ClienteService clienteService;
   @MockBean private ClienteControllerValidator clienteControllerValidator;
-  @MockBean private CuentaService cuentaService;
   private final long dniCliente = 12345678;
   private final String endpoint = "/cliente";
 
@@ -162,6 +161,17 @@ public class ClienteControllerTest {
         .perform(mockRequest)
         .andExpect(status().isCreated())
         .andExpect(content().string(clienteMapped));
+  }
+
+  @Test
+  public void testEliminarClienteCorruptedDataInDBException() throws Exception {
+    doThrow(new CorruptedDataInDbException("")).when(clienteService).eliminarCliente(dniCliente);
+
+    mockMvc
+        .perform(delete(createEndpoint(dniCliente)))
+        .andExpect(status().isInternalServerError())
+        .andExpect(jsonPath("$", notNullValue()))
+        .andExpect(jsonPath("$.errorCode", is(500101)));
   }
 
   @Test
