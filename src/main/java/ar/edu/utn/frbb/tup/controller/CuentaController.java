@@ -2,11 +2,9 @@ package ar.edu.utn.frbb.tup.controller;
 
 import ar.edu.utn.frbb.tup.controller.validator.CuentaControllerValidator;
 import ar.edu.utn.frbb.tup.model.Cuenta;
-import ar.edu.utn.frbb.tup.model.exception.ClienteMenorDeEdadException;
 import ar.edu.utn.frbb.tup.model.exception.ClienteNoExistsException;
-import ar.edu.utn.frbb.tup.model.exception.CuentaAlreadyExistsException;
+import ar.edu.utn.frbb.tup.model.exception.CorruptedDataInDbException;
 import ar.edu.utn.frbb.tup.model.exception.CuentaNoExistsException;
-import ar.edu.utn.frbb.tup.model.exception.CuentaNoExistsInClienteException;
 import ar.edu.utn.frbb.tup.model.exception.CuentaNoSoportadaException;
 import ar.edu.utn.frbb.tup.model.exception.TipoCuentaAlreadyExistsException;
 import ar.edu.utn.frbb.tup.model.exception.WrongInputDataException;
@@ -34,26 +32,26 @@ public class CuentaController {
   @Autowired private CuentaControllerValidator cuentaValidator;
 
   @GetMapping(value = "/{id}")
-  public Cuenta obtenerCuenta(@PathVariable long id) throws CuentaNoExistsException {
+  public Cuenta obtenerCuenta(@PathVariable long id)
+      throws CuentaNoExistsException, CorruptedDataInDbException {
     return cuentaService.buscarCuentaPorId(id);
   }
 
   @PostMapping
   public ResponseEntity<CuentaDto> crearCuenta(@Valid @RequestBody CuentaDto cuentaDto)
       throws WrongInputDataException,
-          CuentaAlreadyExistsException,
           CuentaNoSoportadaException,
           TipoCuentaAlreadyExistsException,
           ClienteNoExistsException,
-          CuentaNoExistsInClienteException,
-          ClienteMenorDeEdadException {
+          CorruptedDataInDbException {
     cuentaValidator.validate(cuentaDto);
     CuentaDto cuentaResponse = cuentaService.darDeAltaCuenta(cuentaDto);
     return new ResponseEntity<CuentaDto>(cuentaResponse, new HttpHeaders(), HttpStatus.CREATED);
   }
 
   @DeleteMapping(value = "/{id}")
-  public Cuenta eliminarCuenta(@PathVariable long id) throws CuentaNoExistsException {
+  public Cuenta eliminarCuenta(@PathVariable long id)
+      throws CuentaNoExistsException, CorruptedDataInDbException {
     return cuentaService.eliminarCuenta(id);
   }
 
@@ -62,10 +60,9 @@ public class CuentaController {
       throws WrongInputDataException,
           CuentaNoExistsException,
           ClienteNoExistsException,
-          CuentaNoExistsInClienteException,
           CuentaNoSoportadaException,
-          ClienteMenorDeEdadException,
-          TipoCuentaAlreadyExistsException {
+          TipoCuentaAlreadyExistsException,
+          CorruptedDataInDbException {
     cuentaValidator.validate(cuentaDto);
     return cuentaService.actualizarCuenta(cuentaDto);
   }

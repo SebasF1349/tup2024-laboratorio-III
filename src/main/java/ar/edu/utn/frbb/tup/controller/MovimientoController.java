@@ -2,6 +2,7 @@ package ar.edu.utn.frbb.tup.controller;
 
 import ar.edu.utn.frbb.tup.controller.validator.MovimientoControllerValidator;
 import ar.edu.utn.frbb.tup.model.exception.BanelcoErrorException;
+import ar.edu.utn.frbb.tup.model.exception.CorruptedDataInDbException;
 import ar.edu.utn.frbb.tup.model.exception.CuentaNoExistsException;
 import ar.edu.utn.frbb.tup.model.exception.MonedasDistintasException;
 import ar.edu.utn.frbb.tup.model.exception.MontoInsuficienteException;
@@ -31,6 +32,7 @@ public class MovimientoController {
           CuentaNoExistsException,
           MontoInsuficienteException,
           MonedasDistintasException,
+          CorruptedDataInDbException,
           BanelcoErrorException {
     movimientoControllerValidator.validate(transferenciaDto);
     TransferenciaDto transferenciaResponse =

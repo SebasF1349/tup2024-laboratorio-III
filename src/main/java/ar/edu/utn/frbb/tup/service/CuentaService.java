@@ -7,8 +7,8 @@ import ar.edu.utn.frbb.tup.model.MovimientoUnidireccional;
 import ar.edu.utn.frbb.tup.model.Transferencia;
 import ar.edu.utn.frbb.tup.model.exception.ClienteMenorDeEdadException;
 import ar.edu.utn.frbb.tup.model.exception.ClienteNoExistsException;
+import ar.edu.utn.frbb.tup.model.exception.CorruptedDataInDbException;
 import ar.edu.utn.frbb.tup.model.exception.CuentaNoExistsException;
-import ar.edu.utn.frbb.tup.model.exception.CuentaNoExistsInClienteException;
 import ar.edu.utn.frbb.tup.model.exception.CuentaNoSoportadaException;
 import ar.edu.utn.frbb.tup.model.exception.TipoCuentaAlreadyExistsException;
 import ar.edu.utn.frbb.tup.persistence.CuentaDao;
@@ -36,8 +36,7 @@ public class CuentaService {
       throws CuentaNoSoportadaException,
           TipoCuentaAlreadyExistsException,
           ClienteNoExistsException,
-          CuentaNoExistsInClienteException,
-          ClienteMenorDeEdadException {
+          CorruptedDataInDbException {
 
     Cuenta cuenta = new Cuenta(cuentaDto);
 
@@ -46,16 +45,34 @@ public class CuentaService {
     Cliente titular = clienteService.obtenerTitularConCuenta(cuenta, cuentaDto.getTitular());
 
     cuenta.setTitular(titular);
+    try {
+      clienteService.actualizarCliente(titular);
+    } catch (ClienteNoExistsException ex) {
+      throw new CorruptedDataInDbException(
+          "Titular de cuenta guardado en Base de Datos con datos incorrectos");
+    } catch (ClienteMenorDeEdadException ex) {
+      throw new CorruptedDataInDbException(
+          "Titular de cuenta guardado en Base de Datos con edad incorrecta");
+    }
     cuentaDao.save(cuenta);
-    clienteService.actualizarCliente(titular);
     cuentaDto.setTitular(titular.getDni());
     return cuentaDto;
   }
 
-  public Cuenta buscarCuentaPorId(long numeroCuenta) throws CuentaNoExistsException {
+  public Cuenta buscarCuentaPorId(long numeroCuenta)
+      throws CuentaNoExistsException, CorruptedDataInDbException {
     Cuenta cuenta = cuentaDao.find(numeroCuenta);
 
     cuentaServiceValidator.validateCuentaExists(cuenta);
+
+    Cliente titular;
+    try {
+      titular = clienteService.getClienteByCuenta(cuenta.getNumeroCuenta());
+    } catch (ClienteNoExistsException ex) {
+      throw new CorruptedDataInDbException(
+          "Cuenta guardada en Base de Datos con datos de Titular incorrectos");
+    }
+    cuenta.setTitular(titular);
 
     return cuenta;
   }
@@ -63,9 +80,8 @@ public class CuentaService {
   public Cuenta actualizarCuenta(@Valid CuentaDto cuentaDto)
       throws CuentaNoExistsException,
           ClienteNoExistsException,
-          CuentaNoExistsInClienteException,
           CuentaNoSoportadaException,
-          ClienteMenorDeEdadException,
+          CorruptedDataInDbException,
           TipoCuentaAlreadyExistsException {
     Cuenta cuenta = new Cuenta(cuentaDto);
 
@@ -73,21 +89,31 @@ public class CuentaService {
     cuentaServiceValidator.validateTipoCuentaEstaSoportada(cuenta);
 
     Cliente titular = clienteService.obtenerTitularConCuenta(cuenta, cuentaDto.getTitular());
-    clienteService.actualizarCliente(titular);
+
+    try {
+      clienteService.actualizarCliente(titular);
+    } catch (ClienteNoExistsException ex) {
+      throw new CorruptedDataInDbException(
+          "Titular de cuenta guardado en Base de Datos con datos incorrectos");
+    } catch (ClienteMenorDeEdadException ex) {
+      throw new CorruptedDataInDbException(
+          "Titular de cuenta guardado en Base de Datos con edad incorrecta");
+    }
+
     cuentaDao.save(cuenta);
     return cuenta;
   }
 
-  public Cuenta eliminarCuenta(long dni) throws CuentaNoExistsException {
+  public Cuenta eliminarCuenta(long dni)
+      throws CuentaNoExistsException, CorruptedDataInDbException {
     Cuenta cuenta = buscarCuentaPorId(dni);
 
     cuenta.setActivo(false);
     cuentaDao.save(cuenta);
-    // TODO: Should set movimientos to inactive too
     return cuenta;
   }
 
-  public Cuenta activarCuenta(long id) throws CuentaNoExistsException {
+  public Cuenta activarCuenta(long id) throws CuentaNoExistsException, CorruptedDataInDbException {
     Cuenta cuenta = buscarCuentaPorId(id);
 
     cuenta.setActivo(true);

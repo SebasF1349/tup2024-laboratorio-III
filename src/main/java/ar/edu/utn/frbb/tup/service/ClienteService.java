@@ -6,7 +6,8 @@ import ar.edu.utn.frbb.tup.model.Cuenta;
 import ar.edu.utn.frbb.tup.model.exception.ClienteAlreadyExistsException;
 import ar.edu.utn.frbb.tup.model.exception.ClienteMenorDeEdadException;
 import ar.edu.utn.frbb.tup.model.exception.ClienteNoExistsException;
-import ar.edu.utn.frbb.tup.model.exception.CuentaNoExistsInClienteException;
+import ar.edu.utn.frbb.tup.model.exception.CorruptedDataInDbException;
+import ar.edu.utn.frbb.tup.model.exception.CuentaNoExistsException;
 import ar.edu.utn.frbb.tup.model.exception.TipoCuentaAlreadyExistsException;
 import ar.edu.utn.frbb.tup.persistence.ClienteDao;
 import ar.edu.utn.frbb.tup.service.validator.ClienteServiceValidator;
@@ -95,9 +96,7 @@ public class ClienteService {
   }
 
   public void actualizarCliente(Cliente cliente)
-      throws ClienteNoExistsException,
-          CuentaNoExistsInClienteException,
-          ClienteMenorDeEdadException {
+      throws ClienteNoExistsException, ClienteMenorDeEdadException {
 
     clienteServiceValidator.validateClienteExists(cliente);
     clienteServiceValidator.validateClienteMayorDeEdad(cliente);
