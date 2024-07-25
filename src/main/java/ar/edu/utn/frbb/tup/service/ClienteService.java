@@ -46,10 +46,12 @@ public class ClienteService {
 
   public Cliente agregarCuenta(Cuenta cuenta, long dniTitular)
       throws TipoCuentaAlreadyExistsException, ClienteNoExistsException {
+
     Cliente titular = buscarClientePorDni(dniTitular);
-    cuenta.setTitular(titular);
 
     clienteServiceValidator.validateTipoCuentaUnica(titular, cuenta);
+
+    cuenta.setTitular(titular);
 
     titular.addCuenta(cuenta);
     clienteDao.save(titular);
@@ -58,6 +60,7 @@ public class ClienteService {
 
   public Cliente obtenerTitularConCuenta(Cuenta cuenta, long dniTitular)
       throws ClienteNoExistsException, TipoCuentaAlreadyExistsException {
+
     Cliente titular = buscarClientePorDni(dniTitular);
 
     clienteServiceValidator.validateTipoCuentaUnica(titular, cuenta);
@@ -131,7 +134,19 @@ public class ClienteService {
     Cliente cliente = buscarClientePorDni(dni);
 
     cliente.setActivo(true);
+
     clienteDao.save(cliente);
+
+    return cliente;
+  }
+
+  protected Cliente getClienteByCuenta(long numeroCuenta) throws ClienteNoExistsException {
+    Cliente cliente = clienteDao.getClienteByCuenta(numeroCuenta);
+
+    if (cliente == null) {
+      throw new ClienteNoExistsException("No existe un cliente con la cuenta solicitada.");
+    }
+
     return cliente;
   }
 }

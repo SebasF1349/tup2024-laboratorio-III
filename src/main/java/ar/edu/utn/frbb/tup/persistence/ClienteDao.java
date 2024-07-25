@@ -27,6 +27,16 @@ public class ClienteDao extends AbstractBaseDao {
     getInMemoryDatabase().put(entity.getId(), entity);
   }
 
+  public Cliente getClienteByCuenta(long numeroCuenta) {
+    for (Object object : getInMemoryDatabase().values()) {
+      ClienteEntity cliente = ((ClienteEntity) object);
+      if (cliente.getCuentas().contains(numeroCuenta)) {
+        return cliente.toCliente();
+      }
+    }
+    return null;
+  }
+
   @Override
   protected String getEntityName() {
     return "CLIENTE";
