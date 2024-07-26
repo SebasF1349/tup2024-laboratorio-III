@@ -40,7 +40,7 @@ public class MovimientoControllerTest {
 
   @MockBean private MovimientoService movimientoService;
   @MockBean private MovimientoControllerValidator movimientoControllerValidator;
-  private final String transferEndpoint = "/transfer";
+  private final String transferEndpoint = "/api/transfer";
 
   @Autowired private MockMvc mockMvc;
   @Autowired private ObjectMapper objectMapper;

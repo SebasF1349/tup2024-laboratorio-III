@@ -44,7 +44,7 @@ public class ClienteControllerTest {
   @MockBean private ClienteService clienteService;
   @MockBean private ClienteControllerValidator clienteControllerValidator;
   private final long dniCliente = 12345678;
-  private final String endpoint = "/cliente";
+  private final String endpoint = "/api/cliente";
 
   @Autowired private MockMvc mockMvc;
   @Autowired private ObjectMapper objectMapper;

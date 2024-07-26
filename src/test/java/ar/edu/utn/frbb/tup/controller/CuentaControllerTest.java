@@ -44,7 +44,7 @@ public class CuentaControllerTest {
   @MockBean private CuentaService cuentaService;
   @MockBean private CuentaControllerValidator cuentaControllerValidator;
   private final long clienteDni = 12345678;
-  private final String endpoint = "/cuenta";
+  private final String endpoint = "/api/cuenta";
 
   @Autowired private MockMvc mockMvc;
   @Autowired private ObjectMapper objectMapper;
