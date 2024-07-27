@@ -39,6 +39,15 @@ public class Cuenta {
     this.moneda = TipoMoneda.fromString(cuentaDto.getMoneda());
   }
 
+  public CuentaDto toCuentaDto() {
+    CuentaDto cuentaDto = new CuentaDto();
+    cuentaDto.setBalance(this.balance);
+    cuentaDto.setTipoCuenta(this.tipoCuenta.toString());
+    cuentaDto.setMoneda(this.moneda.toString());
+    cuentaDto.setTitular(this.titular.getDni());
+    return cuentaDto;
+  }
+
   public long getNumeroCuenta() {
     return numeroCuenta;
   }

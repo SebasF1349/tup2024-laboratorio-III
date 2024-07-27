@@ -25,6 +25,18 @@ public class Cliente extends Persona {
     fechaAlta = LocalDate.now();
     tipoPersona = TipoPersona.fromString(clienteDto.getTipoPersona());
     activo = true;
+    banco = clienteDto.getBanco();
+  }
+
+  public ClienteDto toClienteDto() {
+    ClienteDto clienteDto = new ClienteDto();
+    clienteDto.setDni(this.getDni());
+    clienteDto.setNombre(this.getNombre());
+    clienteDto.setApellido(this.getApellido());
+    clienteDto.setFechaNacimiento(this.getFechaNacimiento().toString());
+    clienteDto.setTipoPersona(this.getTipoPersona().toString());
+    clienteDto.setBanco(this.getBanco());
+    return clienteDto;
   }
 
   public TipoPersona getTipoPersona() {

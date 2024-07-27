@@ -1,6 +1,7 @@
 package ar.edu.utn.frbb.tup.model;
 
 import ar.edu.utn.frbb.tup.controller.TransferenciaDto;
+import ar.edu.utn.frbb.tup.controller.TransferenciaResponseDto;
 import java.time.LocalDateTime;
 
 public class Transferencia extends Movimiento {
@@ -30,6 +31,16 @@ public class Transferencia extends Movimiento {
 
   public Transferencia(TransferenciaDto transferenciaDto, Cuenta cuenta) {
     super(transferenciaDto.getMonto(), cuenta);
+  }
+
+  public TransferenciaResponseDto toTransferenciaResponseDto() {
+    TransferenciaResponseDto transferenciaDto = new TransferenciaResponseDto();
+    transferenciaDto.setMonto(this.getMonto());
+    transferenciaDto.setMoneda(this.getCuenta().getMoneda().toString());
+    transferenciaDto.setCuentaOrigen(this.getCuenta().getNumeroCuenta());
+    transferenciaDto.setCuentaDestino(this.getCuentaDestino().getNumeroCuenta());
+    transferenciaDto.setMontoDebitado(this.getMontoDebitado());
+    return transferenciaDto;
   }
 
   public Cuenta getCuentaDestino() {
