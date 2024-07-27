@@ -42,7 +42,7 @@ public class CuentaControllerTest {
 
   @MockBean private CuentaService cuentaService;
   @MockBean private CuentaControllerValidator cuentaControllerValidator;
-  private final long clienteDni = 12345678;
+  private final long numeroCuenta = 1;
   private final String endpoint = "/api/cuenta";
 
   @Autowired private MockMvc mockMvc;
@@ -57,13 +57,24 @@ public class CuentaControllerTest {
 
   @Test
   public void testObtenerCuentaDoesntExistsFail() throws Exception {
-    doThrow(new CuentaNoExistsException("")).when(cuentaService).buscarCuentaPorId(clienteDni);
+    doThrow(new CuentaNoExistsException("")).when(cuentaService).buscarCuentaPorId(numeroCuenta);
 
     mockMvc
-        .perform(get(createEndpoint(clienteDni)))
+        .perform(get(createEndpoint(numeroCuenta)))
         .andExpect(status().isNotFound())
         .andExpect(jsonPath("$", notNullValue()))
         .andExpect(jsonPath("$.errorCode", is(404102)));
+  }
+
+  @Test
+  public void testObtenerCuentaCorruptedDataInDbException() throws Exception {
+    doThrow(new CorruptedDataInDbException("")).when(cuentaService).buscarCuentaPorId(numeroCuenta);
+
+    mockMvc
+        .perform(get(createEndpoint(numeroCuenta)))
+        .andExpect(status().isInternalServerError())
+        .andExpect(jsonPath("$", notNullValue()))
+        .andExpect(jsonPath("$.errorCode", is(500101)));
   }
 
   @Test
@@ -71,10 +82,10 @@ public class CuentaControllerTest {
     CuentaDto cuentaDto = createCuentaDto();
     String cuentaDtoMapped = objectMapper.writeValueAsString(cuentaDto);
 
-    Mockito.when(cuentaService.buscarCuentaPorId(clienteDni)).thenReturn(cuentaDto);
+    Mockito.when(cuentaService.buscarCuentaPorId(numeroCuenta)).thenReturn(cuentaDto);
 
     mockMvc
-        .perform(get(createEndpoint(clienteDni)))
+        .perform(get(createEndpoint(numeroCuenta)))
         .andExpect(status().isOk())
         .andExpect(content().string(cuentaDtoMapped));
   }
@@ -202,10 +213,10 @@ public class CuentaControllerTest {
 
   @Test
   public void testEliminarCuentaDoesntExistsFail() throws Exception {
-    doThrow(new CuentaNoExistsException("")).when(cuentaService).eliminarCuenta(clienteDni);
+    doThrow(new CuentaNoExistsException("")).when(cuentaService).eliminarCuenta(numeroCuenta);
 
     mockMvc
-        .perform(delete(createEndpoint(clienteDni)))
+        .perform(delete(createEndpoint(numeroCuenta)))
         .andExpect(status().isNotFound())
         .andExpect(jsonPath("$", notNullValue()))
         .andExpect(jsonPath("$.errorCode", is(404102)));
@@ -213,10 +224,10 @@ public class CuentaControllerTest {
 
   @Test
   public void testEliminarCuentaCorruptedDataInDbException() throws Exception {
-    doThrow(new CorruptedDataInDbException("")).when(cuentaService).eliminarCuenta(clienteDni);
+    doThrow(new CorruptedDataInDbException("")).when(cuentaService).eliminarCuenta(numeroCuenta);
 
     mockMvc
-        .perform(delete(createEndpoint(clienteDni)))
+        .perform(delete(createEndpoint(numeroCuenta)))
         .andExpect(status().isInternalServerError())
         .andExpect(jsonPath("$", notNullValue()))
         .andExpect(jsonPath("$.errorCode", is(500101)));
@@ -227,10 +238,10 @@ public class CuentaControllerTest {
     CuentaDto cuentaDto = createCuentaDto();
     String cuentaDtoMapped = objectMapper.writeValueAsString(cuentaDto);
 
-    Mockito.when(cuentaService.eliminarCuenta(clienteDni)).thenReturn(cuentaDto);
+    Mockito.when(cuentaService.eliminarCuenta(numeroCuenta)).thenReturn(cuentaDto);
 
     mockMvc
-        .perform(delete(createEndpoint(clienteDni)))
+        .perform(delete(createEndpoint(numeroCuenta)))
         .andExpect(status().isOk())
         .andExpect(content().string(cuentaDtoMapped));
   }
@@ -376,6 +387,47 @@ public class CuentaControllerTest {
         .andExpect(content().string(cuentaDtoMapped));
   }
 
+  @Test
+  public void testObtenerTransaccionesEnCuentaDoesntExistsFail() throws Exception {
+    doThrow(new CuentaNoExistsException(""))
+        .when(cuentaService)
+        .buscarTransaccionesDeCuentaPorId(numeroCuenta);
+
+    mockMvc
+        .perform(get(createEndpoint(numeroCuenta) + "/transacciones"))
+        .andExpect(status().isNotFound())
+        .andExpect(jsonPath("$", notNullValue()))
+        .andExpect(jsonPath("$.errorCode", is(404102)));
+  }
+
+  @Test
+  public void testObtenerTransaccionesEnCuentaCorruptedDataInDbException() throws Exception {
+    doThrow(new CorruptedDataInDbException(""))
+        .when(cuentaService)
+        .buscarTransaccionesDeCuentaPorId(numeroCuenta);
+
+    mockMvc
+        .perform(get(createEndpoint(numeroCuenta) + "/transacciones"))
+        .andExpect(status().isInternalServerError())
+        .andExpect(jsonPath("$", notNullValue()))
+        .andExpect(jsonPath("$.errorCode", is(500101)));
+  }
+
+  @Test
+  public void testObtenerTransaccionesEnCuentaSuccess() throws Exception {
+    CuentaMovimientosResponseDto cuentaMovimientosResponseDto = new CuentaMovimientosResponseDto();
+    String cuentaMovimientosResponseDtoMapped =
+        objectMapper.writeValueAsString(cuentaMovimientosResponseDto);
+
+    Mockito.when(cuentaService.buscarTransaccionesDeCuentaPorId(numeroCuenta))
+        .thenReturn(cuentaMovimientosResponseDto);
+
+    mockMvc
+        .perform(get(createEndpoint(numeroCuenta) + "/transacciones"))
+        .andExpect(status().isOk())
+        .andExpect(content().string(cuentaMovimientosResponseDtoMapped));
+  }
+
   private String createEndpoint(long end) {
     return endpoint + "/" + end;
   }
@@ -389,7 +441,7 @@ public class CuentaControllerTest {
     cuentaDto.setBalance(500000);
     cuentaDto.setMoneda("P");
     cuentaDto.setTipoCuenta("A");
-    cuentaDto.setTitular(clienteDni);
+    cuentaDto.setTitular(12345678);
     return cuentaDto;
   }
 }

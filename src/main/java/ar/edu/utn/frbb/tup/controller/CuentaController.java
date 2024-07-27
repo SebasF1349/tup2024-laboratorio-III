@@ -65,4 +65,10 @@ public class CuentaController {
     cuentaValidator.validate(cuentaDto);
     return cuentaService.actualizarCuenta(cuentaDto);
   }
+
+  @GetMapping(value = "/{id}/transacciones")
+  public CuentaMovimientosResponseDto obtenerTransaccionesEnCuenta(@PathVariable long id)
+      throws CuentaNoExistsException, CorruptedDataInDbException {
+    return cuentaService.buscarTransaccionesDeCuentaPorId(id);
+  }
 }

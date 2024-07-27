@@ -11,9 +11,12 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import ar.edu.utn.frbb.tup.controller.CuentaDto;
+import ar.edu.utn.frbb.tup.controller.CuentaMovimientosResponseDto;
+import ar.edu.utn.frbb.tup.controller.MovimientoResponseDto;
 import ar.edu.utn.frbb.tup.model.Cliente;
 import ar.edu.utn.frbb.tup.model.Cuenta;
 import ar.edu.utn.frbb.tup.model.Deposito;
+import ar.edu.utn.frbb.tup.model.Movimiento;
 import ar.edu.utn.frbb.tup.model.Retiro;
 import ar.edu.utn.frbb.tup.model.TipoCuenta;
 import ar.edu.utn.frbb.tup.model.TipoMoneda;
@@ -304,7 +307,7 @@ public class CuentaServiceTest {
         .when(cuentaServiceValidator)
         .validateCuentaExists(cuenta);
 
-    assertThrows(CuentaNoExistsException.class, () -> cuentaService.eliminarCuenta(clienteDni));
+    assertThrows(CuentaNoExistsException.class, () -> cuentaService.eliminarCuenta(numeroCuenta));
   }
 
   @Test
@@ -316,7 +319,8 @@ public class CuentaServiceTest {
         .when(clienteService)
         .getClienteByCuenta(cuenta.getNumeroCuenta());
 
-    assertThrows(CorruptedDataInDbException.class, () -> cuentaService.eliminarCuenta(clienteDni));
+    assertThrows(
+        CorruptedDataInDbException.class, () -> cuentaService.eliminarCuenta(numeroCuenta));
   }
 
   @Test
@@ -333,7 +337,7 @@ public class CuentaServiceTest {
     when(cuentaDao.find(numeroCuenta, true)).thenReturn(cuenta);
     when(clienteService.getClienteByCuenta(cuenta.getNumeroCuenta())).thenReturn(cliente);
 
-    CuentaDto cuentaResDto = cuentaService.eliminarCuenta(clienteDni);
+    CuentaDto cuentaResDto = cuentaService.eliminarCuenta(numeroCuenta);
 
     assertEquals(cuentaDto, cuentaResDto);
     assertEquals(false, cuenta.isActivo());
@@ -350,7 +354,7 @@ public class CuentaServiceTest {
         .when(cuentaServiceValidator)
         .validateCuentaExists(cuenta);
 
-    assertThrows(CuentaNoExistsException.class, () -> cuentaService.activarCuenta(clienteDni));
+    assertThrows(CuentaNoExistsException.class, () -> cuentaService.activarCuenta(numeroCuenta));
   }
 
   @Test
@@ -362,7 +366,7 @@ public class CuentaServiceTest {
         .when(clienteService)
         .getClienteByCuenta(cuenta.getNumeroCuenta());
 
-    assertThrows(CorruptedDataInDbException.class, () -> cuentaService.activarCuenta(clienteDni));
+    assertThrows(CorruptedDataInDbException.class, () -> cuentaService.activarCuenta(numeroCuenta));
   }
 
   @Test
@@ -379,7 +383,7 @@ public class CuentaServiceTest {
     when(cuentaDao.find(numeroCuenta, true)).thenReturn(cuenta);
     when(clienteService.getClienteByCuenta(cuenta.getNumeroCuenta())).thenReturn(cliente);
 
-    CuentaDto cuentaResDto = cuentaService.activarCuenta(clienteDni);
+    CuentaDto cuentaResDto = cuentaService.activarCuenta(numeroCuenta);
 
     assertEquals(cuentaDto, cuentaResDto);
     assertEquals(true, cuenta.isActivo());
@@ -502,6 +506,63 @@ public class CuentaServiceTest {
     assertEquals(cuentaDestino.getMovimiento(transferencia.getMovimientoId()), transferencia);
   }
 
+  @Test
+  public void testBuscarTransaccionesDeCuentaNoExistsException() throws CuentaNoExistsException {
+    Cuenta cuenta = createCuenta();
+
+    when(cuentaDao.find(numeroCuenta, true)).thenReturn(cuenta);
+
+    doThrow(CuentaNoExistsException.class)
+        .when(cuentaServiceValidator)
+        .validateCuentaExists(cuenta);
+
+    assertThrows(
+        CuentaNoExistsException.class,
+        () -> cuentaService.buscarTransaccionesDeCuentaPorId(numeroCuenta));
+  }
+
+  @Test
+  public void testBuscarTransaccionesDeCuentaCorruptedDataInDbException()
+      throws ClienteNoExistsException {
+    Cuenta cuenta = createCuenta();
+
+    when(cuentaDao.find(numeroCuenta, true)).thenReturn(cuenta);
+    doThrow(ClienteNoExistsException.class)
+        .when(clienteService)
+        .getClienteByCuenta(cuenta.getNumeroCuenta());
+
+    assertThrows(
+        CorruptedDataInDbException.class,
+        () -> cuentaService.buscarTransaccionesDeCuentaPorId(numeroCuenta));
+  }
+
+  @Test
+  public void testBuscarTransaccionesDeCuentaSuccess()
+      throws CuentaNoExistsException, CorruptedDataInDbException, ClienteNoExistsException {
+    Cuenta cuenta = createCuenta();
+    cuenta.setNumeroCuenta(123);
+    Movimiento movimiento = createDeposito();
+    cuenta.addMovimiento(movimiento);
+    Transferencia transferencia = createTransferencia();
+    cuenta.addMovimiento(transferencia);
+
+    CuentaMovimientosResponseDto cuentaMovimientosResponseDtoExpected =
+        cuenta.toCuentaMovimientoResponseDto();
+    MovimientoResponseDto movimientoResponseDto =
+        movimiento.toMovimientoResponseDto(cuenta.getNumeroCuenta());
+    cuentaMovimientosResponseDtoExpected.addMovimiento(movimientoResponseDto);
+    MovimientoResponseDto transferenciaResponseDto =
+        transferencia.toMovimientoResponseDto(cuenta.getNumeroCuenta());
+    cuentaMovimientosResponseDtoExpected.addMovimiento(transferenciaResponseDto);
+
+    when(cuentaDao.find(numeroCuenta, true)).thenReturn(cuenta);
+
+    CuentaMovimientosResponseDto cuentaMovimientosResponseDto =
+        cuentaService.buscarTransaccionesDeCuentaPorId(numeroCuenta);
+
+    assertEquals(cuentaMovimientosResponseDtoExpected, cuentaMovimientosResponseDto);
+  }
+
   private CuentaDto createCuentaDto() {
     CuentaDto cuentaDto = new CuentaDto();
     cuentaDto.setBalance(500000);
@@ -521,5 +582,13 @@ public class CuentaServiceTest {
     cliente.setNombre("Nombre");
     cliente.setApellido("Apellido");
     return cliente;
+  }
+
+  private Movimiento createDeposito() {
+    return new Deposito(500, createCuenta());
+  }
+
+  private Transferencia createTransferencia() {
+    return new Transferencia(1000, createCuenta(), createCuenta());
   }
 }

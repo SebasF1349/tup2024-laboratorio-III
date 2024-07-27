@@ -1,8 +1,11 @@
 package ar.edu.utn.frbb.tup.service;
 
 import ar.edu.utn.frbb.tup.controller.CuentaDto;
+import ar.edu.utn.frbb.tup.controller.CuentaMovimientosResponseDto;
+import ar.edu.utn.frbb.tup.controller.MovimientoResponseDto;
 import ar.edu.utn.frbb.tup.model.Cliente;
 import ar.edu.utn.frbb.tup.model.Cuenta;
+import ar.edu.utn.frbb.tup.model.Movimiento;
 import ar.edu.utn.frbb.tup.model.MovimientoUnidireccional;
 import ar.edu.utn.frbb.tup.model.Transferencia;
 import ar.edu.utn.frbb.tup.model.exception.ClienteMenorDeEdadException;
@@ -164,5 +167,20 @@ public class CuentaService {
 
     cuentaDestino.setBalance(transferencia.getNuevoMontoCuentaDestino());
     cuentaDestino.addMovimiento(transferencia);
+  }
+
+  public CuentaMovimientosResponseDto buscarTransaccionesDeCuentaPorId(long id)
+      throws CuentaNoExistsException, CorruptedDataInDbException {
+    Cuenta cuenta = buscarCuentaCompletaPorId(id);
+
+    CuentaMovimientosResponseDto cuentaMovimientosResponseDto =
+        cuenta.toCuentaMovimientoResponseDto();
+
+    for (Movimiento movimiento : cuenta.getMovimientos()) {
+      MovimientoResponseDto movimientoResponseDto = movimiento.toMovimientoResponseDto(id);
+      cuentaMovimientosResponseDto.addMovimiento(movimientoResponseDto);
+    }
+
+    return cuentaMovimientosResponseDto;
   }
 }
