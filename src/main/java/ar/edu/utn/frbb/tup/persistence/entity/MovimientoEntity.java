@@ -14,6 +14,7 @@ public class MovimientoEntity extends BaseEntity {
   private LocalDateTime diaHora;
   private double monto;
   private long numeroCuentaDestino;
+  private String descripcion;
 
   public MovimientoEntity(Movimiento movimiento) {
     super(movimiento.getMovimientoId());
@@ -21,6 +22,7 @@ public class MovimientoEntity extends BaseEntity {
     this.diaHora = movimiento.getDiaHora();
     this.monto = movimiento.getMonto();
     this.movimiento = movimiento.getTipoMovimiento();
+    this.descripcion = movimiento.getDescripcion();
     if (movimiento instanceof Transferencia) {
       this.numeroCuentaDestino = ((Transferencia) movimiento).getCuentaDestino().getNumeroCuenta();
     }
@@ -34,13 +36,14 @@ public class MovimientoEntity extends BaseEntity {
       case "TRANSFERENCIA":
         Cuenta cuentaDestino = cuentaDao.find(this.numeroCuentaDestino);
         movimiento =
-            new Transferencia(this.monto, cuentaDestino, this.diaHora, this.getId(), cuenta);
+            new Transferencia(
+                this.monto, cuentaDestino, this.diaHora, this.getId(), cuenta, this.descripcion);
         break;
       case "RETIRO":
-        movimiento = new Retiro(this.monto, this.diaHora, this.getId(), cuenta);
+        movimiento = new Retiro(this.monto, this.diaHora, this.getId(), cuenta, this.descripcion);
         break;
       case "DEPOSITO":
-        movimiento = new Deposito(this.monto, this.diaHora, this.getId(), cuenta);
+        movimiento = new Deposito(this.monto, this.diaHora, this.getId(), cuenta, this.descripcion);
         break;
       default:
         throw new IllegalArgumentException("Unhandled TipoMovimiento");

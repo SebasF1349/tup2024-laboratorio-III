@@ -7,6 +7,7 @@ public abstract class Movimiento {
   private long movimientoId;
   private LocalDateTime diaHora;
   private double monto;
+  private String descripcion;
 
   public Movimiento(double monto, Cuenta cuenta) {
     this.diaHora = LocalDateTime.now();
@@ -14,11 +15,15 @@ public abstract class Movimiento {
     this.cuenta = cuenta;
   }
 
-  public Movimiento(double monto, LocalDateTime diaHora, long movimientoId, Cuenta cuenta) {
+  public Movimiento(
+      double monto, LocalDateTime diaHora, long movimientoId, Cuenta cuenta, String descripcion) {
     this.movimientoId = movimientoId;
     this.diaHora = diaHora;
     this.monto = monto;
     this.cuenta = cuenta;
+    this.descripcion = descripcion;
+  }
+
   }
 
   public Cuenta getCuenta() {
@@ -47,6 +52,14 @@ public abstract class Movimiento {
 
   public double getMonto() {
     return monto;
+  }
+
+  public String getDescripcion() {
+    return descripcion;
+  }
+
+  public void setDescripcion(String descripcion) {
+    this.descripcion = descripcion;
   }
 
   public abstract String getTipoMovimiento();

@@ -7,8 +7,9 @@ public class Deposito extends MovimientoUnidireccional {
     super(monto, cuenta);
   }
 
-  public Deposito(double monto, LocalDateTime diaHora, long movimientoId, Cuenta cuenta) {
-    super(monto, diaHora, movimientoId, cuenta);
+  public Deposito(
+      double monto, LocalDateTime diaHora, long movimientoId, Cuenta cuenta, String descripcion) {
+    super(monto, diaHora, movimientoId, cuenta, descripcion);
   }
 
   @Override

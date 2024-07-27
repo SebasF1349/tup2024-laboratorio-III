@@ -19,8 +19,13 @@ public class Transferencia extends Movimiento {
   }
 
   public Transferencia(
-      double monto, Cuenta cuentaDestino, LocalDateTime diaHora, long movimientoId, Cuenta cuenta) {
-    super(monto, diaHora, movimientoId, cuenta);
+      double monto,
+      Cuenta cuentaDestino,
+      LocalDateTime diaHora,
+      long movimientoId,
+      Cuenta cuenta,
+      String descripcion) {
+    super(monto, diaHora, movimientoId, cuenta, descripcion);
     this.cuentaDestino = cuentaDestino;
   }
 
