@@ -3,12 +3,9 @@ package ar.edu.utn.frbb.tup.persistence.entity;
 import ar.edu.utn.frbb.tup.model.Cliente;
 import ar.edu.utn.frbb.tup.model.Cuenta;
 import ar.edu.utn.frbb.tup.model.TipoPersona;
-import ar.edu.utn.frbb.tup.persistence.CuentaDao;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class ClienteEntity extends BaseEntity {
   private final String tipoPersona;
@@ -17,6 +14,7 @@ public class ClienteEntity extends BaseEntity {
   private final LocalDate fechaAlta;
   private final LocalDate fechaNacimiento;
   private final boolean activo;
+  private final String banco;
   private List<Long> cuentas;
 
   public ClienteEntity(Cliente cliente) {
@@ -28,6 +26,7 @@ public class ClienteEntity extends BaseEntity {
     this.fechaAlta = cliente.getFechaAlta();
     this.fechaNacimiento = cliente.getFechaNacimiento();
     this.activo = cliente.isActivo();
+    this.banco = cliente.getBanco();
     this.cuentas = new ArrayList<>();
     if (cliente.getCuentas() != null && !cliente.getCuentas().isEmpty()) {
       for (Cuenta c : cliente.getCuentas()) {
@@ -52,16 +51,7 @@ public class ClienteEntity extends BaseEntity {
     cliente.setFechaAlta(this.fechaAlta);
     cliente.setFechaNacimiento(this.fechaNacimiento);
     cliente.setActivo(this.activo);
-
-    if (!this.cuentas.isEmpty()) {
-      Set<Cuenta> c = new HashSet<>();
-      CuentaDao cuentaDao = new CuentaDao();
-      for (long numeroCuenta : cuentas) {
-        Cuenta titular = cuentaDao.find(numeroCuenta);
-        c.add(titular);
-      }
-      cliente.setCuentas(c);
-    }
+    cliente.setBanco(this.banco);
 
     return cliente;
   }
