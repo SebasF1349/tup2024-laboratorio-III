@@ -369,10 +369,12 @@ public class ClienteServiceTest {
   }
 
   private Cuenta createCuenta() {
-    return new Cuenta()
-        .setNumeroCuenta(1)
-        .setMoneda(TipoMoneda.PESOS_ARGENTINOS)
-        .setBalance(500000)
-        .setTipoCuenta(TipoCuenta.CAJA_AHORROS);
+    Cuenta cuenta = new Cuenta();
+    cuenta.setNumeroCuenta(1);
+    cuenta.setBalance(500000);
+    cuenta.setTipoCuenta(TipoCuenta.CAJA_AHORROS);
+    cuenta.setMoneda(TipoMoneda.PESOS_ARGENTINOS);
+    cuenta.setActivo(true);
+    return cuenta;
   }
 }

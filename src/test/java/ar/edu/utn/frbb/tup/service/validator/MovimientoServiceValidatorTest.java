@@ -119,11 +119,13 @@ public class MovimientoServiceValidatorTest {
   }
 
   private Cuenta createCuenta(int id) {
-    return new Cuenta()
-        .setNumeroCuenta(id)
-        .setMoneda(TipoMoneda.PESOS_ARGENTINOS)
-        .setBalance(500000)
-        .setTipoCuenta(TipoCuenta.CAJA_AHORROS);
+    Cuenta cuenta = new Cuenta();
+    cuenta.setNumeroCuenta(1);
+    cuenta.setBalance(500000);
+    cuenta.setTipoCuenta(TipoCuenta.CAJA_AHORROS);
+    cuenta.setMoneda(TipoMoneda.PESOS_ARGENTINOS);
+    cuenta.setActivo(true);
+    return cuenta;
   }
 
   private Transferencia createTransferencia() {

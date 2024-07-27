@@ -75,52 +75,47 @@ public class CuentaServiceValidatorTest {
 
   @Test
   public void tipoCuentaEstaSoportadaPesosCaja() {
-    Cuenta cuenta =
-        new Cuenta()
-            .setMoneda(TipoMoneda.PESOS_ARGENTINOS)
-            .setBalance(500000)
-            .setTipoCuenta(TipoCuenta.CAJA_AHORROS);
+    Cuenta cuenta = createCuenta();
+    cuenta.setMoneda(TipoMoneda.PESOS_ARGENTINOS);
+    cuenta.setTipoCuenta(TipoCuenta.CAJA_AHORROS);
 
     assertTrue(cuentaServiceValidator.tipoCuentaEstaSoportada(cuenta));
   }
 
   @Test
   public void tipoCuentaEstaSoportadaDolarCaja() {
-    Cuenta cuenta =
-        new Cuenta()
-            .setMoneda(TipoMoneda.DOLARES_AMERICANOS)
-            .setBalance(500000)
-            .setTipoCuenta(TipoCuenta.CAJA_AHORROS);
+    Cuenta cuenta = createCuenta();
+    cuenta.setMoneda(TipoMoneda.DOLARES_AMERICANOS);
+    cuenta.setTipoCuenta(TipoCuenta.CAJA_AHORROS);
 
     assertTrue(cuentaServiceValidator.tipoCuentaEstaSoportada(cuenta));
   }
 
   @Test
   public void tipoCuentaEstaSoportadaPesosCorriente() {
-    Cuenta cuenta =
-        new Cuenta()
-            .setMoneda(TipoMoneda.PESOS_ARGENTINOS)
-            .setBalance(500000)
-            .setTipoCuenta(TipoCuenta.CUENTA_CORRIENTE);
+    Cuenta cuenta = createCuenta();
+    cuenta.setMoneda(TipoMoneda.PESOS_ARGENTINOS);
+    cuenta.setTipoCuenta(TipoCuenta.CUENTA_CORRIENTE);
 
     assertTrue(cuentaServiceValidator.tipoCuentaEstaSoportada(cuenta));
   }
 
   @Test
   public void tipoCuentaEstaSoportadaDolarCorriente() {
-    Cuenta cuenta =
-        new Cuenta()
-            .setMoneda(TipoMoneda.DOLARES_AMERICANOS)
-            .setBalance(500000)
-            .setTipoCuenta(TipoCuenta.CUENTA_CORRIENTE);
+    Cuenta cuenta = createCuenta();
+    cuenta.setMoneda(TipoMoneda.DOLARES_AMERICANOS);
+    cuenta.setTipoCuenta(TipoCuenta.CUENTA_CORRIENTE);
 
     assertFalse(cuentaServiceValidator.tipoCuentaEstaSoportada(cuenta));
   }
 
   private Cuenta createCuenta() {
-    return new Cuenta()
-        .setMoneda(TipoMoneda.PESOS_ARGENTINOS)
-        .setBalance(500000)
-        .setTipoCuenta(TipoCuenta.CAJA_AHORROS);
+    Cuenta cuenta = new Cuenta();
+    cuenta.setNumeroCuenta(1);
+    cuenta.setBalance(500000);
+    cuenta.setTipoCuenta(TipoCuenta.CAJA_AHORROS);
+    cuenta.setMoneda(TipoMoneda.PESOS_ARGENTINOS);
+    cuenta.setActivo(true);
+    return cuenta;
   }
 }

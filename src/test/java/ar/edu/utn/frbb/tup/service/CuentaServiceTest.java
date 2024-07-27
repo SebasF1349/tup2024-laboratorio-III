@@ -10,6 +10,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import ar.edu.utn.frbb.tup.controller.ClienteDto;
 import ar.edu.utn.frbb.tup.controller.CuentaDto;
 import ar.edu.utn.frbb.tup.controller.CuentaMovimientosResponseDto;
 import ar.edu.utn.frbb.tup.controller.MovimientoResponseDto;
@@ -607,12 +608,20 @@ public class CuentaServiceTest {
     return new Cuenta(createCuentaDto());
   }
 
+  private ClienteDto createClienteDto() {
+    ClienteDto clienteDto = new ClienteDto();
+    clienteDto.setDni(12345678);
+    clienteDto.setNombre("Nombre");
+    clienteDto.setApellido("Apellido");
+    clienteDto.setFechaNacimiento("1990-01-01");
+    clienteDto.setTipoPersona("F");
+    clienteDto.setBanco("");
+    return clienteDto;
+  }
+
   private Cliente createCliente() {
-    Cliente cliente = new Cliente();
-    cliente.setDni(clienteDni);
-    cliente.setNombre("Nombre");
-    cliente.setApellido("Apellido");
-    return cliente;
+    ClienteDto clienteDto = createClienteDto();
+    return new Cliente(clienteDto);
   }
 
   private Movimiento createDeposito() {

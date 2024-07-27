@@ -59,54 +59,48 @@ public class Cuenta {
     return numeroCuenta;
   }
 
-  public Cuenta setNumeroCuenta(long numeroCuenta) {
+  public void setNumeroCuenta(long numeroCuenta) {
     this.numeroCuenta = numeroCuenta;
-    return this;
   }
 
   public Cliente getTitular() {
     return titular;
   }
 
-  public Cuenta setTitular(Cliente titular) {
+  public void setTitular(Cliente titular) {
     this.titular = titular;
-    return this;
   }
 
   public LocalDateTime getFechaApertura() {
     return fechaApertura;
   }
 
-  public Cuenta setFechaApertura(LocalDateTime fechaCreacion) {
+  public void setFechaApertura(LocalDateTime fechaCreacion) {
     this.fechaApertura = fechaCreacion;
-    return this;
   }
 
   public double getBalance() {
     return balance;
   }
 
-  public Cuenta setBalance(double balance) {
+  public void setBalance(double balance) {
     this.balance = balance;
-    return this;
   }
 
   public TipoCuenta getTipoCuenta() {
     return tipoCuenta;
   }
 
-  public Cuenta setTipoCuenta(TipoCuenta tipoCuenta) {
+  public void setTipoCuenta(TipoCuenta tipoCuenta) {
     this.tipoCuenta = tipoCuenta;
-    return this;
   }
 
   public TipoMoneda getMoneda() {
     return moneda;
   }
 
-  public Cuenta setMoneda(TipoMoneda moneda) {
+  public void setMoneda(TipoMoneda moneda) {
     this.moneda = moneda;
-    return this;
   }
 
   public Set<Movimiento> getMovimientos() {

@@ -163,7 +163,7 @@ public class CuentaService {
     Cuenta cuentaOrigen = movimiento.getCuenta();
 
     double nuevoSaldoOrigen = movimiento.actualizarCuentaMonto(cuentaOrigen);
-    // TODO: is validation needed if it doesn't interact with the client?
+
     cuentaOrigen.setBalance(nuevoSaldoOrigen);
     cuentaOrigen.addMovimiento(movimiento);
   }
@@ -171,7 +171,6 @@ public class CuentaService {
   protected void agregarTransferenciaACuentas(Transferencia transferencia) {
     Cuenta cuentaOrigen = transferencia.getCuenta();
 
-    // TODO: is validation needed if it doesn't interact with the client?
     cuentaOrigen.setBalance(transferencia.getNuevoMontoCuentaOrigen());
     cuentaOrigen.addMovimiento(transferencia);
 

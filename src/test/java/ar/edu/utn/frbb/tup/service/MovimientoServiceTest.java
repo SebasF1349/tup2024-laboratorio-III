@@ -1,8 +1,10 @@
 package ar.edu.utn.frbb.tup.service;
 
+import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
@@ -292,6 +294,7 @@ public class MovimientoServiceTest {
     TransferenciaResponseDto transferenciaDtoResult =
         movimientoService.realizarTransferencia(transferenciaDto);
 
+    verify(movimientoDao, times(1)).save(any(Transferencia.class));
     assertEquals(transferenciaResponseDto, transferenciaDtoResult);
   }
 
@@ -369,11 +372,13 @@ public class MovimientoServiceTest {
   }
 
   private Cuenta createCuenta(int id) {
-    return new Cuenta()
-        .setNumeroCuenta(id)
-        .setMoneda(TipoMoneda.PESOS_ARGENTINOS)
-        .setBalance(500000)
-        .setTipoCuenta(TipoCuenta.CAJA_AHORROS);
+    Cuenta cuenta = new Cuenta();
+    cuenta.setNumeroCuenta(id);
+    cuenta.setBalance(500000);
+    cuenta.setTipoCuenta(TipoCuenta.CAJA_AHORROS);
+    cuenta.setMoneda(TipoMoneda.PESOS_ARGENTINOS);
+    cuenta.setActivo(true);
+    return cuenta;
   }
 
   private TransferenciaDto createTransferenciaDto() {

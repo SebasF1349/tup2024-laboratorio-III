@@ -316,9 +316,4 @@ public class ClienteControllerTest {
     clienteDto.setBanco("");
     return clienteDto;
   }
-
-  // private Cliente createCliente() {
-  //   ClienteDto clienteDto = createClienteDto();
-  //   return new Cliente(clienteDto);
-  // }
 }
