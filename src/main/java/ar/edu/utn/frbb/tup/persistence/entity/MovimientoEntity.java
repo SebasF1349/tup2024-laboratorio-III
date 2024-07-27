@@ -50,4 +50,52 @@ public class MovimientoEntity extends BaseEntity {
     }
     return movimiento;
   }
+
+  public String getMovimiento() {
+    return movimiento;
+  }
+
+  public void setMovimiento(String movimiento) {
+    this.movimiento = movimiento;
+  }
+
+  public long getNumeroCuenta() {
+    return numeroCuenta;
+  }
+
+  public void setNumeroCuenta(long numeroCuenta) {
+    this.numeroCuenta = numeroCuenta;
+  }
+
+  public LocalDateTime getDiaHora() {
+    return diaHora;
+  }
+
+  public void setDiaHora(LocalDateTime diaHora) {
+    this.diaHora = diaHora;
+  }
+
+  public double getMonto() {
+    return monto;
+  }
+
+  public void setMonto(double monto) {
+    this.monto = monto;
+  }
+
+  public long getNumeroCuentaDestino() {
+    return numeroCuentaDestino;
+  }
+
+  public void setNumeroCuentaDestino(long numeroCuentaDestino) {
+    this.numeroCuentaDestino = numeroCuentaDestino;
+  }
+
+  public String getDescripcion() {
+    return descripcion;
+  }
+
+  public void setDescripcion(String descripcion) {
+    this.descripcion = descripcion;
+  }
 }
