@@ -149,7 +149,7 @@ public class CuentaServiceTest {
   public void testBuscarCuentaPorIdCuentaNoExistsException() throws CuentaNoExistsException {
     Cuenta cuenta = createCuenta();
 
-    when(cuentaDao.find(numeroCuenta)).thenReturn(cuenta);
+    when(cuentaDao.find(numeroCuenta, false)).thenReturn(cuenta);
     doThrow(CuentaNoExistsException.class)
         .when(cuentaServiceValidator)
         .validateCuentaExists(cuenta);
@@ -162,7 +162,7 @@ public class CuentaServiceTest {
   public void testBuscarCuentaPorIdCorruptedDataInDbException() throws ClienteNoExistsException {
     Cuenta cuenta = createCuenta();
 
-    when(cuentaDao.find(numeroCuenta)).thenReturn(cuenta);
+    when(cuentaDao.find(numeroCuenta, false)).thenReturn(cuenta);
     doThrow(ClienteNoExistsException.class)
         .when(clienteService)
         .getClienteByCuenta(cuenta.getNumeroCuenta());
@@ -181,7 +181,7 @@ public class CuentaServiceTest {
     cuentaDto.setTipoCuenta(cuenta.getTipoCuenta().toString());
     cuentaDto.setMoneda(cuenta.getMoneda().toString());
 
-    when(cuentaDao.find(numeroCuenta)).thenReturn(cuenta);
+    when(cuentaDao.find(numeroCuenta, false)).thenReturn(cuenta);
     when(clienteService.getClienteByCuenta(cuenta.getNumeroCuenta())).thenReturn(cliente);
 
     assertEquals(cuentaDto, cuentaService.buscarCuentaPorId(numeroCuenta));
@@ -299,7 +299,7 @@ public class CuentaServiceTest {
   public void testEliminarCuentaNoExistsException() throws CuentaNoExistsException {
     Cuenta cuenta = createCuenta();
 
-    when(cuentaDao.find(clienteDni)).thenReturn(cuenta);
+    when(cuentaDao.find(numeroCuenta, true)).thenReturn(cuenta);
     doThrow(CuentaNoExistsException.class)
         .when(cuentaServiceValidator)
         .validateCuentaExists(cuenta);
@@ -311,7 +311,7 @@ public class CuentaServiceTest {
   public void testEliminarCuentaCorruptedDataInDbException() throws ClienteNoExistsException {
     Cuenta cuenta = createCuenta();
 
-    when(cuentaDao.find(clienteDni)).thenReturn(cuenta);
+    when(cuentaDao.find(numeroCuenta, true)).thenReturn(cuenta);
     doThrow(ClienteNoExistsException.class)
         .when(clienteService)
         .getClienteByCuenta(cuenta.getNumeroCuenta());
@@ -330,7 +330,7 @@ public class CuentaServiceTest {
     cuentaDto.setTipoCuenta(cuenta.getTipoCuenta().toString());
     cuentaDto.setMoneda(cuenta.getMoneda().toString());
 
-    when(cuentaDao.find(clienteDni)).thenReturn(cuenta);
+    when(cuentaDao.find(numeroCuenta, true)).thenReturn(cuenta);
     when(clienteService.getClienteByCuenta(cuenta.getNumeroCuenta())).thenReturn(cliente);
 
     CuentaDto cuentaResDto = cuentaService.eliminarCuenta(clienteDni);
@@ -345,7 +345,7 @@ public class CuentaServiceTest {
 
     Cuenta cuenta = createCuenta();
 
-    when(cuentaDao.find(clienteDni)).thenReturn(cuenta);
+    when(cuentaDao.find(numeroCuenta, true)).thenReturn(cuenta);
     doThrow(CuentaNoExistsException.class)
         .when(cuentaServiceValidator)
         .validateCuentaExists(cuenta);
@@ -357,7 +357,7 @@ public class CuentaServiceTest {
   public void testActivarCuentaCorruptedDataInDbException() throws ClienteNoExistsException {
     Cuenta cuenta = createCuenta();
 
-    when(cuentaDao.find(clienteDni)).thenReturn(cuenta);
+    when(cuentaDao.find(numeroCuenta, true)).thenReturn(cuenta);
     doThrow(ClienteNoExistsException.class)
         .when(clienteService)
         .getClienteByCuenta(cuenta.getNumeroCuenta());
@@ -376,7 +376,7 @@ public class CuentaServiceTest {
     cuentaDto.setTipoCuenta(cuenta.getTipoCuenta().toString());
     cuentaDto.setMoneda(cuenta.getMoneda().toString());
 
-    when(cuentaDao.find(clienteDni)).thenReturn(cuenta);
+    when(cuentaDao.find(numeroCuenta, true)).thenReturn(cuenta);
     when(clienteService.getClienteByCuenta(cuenta.getNumeroCuenta())).thenReturn(cliente);
 
     CuentaDto cuentaResDto = cuentaService.activarCuenta(clienteDni);
@@ -391,7 +391,7 @@ public class CuentaServiceTest {
       throws CuentaNoExistsException {
     Cuenta cuenta = createCuenta();
 
-    when(cuentaDao.find(numeroCuenta)).thenReturn(cuenta);
+    when(cuentaDao.find(numeroCuenta, true)).thenReturn(cuenta);
     doThrow(CuentaNoExistsException.class)
         .when(cuentaServiceValidator)
         .validateCuentaExists(cuenta);
@@ -405,7 +405,7 @@ public class CuentaServiceTest {
       throws ClienteNoExistsException {
     Cuenta cuenta = createCuenta();
 
-    when(cuentaDao.find(numeroCuenta)).thenReturn(cuenta);
+    when(cuentaDao.find(numeroCuenta, true)).thenReturn(cuenta);
     doThrow(ClienteNoExistsException.class)
         .when(clienteService)
         .getClienteByCuenta(cuenta.getNumeroCuenta());
@@ -425,7 +425,7 @@ public class CuentaServiceTest {
     cuentaDto.setTipoCuenta(cuenta.getTipoCuenta().toString());
     cuentaDto.setMoneda(cuenta.getMoneda().toString());
 
-    when(cuentaDao.find(numeroCuenta)).thenReturn(cuenta);
+    when(cuentaDao.find(numeroCuenta, true)).thenReturn(cuenta);
     when(clienteService.getClienteByCuenta(cuenta.getNumeroCuenta())).thenReturn(cliente);
 
     assertEquals(cuenta, cuentaService.buscarCuentaCompletaPorId(numeroCuenta));

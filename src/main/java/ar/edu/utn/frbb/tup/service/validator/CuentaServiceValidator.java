@@ -30,14 +30,14 @@ public class CuentaServiceValidator {
   }
 
   public void validateCuentaNoExists(Cuenta cuenta) throws CuentaAlreadyExistsException {
-    if (cuenta != null && cuentaDao.find(cuenta.getNumeroCuenta()) != null) {
+    if (cuenta != null && cuentaDao.find(cuenta.getNumeroCuenta(), false) != null) {
       throw new CuentaAlreadyExistsException(
           "La cuenta " + cuenta.getNumeroCuenta() + " ya existe.");
     }
   }
 
   public void validateCuentaExists(Cuenta cuenta) throws CuentaNoExistsException {
-    if (cuenta == null || cuentaDao.find(cuenta.getNumeroCuenta()) == null) {
+    if (cuenta == null || cuentaDao.find(cuenta.getNumeroCuenta(), false) == null) {
       throw new CuentaNoExistsException("No existe una cuenta con el id suministrado.");
     }
   }

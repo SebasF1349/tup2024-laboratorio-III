@@ -60,7 +60,7 @@ public class CuentaService {
 
   public CuentaDto buscarCuentaPorId(long numeroCuenta)
       throws CuentaNoExistsException, CorruptedDataInDbException {
-    Cuenta cuenta = cuentaDao.find(numeroCuenta);
+    Cuenta cuenta = cuentaDao.find(numeroCuenta, false);
 
     cuentaServiceValidator.validateCuentaExists(cuenta);
 
@@ -104,9 +104,9 @@ public class CuentaService {
     return cuenta.toCuentaDto();
   }
 
-  public CuentaDto eliminarCuenta(long dni)
+  public CuentaDto eliminarCuenta(long id)
       throws CuentaNoExistsException, CorruptedDataInDbException {
-    Cuenta cuenta = buscarCuentaCompletaPorId(dni);
+    Cuenta cuenta = buscarCuentaCompletaPorId(id);
 
     cuenta.setActivo(false);
     cuentaDao.save(cuenta);
@@ -124,7 +124,7 @@ public class CuentaService {
 
   protected Cuenta buscarCuentaCompletaPorId(long numeroCuenta)
       throws CuentaNoExistsException, CorruptedDataInDbException {
-    Cuenta cuenta = cuentaDao.find(numeroCuenta);
+    Cuenta cuenta = cuentaDao.find(numeroCuenta, true);
 
     cuentaServiceValidator.validateCuentaExists(cuenta);
 

@@ -4,12 +4,9 @@ import ar.edu.utn.frbb.tup.model.Cuenta;
 import ar.edu.utn.frbb.tup.model.Movimiento;
 import ar.edu.utn.frbb.tup.model.TipoCuenta;
 import ar.edu.utn.frbb.tup.model.TipoMoneda;
-import ar.edu.utn.frbb.tup.persistence.MovimientoDao;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class CuentaEntity extends BaseEntity {
   private LocalDateTime fechaCreacion;
@@ -51,20 +48,6 @@ public class CuentaEntity extends BaseEntity {
     cuenta.setMoneda(TipoMoneda.fromString(this.moneda));
     cuenta.setFechaApertura(this.fechaCreacion);
     cuenta.setActivo(this.activo);
-
-    // ClienteDao clienteDao = new ClienteDao();
-    // Cliente titular = clienteDao.find(this.titular, false);
-    // cuenta.setTitular(titular);
-
-    if (!this.movimientos.isEmpty()) {
-      Set<Movimiento> m = new HashSet<>();
-      MovimientoDao movimientoDao = new MovimientoDao();
-      for (long movimientoId : movimientos) {
-        Movimiento movimiento = movimientoDao.find(movimientoId);
-        m.add(movimiento);
-      }
-      cuenta.setMovimientos(m);
-    }
 
     return cuenta;
   }

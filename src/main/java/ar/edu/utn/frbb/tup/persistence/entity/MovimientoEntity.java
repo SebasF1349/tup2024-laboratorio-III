@@ -30,11 +30,11 @@ public class MovimientoEntity extends BaseEntity {
 
   public Movimiento toMovimiento() {
     CuentaDao cuentaDao = new CuentaDao();
-    Cuenta cuenta = cuentaDao.find(this.numeroCuenta);
+    Cuenta cuenta = cuentaDao.find(this.numeroCuenta, true);
     Movimiento movimiento;
     switch (this.movimiento) {
       case "TRANSFERENCIA":
-        Cuenta cuentaDestino = cuentaDao.find(this.numeroCuentaDestino);
+        Cuenta cuentaDestino = cuentaDao.find(this.numeroCuentaDestino, true);
         movimiento =
             new Transferencia(
                 this.monto, cuentaDestino, this.diaHora, this.getId(), cuenta, this.descripcion);

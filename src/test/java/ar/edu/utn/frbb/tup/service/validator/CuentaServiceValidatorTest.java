@@ -37,7 +37,7 @@ public class CuentaServiceValidatorTest {
   public void validateCuentaNoExistsFail() {
     Cuenta cuenta = createCuenta();
 
-    when(cuentaDao.find(cuenta.getNumeroCuenta())).thenReturn(cuenta);
+    when(cuentaDao.find(cuenta.getNumeroCuenta(), false)).thenReturn(cuenta);
 
     assertThrows(
         CuentaAlreadyExistsException.class,
@@ -48,7 +48,7 @@ public class CuentaServiceValidatorTest {
   public void validateCuentaNoExistsSuccess() {
     Cuenta cuenta = createCuenta();
 
-    when(cuentaDao.find(cuenta.getNumeroCuenta())).thenReturn(null);
+    when(cuentaDao.find(cuenta.getNumeroCuenta(), false)).thenReturn(null);
 
     assertDoesNotThrow(() -> cuentaServiceValidator.validateCuentaNoExists(cuenta));
   }
@@ -57,7 +57,7 @@ public class CuentaServiceValidatorTest {
   public void validateCuentaExistsFail() {
     Cuenta cuenta = createCuenta();
 
-    when(cuentaDao.find(cuenta.getNumeroCuenta())).thenReturn(null);
+    when(cuentaDao.find(cuenta.getNumeroCuenta(), false)).thenReturn(null);
 
     assertThrows(
         CuentaNoExistsException.class, () -> cuentaServiceValidator.validateCuentaExists(cuenta));
@@ -67,7 +67,7 @@ public class CuentaServiceValidatorTest {
   public void validateCuentaExistsSuccess() {
     Cuenta cuenta = createCuenta();
 
-    when(cuentaDao.find(cuenta.getNumeroCuenta())).thenReturn(cuenta);
+    when(cuentaDao.find(cuenta.getNumeroCuenta(), false)).thenReturn(cuenta);
 
     assertDoesNotThrow(() -> cuentaServiceValidator.validateCuentaExists(cuenta));
   }
