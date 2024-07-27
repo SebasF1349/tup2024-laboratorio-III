@@ -1,6 +1,7 @@
 package ar.edu.utn.frbb.tup.model;
 
 import ar.edu.utn.frbb.tup.controller.CuentaDto;
+import ar.edu.utn.frbb.tup.controller.CuentaMovimientosResponseDto;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -46,6 +47,12 @@ public class Cuenta {
     cuentaDto.setMoneda(this.moneda.toString());
     cuentaDto.setTitular(this.titular.getDni());
     return cuentaDto;
+  }
+
+  public CuentaMovimientosResponseDto toCuentaMovimientoResponseDto() {
+    CuentaMovimientosResponseDto cuentaMovimientosResponseDto = new CuentaMovimientosResponseDto();
+    cuentaMovimientosResponseDto.setNumeroCuenta(this.numeroCuenta);
+    return cuentaMovimientosResponseDto;
   }
 
   public long getNumeroCuenta() {

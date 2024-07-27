@@ -1,5 +1,6 @@
 package ar.edu.utn.frbb.tup.model;
 
+import ar.edu.utn.frbb.tup.controller.MovimientoResponseDto;
 import java.time.LocalDateTime;
 
 public abstract class Movimiento {
@@ -24,6 +25,25 @@ public abstract class Movimiento {
     this.descripcion = descripcion;
   }
 
+  public MovimientoResponseDto toMovimientoResponseDto(long numeroCuenta) {
+    MovimientoResponseDto movimientoResponseDto = new MovimientoResponseDto();
+    movimientoResponseDto.setFecha(this.getDiaHora().toString());
+    movimientoResponseDto.setDescripcion(this.getDescripcion());
+    if (this.getTipoMovimiento() == "TRANSFERENCIA") {
+      Transferencia transferencia = (Transferencia) this;
+      if (transferencia.getCuenta().getNumeroCuenta() == numeroCuenta) {
+        movimientoResponseDto.setTipoTransaccion(TipoTransaccion.DEBITO.toString());
+        movimientoResponseDto.setMontoDebitado(transferencia.getMontoDebitado());
+      } else if (transferencia.getCuentaDestino().getNumeroCuenta() == numeroCuenta) {
+        movimientoResponseDto.setTipoTransaccion(TipoTransaccion.CREDITO.toString());
+        movimientoResponseDto.setMontoDebitado(transferencia.getMonto());
+      }
+    } else {
+      movimientoResponseDto.setTipoTransaccion(this.getTipoMovimiento().toString());
+      movimientoResponseDto.setMontoDebitado(this.getMonto());
+    }
+    movimientoResponseDto.setMontoDebitado(this.getMonto());
+    return movimientoResponseDto;
   }
 
   public Cuenta getCuenta() {
