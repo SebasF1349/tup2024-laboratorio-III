@@ -166,12 +166,6 @@ public class Cliente extends Persona {
         + activo
         + ", banco="
         + banco
-        + ", getTipoPersona()="
-        + getTipoPersona()
-        + ", getFechaAlta()="
-        + getFechaAlta()
-        + ", isActivo()="
-        + isActivo()
         + "}";
   }
 }

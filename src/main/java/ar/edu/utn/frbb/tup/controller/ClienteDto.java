@@ -59,4 +59,21 @@ public class ClienteDto extends PersonaDto {
     }
     return true;
   }
+
+  @Override
+  public String toString() {
+    return "ClienteDto{tipoPersona="
+        + tipoPersona
+        + ", banco="
+        + banco
+        + ", getNombre()="
+        + getNombre()
+        + ", getApellido()="
+        + getApellido()
+        + ", getDni()="
+        + getDni()
+        + ", getFechaNacimiento()="
+        + getFechaNacimiento()
+        + "}";
+  }
 }

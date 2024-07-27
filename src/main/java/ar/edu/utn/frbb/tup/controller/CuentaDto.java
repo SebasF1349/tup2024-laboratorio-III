@@ -87,4 +87,17 @@ public class CuentaDto {
     }
     return true;
   }
+
+  @Override
+  public String toString() {
+    return "CuentaDto{balance="
+        + balance
+        + ", tipoCuenta="
+        + tipoCuenta
+        + ", moneda="
+        + moneda
+        + ", titular="
+        + titular
+        + "}";
+  }
 }
