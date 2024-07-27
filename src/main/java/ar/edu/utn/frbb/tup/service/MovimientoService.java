@@ -48,6 +48,10 @@ public class MovimientoService {
               cuentaOrigen, transferenciaDto.getCuentaDestino(), transferenciaDto.getMonto());
 
       movimientoServiceValidator.validateBanelcoResponse(banelcoResponse);
+
+      Cuenta cuentaExterna = new Cuenta();
+      cuentaExterna.setNumeroCuenta(transferenciaDto.getCuentaDestino());
+      transferencia.setCuentaDestino(cuentaExterna);
     }
 
     transferencia.setMontoDebitado(getMontoDebitado(transferencia));
