@@ -10,6 +10,7 @@ import ar.edu.utn.frbb.tup.model.exception.ClienteMenorDeEdadException;
 import ar.edu.utn.frbb.tup.model.exception.ClienteNoExistsException;
 import ar.edu.utn.frbb.tup.model.exception.CorruptedDataInDbException;
 import ar.edu.utn.frbb.tup.model.exception.CuentaNoExistsException;
+import ar.edu.utn.frbb.tup.model.exception.ImpossibleException;
 import ar.edu.utn.frbb.tup.model.exception.TipoCuentaAlreadyExistsException;
 import ar.edu.utn.frbb.tup.persistence.ClienteDao;
 import ar.edu.utn.frbb.tup.service.validator.ClienteServiceValidator;
@@ -234,7 +235,10 @@ public class ClienteServiceTest {
 
   @Test
   public void testEliminarClienteCorruptedDataInDbException()
-      throws CorruptedDataInDbException, CuentaNoExistsException {
+      throws CorruptedDataInDbException,
+          CuentaNoExistsException,
+          ImpossibleException,
+          IllegalArgumentException {
     Cliente cliente = createCliente();
     Cuenta cuenta = createCuenta();
     cliente.addCuenta(cuenta);
@@ -256,7 +260,11 @@ public class ClienteServiceTest {
 
   @Test
   public void testEliminarClienteCuentaNoExistsSuccess()
-      throws CorruptedDataInDbException, ClienteNoExistsException, CuentaNoExistsException {
+      throws CorruptedDataInDbException,
+          ClienteNoExistsException,
+          CuentaNoExistsException,
+          ImpossibleException,
+          IllegalArgumentException {
     Cliente cliente = createCliente();
     Cuenta cuenta = createCuenta();
     cliente.addCuenta(cuenta);
@@ -279,7 +287,10 @@ public class ClienteServiceTest {
 
   @Test
   public void testEliminarClienteSuccess()
-      throws CorruptedDataInDbException, ClienteNoExistsException {
+      throws CorruptedDataInDbException,
+          ClienteNoExistsException,
+          ImpossibleException,
+          IllegalArgumentException {
     Cliente cliente = createCliente();
 
     when(clienteDao.find(dniCliente, true)).thenReturn(cliente);

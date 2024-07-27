@@ -11,6 +11,7 @@ import ar.edu.utn.frbb.tup.model.TipoCuenta;
 import ar.edu.utn.frbb.tup.model.TipoMoneda;
 import ar.edu.utn.frbb.tup.model.exception.CuentaAlreadyExistsException;
 import ar.edu.utn.frbb.tup.model.exception.CuentaNoExistsException;
+import ar.edu.utn.frbb.tup.model.exception.ImpossibleException;
 import ar.edu.utn.frbb.tup.persistence.CuentaDao;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -34,7 +35,7 @@ public class CuentaServiceValidatorTest {
   }
 
   @Test
-  public void validateCuentaNoExistsFail() {
+  public void validateCuentaNoExistsFail() throws ImpossibleException, IllegalArgumentException {
     Cuenta cuenta = createCuenta();
 
     when(cuentaDao.find(cuenta.getNumeroCuenta(), false)).thenReturn(cuenta);
@@ -45,7 +46,7 @@ public class CuentaServiceValidatorTest {
   }
 
   @Test
-  public void validateCuentaNoExistsSuccess() {
+  public void validateCuentaNoExistsSuccess() throws ImpossibleException, IllegalArgumentException {
     Cuenta cuenta = createCuenta();
 
     when(cuentaDao.find(cuenta.getNumeroCuenta(), false)).thenReturn(null);
@@ -54,7 +55,7 @@ public class CuentaServiceValidatorTest {
   }
 
   @Test
-  public void validateCuentaExistsFail() {
+  public void validateCuentaExistsFail() throws ImpossibleException, IllegalArgumentException {
     Cuenta cuenta = createCuenta();
 
     when(cuentaDao.find(cuenta.getNumeroCuenta(), false)).thenReturn(null);
@@ -64,7 +65,7 @@ public class CuentaServiceValidatorTest {
   }
 
   @Test
-  public void validateCuentaExistsSuccess() {
+  public void validateCuentaExistsSuccess() throws ImpossibleException, IllegalArgumentException {
     Cuenta cuenta = createCuenta();
 
     when(cuentaDao.find(cuenta.getNumeroCuenta(), false)).thenReturn(cuenta);

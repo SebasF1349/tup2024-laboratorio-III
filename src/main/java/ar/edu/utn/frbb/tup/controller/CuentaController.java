@@ -5,6 +5,7 @@ import ar.edu.utn.frbb.tup.model.exception.ClienteNoExistsException;
 import ar.edu.utn.frbb.tup.model.exception.CorruptedDataInDbException;
 import ar.edu.utn.frbb.tup.model.exception.CuentaNoExistsException;
 import ar.edu.utn.frbb.tup.model.exception.CuentaNoSoportadaException;
+import ar.edu.utn.frbb.tup.model.exception.ImpossibleException;
 import ar.edu.utn.frbb.tup.model.exception.TipoCuentaAlreadyExistsException;
 import ar.edu.utn.frbb.tup.model.exception.WrongInputDataException;
 import ar.edu.utn.frbb.tup.service.CuentaService;
@@ -32,7 +33,10 @@ public class CuentaController {
 
   @GetMapping(value = "/{id}")
   public CuentaDto obtenerCuenta(@PathVariable long id)
-      throws CuentaNoExistsException, CorruptedDataInDbException {
+      throws CuentaNoExistsException,
+          CorruptedDataInDbException,
+          ImpossibleException,
+          IllegalArgumentException {
     return cuentaService.buscarCuentaPorId(id);
   }
 
@@ -50,7 +54,10 @@ public class CuentaController {
 
   @DeleteMapping(value = "/{id}")
   public CuentaDto eliminarCuenta(@PathVariable long id)
-      throws CuentaNoExistsException, CorruptedDataInDbException {
+      throws CuentaNoExistsException,
+          CorruptedDataInDbException,
+          ImpossibleException,
+          IllegalArgumentException {
     return cuentaService.eliminarCuenta(id);
   }
 
@@ -61,14 +68,19 @@ public class CuentaController {
           ClienteNoExistsException,
           CuentaNoSoportadaException,
           TipoCuentaAlreadyExistsException,
-          CorruptedDataInDbException {
+          CorruptedDataInDbException,
+          ImpossibleException,
+          IllegalArgumentException {
     cuentaValidator.validate(cuentaDto);
     return cuentaService.actualizarCuenta(cuentaDto);
   }
 
   @GetMapping(value = "/{id}/transacciones")
   public CuentaMovimientosResponseDto obtenerTransaccionesEnCuenta(@PathVariable long id)
-      throws CuentaNoExistsException, CorruptedDataInDbException {
+      throws CuentaNoExistsException,
+          CorruptedDataInDbException,
+          ImpossibleException,
+          IllegalArgumentException {
     return cuentaService.buscarTransaccionesDeCuentaPorId(id);
   }
 }

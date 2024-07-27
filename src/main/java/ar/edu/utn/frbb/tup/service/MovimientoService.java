@@ -10,6 +10,7 @@ import ar.edu.utn.frbb.tup.model.Transferencia;
 import ar.edu.utn.frbb.tup.model.exception.BanelcoErrorException;
 import ar.edu.utn.frbb.tup.model.exception.CorruptedDataInDbException;
 import ar.edu.utn.frbb.tup.model.exception.CuentaNoExistsException;
+import ar.edu.utn.frbb.tup.model.exception.ImpossibleException;
 import ar.edu.utn.frbb.tup.model.exception.MonedasDistintasException;
 import ar.edu.utn.frbb.tup.model.exception.MontoInsuficienteException;
 import ar.edu.utn.frbb.tup.persistence.MovimientoDao;
@@ -30,7 +31,9 @@ public class MovimientoService {
           MontoInsuficienteException,
           MonedasDistintasException,
           CorruptedDataInDbException,
-          BanelcoErrorException {
+          BanelcoErrorException,
+          ImpossibleException,
+          IllegalArgumentException {
 
     Cuenta cuentaOrigen =
         cuentaService.buscarCuentaCompletaPorId(transferenciaDto.getCuentaOrigen());

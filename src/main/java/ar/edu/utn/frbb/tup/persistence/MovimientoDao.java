@@ -1,6 +1,7 @@
 package ar.edu.utn.frbb.tup.persistence;
 
 import ar.edu.utn.frbb.tup.model.Movimiento;
+import ar.edu.utn.frbb.tup.model.exception.ImpossibleException;
 import ar.edu.utn.frbb.tup.persistence.entity.MovimientoEntity;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +14,7 @@ public class MovimientoDao extends AbstractBaseDao {
     return "MOVIMIENTO";
   }
 
-  public Movimiento find(long idMovimiento) {
+  public Movimiento find(long idMovimiento) throws ImpossibleException {
     if (getInMemoryDatabase().get(idMovimiento) == null) return null;
     return ((MovimientoEntity) getInMemoryDatabase().get(idMovimiento)).toMovimiento();
   }
@@ -23,7 +24,7 @@ public class MovimientoDao extends AbstractBaseDao {
     getInMemoryDatabase().put(entity.getId(), entity);
   }
 
-  public List<Movimiento> getMovimientosByCuenta(long numeroCuenta) {
+  public List<Movimiento> getMovimientosByCuenta(long numeroCuenta) throws ImpossibleException {
     List<Movimiento> movimientosDeCuenta = new ArrayList<>();
     for (Object object : getInMemoryDatabase().values()) {
       MovimientoEntity movimiento = ((MovimientoEntity) object);

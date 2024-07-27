@@ -1,5 +1,6 @@
 package ar.edu.utn.frbb.tup.model;
 
+import ar.edu.utn.frbb.tup.model.exception.ImpossibleException;
 import java.time.LocalDateTime;
 
 public abstract class MovimientoUnidireccional extends Movimiento {
@@ -15,15 +16,14 @@ public abstract class MovimientoUnidireccional extends Movimiento {
 
   protected abstract TipoTransaccion getTipoTransaccion();
 
-  public double actualizarCuentaMonto(Cuenta cuenta) {
+  public double actualizarCuentaMonto(Cuenta cuenta) throws ImpossibleException {
     switch (getTipoTransaccion()) {
       case DEBITO:
         return cuenta.getBalance() + this.getMonto();
       case CREDITO:
         return cuenta.getBalance() - this.getMonto();
       default:
-        // TODO: find better way to handle impossible cases
-        throw new IllegalArgumentException("Unhandled TipoTransaccion");
+        throw new ImpossibleException();
     }
   }
 }

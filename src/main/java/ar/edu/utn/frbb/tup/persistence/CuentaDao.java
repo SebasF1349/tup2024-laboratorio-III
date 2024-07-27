@@ -2,6 +2,7 @@ package ar.edu.utn.frbb.tup.persistence;
 
 import ar.edu.utn.frbb.tup.model.Cuenta;
 import ar.edu.utn.frbb.tup.model.Movimiento;
+import ar.edu.utn.frbb.tup.model.exception.ImpossibleException;
 import ar.edu.utn.frbb.tup.persistence.entity.CuentaEntity;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,8 +19,8 @@ public class CuentaDao extends AbstractBaseDao {
     return "CUENTA";
   }
 
-  // TODO: Add second argument to get movimientos or not
-  public Cuenta find(long numeroCuenta, boolean loadComplete) {
+  public Cuenta find(long numeroCuenta, boolean loadComplete)
+      throws ImpossibleException, IllegalArgumentException {
     if (getInMemoryDatabase().get(numeroCuenta) == null) return null;
     Cuenta cuenta = ((CuentaEntity) getInMemoryDatabase().get(numeroCuenta)).toCuenta();
     if (loadComplete) {

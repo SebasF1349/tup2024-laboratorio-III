@@ -6,6 +6,7 @@ import ar.edu.utn.frbb.tup.model.TipoMoneda;
 import ar.edu.utn.frbb.tup.model.exception.CuentaAlreadyExistsException;
 import ar.edu.utn.frbb.tup.model.exception.CuentaNoExistsException;
 import ar.edu.utn.frbb.tup.model.exception.CuentaNoSoportadaException;
+import ar.edu.utn.frbb.tup.model.exception.ImpossibleException;
 import ar.edu.utn.frbb.tup.persistence.CuentaDao;
 import java.util.AbstractMap;
 import java.util.Arrays;
@@ -29,14 +30,16 @@ public class CuentaServiceValidator {
     this.cuentaDao = cuentaDao;
   }
 
-  public void validateCuentaNoExists(Cuenta cuenta) throws CuentaAlreadyExistsException {
+  public void validateCuentaNoExists(Cuenta cuenta)
+      throws CuentaAlreadyExistsException, ImpossibleException, IllegalArgumentException {
     if (cuenta != null && cuentaDao.find(cuenta.getNumeroCuenta(), false) != null) {
       throw new CuentaAlreadyExistsException(
           "La cuenta " + cuenta.getNumeroCuenta() + " ya existe.");
     }
   }
 
-  public void validateCuentaExists(Cuenta cuenta) throws CuentaNoExistsException {
+  public void validateCuentaExists(Cuenta cuenta)
+      throws CuentaNoExistsException, ImpossibleException, IllegalArgumentException {
     if (cuenta == null || cuentaDao.find(cuenta.getNumeroCuenta(), false) == null) {
       throw new CuentaNoExistsException("No existe una cuenta con el id suministrado.");
     }

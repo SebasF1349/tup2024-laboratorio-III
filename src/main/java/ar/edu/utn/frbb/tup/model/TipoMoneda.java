@@ -1,5 +1,7 @@
 package ar.edu.utn.frbb.tup.model;
 
+import ar.edu.utn.frbb.tup.model.exception.ImpossibleException;
+
 public enum TipoMoneda {
   PESOS_ARGENTINOS("P"),
   DOLARES_AMERICANOS("D");
@@ -24,14 +26,14 @@ public enum TipoMoneda {
         "No se pudo encontrar un MonedaCuenta con la descripción: " + text);
   }
 
-  public String getSymbol() {
+  public String getSymbol() throws ImpossibleException {
     switch (this) {
       case PESOS_ARGENTINOS:
         return "$";
       case DOLARES_AMERICANOS:
         return "us$";
       default:
-        return "Moneda not found";
+        throw new ImpossibleException();
     }
   }
 

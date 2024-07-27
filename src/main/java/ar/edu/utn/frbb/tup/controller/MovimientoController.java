@@ -4,6 +4,7 @@ import ar.edu.utn.frbb.tup.controller.validator.MovimientoControllerValidator;
 import ar.edu.utn.frbb.tup.model.exception.BanelcoErrorException;
 import ar.edu.utn.frbb.tup.model.exception.CorruptedDataInDbException;
 import ar.edu.utn.frbb.tup.model.exception.CuentaNoExistsException;
+import ar.edu.utn.frbb.tup.model.exception.ImpossibleException;
 import ar.edu.utn.frbb.tup.model.exception.MonedasDistintasException;
 import ar.edu.utn.frbb.tup.model.exception.MontoInsuficienteException;
 import ar.edu.utn.frbb.tup.model.exception.WrongInputDataException;
@@ -33,7 +34,9 @@ public class MovimientoController {
           MontoInsuficienteException,
           MonedasDistintasException,
           CorruptedDataInDbException,
-          BanelcoErrorException {
+          BanelcoErrorException,
+          ImpossibleException,
+          IllegalArgumentException {
     movimientoControllerValidator.validate(transferenciaDto);
     TransferenciaResponseDto transferenciaResponse =
         movimientoService.realizarTransferencia(transferenciaDto);

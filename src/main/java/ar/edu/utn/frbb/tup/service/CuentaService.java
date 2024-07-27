@@ -13,6 +13,7 @@ import ar.edu.utn.frbb.tup.model.exception.ClienteNoExistsException;
 import ar.edu.utn.frbb.tup.model.exception.CorruptedDataInDbException;
 import ar.edu.utn.frbb.tup.model.exception.CuentaNoExistsException;
 import ar.edu.utn.frbb.tup.model.exception.CuentaNoSoportadaException;
+import ar.edu.utn.frbb.tup.model.exception.ImpossibleException;
 import ar.edu.utn.frbb.tup.model.exception.TipoCuentaAlreadyExistsException;
 import ar.edu.utn.frbb.tup.persistence.CuentaDao;
 import ar.edu.utn.frbb.tup.persistence.MovimientoDao;
@@ -62,7 +63,10 @@ public class CuentaService {
   }
 
   public CuentaDto buscarCuentaPorId(long numeroCuenta)
-      throws CuentaNoExistsException, CorruptedDataInDbException {
+      throws CuentaNoExistsException,
+          CorruptedDataInDbException,
+          ImpossibleException,
+          IllegalArgumentException {
     Cuenta cuenta = cuentaDao.find(numeroCuenta, false);
 
     cuentaServiceValidator.validateCuentaExists(cuenta);
@@ -84,7 +88,9 @@ public class CuentaService {
           ClienteNoExistsException,
           CuentaNoSoportadaException,
           CorruptedDataInDbException,
-          TipoCuentaAlreadyExistsException {
+          TipoCuentaAlreadyExistsException,
+          ImpossibleException,
+          IllegalArgumentException {
     Cuenta cuenta = new Cuenta(cuentaDto);
 
     cuentaServiceValidator.validateCuentaExists(cuenta);
@@ -108,7 +114,10 @@ public class CuentaService {
   }
 
   public CuentaDto eliminarCuenta(long id)
-      throws CuentaNoExistsException, CorruptedDataInDbException {
+      throws CuentaNoExistsException,
+          CorruptedDataInDbException,
+          ImpossibleException,
+          IllegalArgumentException {
     Cuenta cuenta = buscarCuentaCompletaPorId(id);
 
     cuenta.setActivo(false);
@@ -117,7 +126,10 @@ public class CuentaService {
   }
 
   public CuentaDto activarCuenta(long id)
-      throws CuentaNoExistsException, CorruptedDataInDbException {
+      throws CuentaNoExistsException,
+          CorruptedDataInDbException,
+          ImpossibleException,
+          IllegalArgumentException {
     Cuenta cuenta = buscarCuentaCompletaPorId(id);
 
     cuenta.setActivo(true);
@@ -126,7 +138,10 @@ public class CuentaService {
   }
 
   protected Cuenta buscarCuentaCompletaPorId(long numeroCuenta)
-      throws CuentaNoExistsException, CorruptedDataInDbException {
+      throws CuentaNoExistsException,
+          CorruptedDataInDbException,
+          ImpossibleException,
+          IllegalArgumentException {
     Cuenta cuenta = cuentaDao.find(numeroCuenta, true);
 
     cuentaServiceValidator.validateCuentaExists(cuenta);
@@ -143,7 +158,8 @@ public class CuentaService {
     return cuenta;
   }
 
-  protected void agregarMovimientoACuentas(MovimientoUnidireccional movimiento) {
+  protected void agregarMovimientoACuentas(MovimientoUnidireccional movimiento)
+      throws ImpossibleException {
     Cuenta cuentaOrigen = movimiento.getCuenta();
 
     double nuevoSaldoOrigen = movimiento.actualizarCuentaMonto(cuentaOrigen);
@@ -170,7 +186,10 @@ public class CuentaService {
   }
 
   public CuentaMovimientosResponseDto buscarTransaccionesDeCuentaPorId(long id)
-      throws CuentaNoExistsException, CorruptedDataInDbException {
+      throws CuentaNoExistsException,
+          CorruptedDataInDbException,
+          ImpossibleException,
+          IllegalArgumentException {
     Cuenta cuenta = buscarCuentaCompletaPorId(id);
 
     CuentaMovimientosResponseDto cuentaMovimientosResponseDto =

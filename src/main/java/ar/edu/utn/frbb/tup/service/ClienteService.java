@@ -8,6 +8,7 @@ import ar.edu.utn.frbb.tup.model.exception.ClienteMenorDeEdadException;
 import ar.edu.utn.frbb.tup.model.exception.ClienteNoExistsException;
 import ar.edu.utn.frbb.tup.model.exception.CorruptedDataInDbException;
 import ar.edu.utn.frbb.tup.model.exception.CuentaNoExistsException;
+import ar.edu.utn.frbb.tup.model.exception.ImpossibleException;
 import ar.edu.utn.frbb.tup.model.exception.TipoCuentaAlreadyExistsException;
 import ar.edu.utn.frbb.tup.persistence.ClienteDao;
 import ar.edu.utn.frbb.tup.service.validator.ClienteServiceValidator;
@@ -100,7 +101,10 @@ public class ClienteService {
   }
 
   public ClienteDto eliminarCliente(long dni)
-      throws CorruptedDataInDbException, ClienteNoExistsException {
+      throws CorruptedDataInDbException,
+          ClienteNoExistsException,
+          ImpossibleException,
+          IllegalArgumentException {
     Cliente cliente = buscarClienteCompletoPorDni(dni);
 
     cliente.setActivo(false);

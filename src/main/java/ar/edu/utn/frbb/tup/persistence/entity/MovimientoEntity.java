@@ -5,6 +5,7 @@ import ar.edu.utn.frbb.tup.model.Deposito;
 import ar.edu.utn.frbb.tup.model.Movimiento;
 import ar.edu.utn.frbb.tup.model.Retiro;
 import ar.edu.utn.frbb.tup.model.Transferencia;
+import ar.edu.utn.frbb.tup.model.exception.ImpossibleException;
 import ar.edu.utn.frbb.tup.persistence.CuentaDao;
 import java.time.LocalDateTime;
 
@@ -28,7 +29,7 @@ public class MovimientoEntity extends BaseEntity {
     }
   }
 
-  public Movimiento toMovimiento() {
+  public Movimiento toMovimiento() throws ImpossibleException {
     CuentaDao cuentaDao = new CuentaDao();
     Cuenta cuenta = cuentaDao.find(this.numeroCuenta, true);
     Movimiento movimiento;
@@ -46,7 +47,7 @@ public class MovimientoEntity extends BaseEntity {
         movimiento = new Deposito(this.monto, this.diaHora, this.getId(), cuenta, this.descripcion);
         break;
       default:
-        throw new IllegalArgumentException("Unhandled TipoMovimiento");
+        throw new ImpossibleException();
     }
     return movimiento;
   }

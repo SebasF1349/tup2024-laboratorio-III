@@ -5,6 +5,7 @@ import ar.edu.utn.frbb.tup.model.exception.ClienteAlreadyExistsException;
 import ar.edu.utn.frbb.tup.model.exception.ClienteMenorDeEdadException;
 import ar.edu.utn.frbb.tup.model.exception.ClienteNoExistsException;
 import ar.edu.utn.frbb.tup.model.exception.CorruptedDataInDbException;
+import ar.edu.utn.frbb.tup.model.exception.ImpossibleException;
 import ar.edu.utn.frbb.tup.model.exception.WrongInputDataException;
 import ar.edu.utn.frbb.tup.service.ClienteService;
 import jakarta.validation.Valid;
@@ -46,7 +47,10 @@ public class ClienteController {
 
   @DeleteMapping(value = "/{dni}")
   public ClienteDto eliminarCliente(@PathVariable long dni)
-      throws CorruptedDataInDbException, ClienteNoExistsException {
+      throws CorruptedDataInDbException,
+          ClienteNoExistsException,
+          ImpossibleException,
+          IllegalArgumentException {
     return clienteService.eliminarCliente(dni);
   }
 
