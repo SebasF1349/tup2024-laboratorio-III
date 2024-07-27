@@ -1,7 +1,6 @@
 package ar.edu.utn.frbb.tup.controller;
 
 import ar.edu.utn.frbb.tup.controller.validator.CuentaControllerValidator;
-import ar.edu.utn.frbb.tup.model.Cuenta;
 import ar.edu.utn.frbb.tup.model.exception.ClienteNoExistsException;
 import ar.edu.utn.frbb.tup.model.exception.CorruptedDataInDbException;
 import ar.edu.utn.frbb.tup.model.exception.CuentaNoExistsException;
@@ -32,7 +31,7 @@ public class CuentaController {
   @Autowired private CuentaControllerValidator cuentaValidator;
 
   @GetMapping(value = "/{id}")
-  public Cuenta obtenerCuenta(@PathVariable long id)
+  public CuentaDto obtenerCuenta(@PathVariable long id)
       throws CuentaNoExistsException, CorruptedDataInDbException {
     return cuentaService.buscarCuentaPorId(id);
   }
@@ -50,13 +49,13 @@ public class CuentaController {
   }
 
   @DeleteMapping(value = "/{id}")
-  public Cuenta eliminarCuenta(@PathVariable long id)
+  public CuentaDto eliminarCuenta(@PathVariable long id)
       throws CuentaNoExistsException, CorruptedDataInDbException {
     return cuentaService.eliminarCuenta(id);
   }
 
   @PutMapping
-  public Cuenta actualizarCuenta(@Valid @RequestBody CuentaDto cuentaDto)
+  public CuentaDto actualizarCuenta(@Valid @RequestBody CuentaDto cuentaDto)
       throws WrongInputDataException,
           CuentaNoExistsException,
           ClienteNoExistsException,

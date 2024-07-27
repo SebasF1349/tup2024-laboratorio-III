@@ -26,7 +26,7 @@ public class MovimientoController {
   @Autowired private MovimientoControllerValidator movimientoControllerValidator;
 
   @PostMapping(value = "/transfer")
-  public ResponseEntity<TransferenciaDto> realizarTransferencia(
+  public ResponseEntity<TransferenciaResponseDto> realizarTransferencia(
       @Valid @RequestBody TransferenciaDto transferenciaDto)
       throws WrongInputDataException,
           CuentaNoExistsException,
@@ -35,9 +35,9 @@ public class MovimientoController {
           CorruptedDataInDbException,
           BanelcoErrorException {
     movimientoControllerValidator.validate(transferenciaDto);
-    TransferenciaDto transferenciaResponse =
+    TransferenciaResponseDto transferenciaResponse =
         movimientoService.realizarTransferencia(transferenciaDto);
-    return new ResponseEntity<TransferenciaDto>(
+    return new ResponseEntity<TransferenciaResponseDto>(
         transferenciaResponse, new HttpHeaders(), HttpStatus.CREATED);
   }
 }

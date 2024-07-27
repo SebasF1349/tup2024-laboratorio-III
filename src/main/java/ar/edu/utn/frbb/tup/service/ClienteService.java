@@ -32,7 +32,7 @@ public class ClienteService {
     this.cuentaService = cuentaService;
   }
 
-  public Cliente darDeAltaCliente(ClienteDto clienteDto)
+  public ClienteDto darDeAltaCliente(ClienteDto clienteDto)
       throws ClienteAlreadyExistsException, ClienteMenorDeEdadException {
 
     Cliente cliente = new Cliente(clienteDto);
@@ -41,13 +41,14 @@ public class ClienteService {
     clienteServiceValidator.validateClienteMayorDeEdad(cliente);
 
     clienteDao.save(cliente);
-    return cliente;
+
+    return cliente.toClienteDto();
   }
 
-  public Cliente agregarCuenta(Cuenta cuenta, long dniTitular)
+  protected Cliente agregarCuenta(Cuenta cuenta, long dniTitular)
       throws TipoCuentaAlreadyExistsException, ClienteNoExistsException {
 
-    Cliente titular = buscarClientePorDni(dniTitular);
+    Cliente titular = buscarClienteCompletoPorDni(dniTitular);
 
     clienteServiceValidator.validateTipoCuentaUnica(titular, cuenta);
 
@@ -61,7 +62,7 @@ public class ClienteService {
   public Cliente obtenerTitularConCuenta(Cuenta cuenta, long dniTitular)
       throws ClienteNoExistsException, TipoCuentaAlreadyExistsException {
 
-    Cliente titular = buscarClientePorDni(dniTitular);
+    Cliente titular = buscarClienteCompletoPorDni(dniTitular);
 
     clienteServiceValidator.validateTipoCuentaUnica(titular, cuenta);
 
@@ -75,17 +76,17 @@ public class ClienteService {
     return titular;
   }
 
-  public Cliente buscarClientePorDni(long dni) throws ClienteNoExistsException {
-    Cliente cliente = clienteDao.find(dni, true);
+  public ClienteDto buscarClientePorDni(long dni) throws ClienteNoExistsException {
+    Cliente cliente = clienteDao.find(dni, false);
 
     if (cliente == null) {
       throw new ClienteNoExistsException("No existe un cliente con DNI " + dni);
     }
 
-    return cliente;
+    return cliente.toClienteDto();
   }
 
-  public Cliente actualizarCliente(ClienteDto clienteDto)
+  public ClienteDto actualizarCliente(ClienteDto clienteDto)
       throws ClienteNoExistsException, ClienteMenorDeEdadException {
 
     Cliente cliente = new Cliente(clienteDto);
@@ -95,21 +96,12 @@ public class ClienteService {
 
     clienteDao.save(cliente);
 
-    return cliente;
+    return cliente.toClienteDto();
   }
 
-  public void actualizarCliente(Cliente cliente)
-      throws ClienteNoExistsException, ClienteMenorDeEdadException {
-
-    clienteServiceValidator.validateClienteExists(cliente);
-    clienteServiceValidator.validateClienteMayorDeEdad(cliente);
-
-    clienteDao.save(cliente);
-  }
-
-  public Cliente eliminarCliente(long dni)
+  public ClienteDto eliminarCliente(long dni)
       throws CorruptedDataInDbException, ClienteNoExistsException {
-    Cliente cliente = buscarClientePorDni(dni);
+    Cliente cliente = buscarClienteCompletoPorDni(dni);
 
     cliente.setActivo(false);
 
@@ -127,15 +119,34 @@ public class ClienteService {
     }
 
     clienteDao.save(cliente);
-    return cliente;
+    return cliente.toClienteDto();
   }
 
-  public Cliente activarCliente(long dni) throws ClienteNoExistsException {
-    Cliente cliente = buscarClientePorDni(dni);
+  public ClienteDto activarCliente(long dni) throws ClienteNoExistsException {
+    Cliente cliente = buscarClienteCompletoPorDni(dni);
 
     cliente.setActivo(true);
 
     clienteDao.save(cliente);
+
+    return cliente.toClienteDto();
+  }
+
+  protected void actualizarCliente(Cliente cliente)
+      throws ClienteNoExistsException, ClienteMenorDeEdadException {
+
+    clienteServiceValidator.validateClienteExists(cliente);
+    clienteServiceValidator.validateClienteMayorDeEdad(cliente);
+
+    clienteDao.save(cliente);
+  }
+
+  protected Cliente buscarClienteCompletoPorDni(long dni) throws ClienteNoExistsException {
+    Cliente cliente = clienteDao.find(dni, true);
+
+    if (cliente == null) {
+      throw new ClienteNoExistsException("No existe un cliente con DNI " + dni);
+    }
 
     return cliente;
   }

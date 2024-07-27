@@ -7,6 +7,7 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 import ar.edu.utn.frbb.tup.controller.TransferenciaDto;
+import ar.edu.utn.frbb.tup.controller.TransferenciaResponseDto;
 import ar.edu.utn.frbb.tup.externalService.Banelco;
 import ar.edu.utn.frbb.tup.externalService.BanelcoResponseDto;
 import ar.edu.utn.frbb.tup.model.Cuenta;
@@ -53,7 +54,7 @@ public class MovimientoServiceTest {
 
     doThrow(CuentaNoExistsException.class)
         .when(cuentaService)
-        .buscarCuentaPorId(transferenciaDto.getCuentaOrigen());
+        .buscarCuentaCompletaPorId(transferenciaDto.getCuentaOrigen());
 
     assertThrows(
         CuentaNoExistsException.class,
@@ -66,7 +67,7 @@ public class MovimientoServiceTest {
     TransferenciaDto transferenciaDto = createTransferenciaDto();
     Cuenta cuentaOrigen = createCuenta(1);
 
-    when(cuentaService.buscarCuentaPorId(transferenciaDto.getCuentaOrigen()))
+    when(cuentaService.buscarCuentaCompletaPorId(transferenciaDto.getCuentaOrigen()))
         .thenReturn(cuentaOrigen);
 
     doThrow(MontoInsuficienteException.class)
@@ -84,7 +85,7 @@ public class MovimientoServiceTest {
     TransferenciaDto transferenciaDto = createTransferenciaDto();
     Cuenta cuentaOrigen = createCuenta(1);
 
-    when(cuentaService.buscarCuentaPorId(transferenciaDto.getCuentaOrigen()))
+    when(cuentaService.buscarCuentaCompletaPorId(transferenciaDto.getCuentaOrigen()))
         .thenReturn(cuentaOrigen);
 
     doThrow(MonedasDistintasException.class)
@@ -102,7 +103,7 @@ public class MovimientoServiceTest {
     TransferenciaDto transferenciaDto = createTransferenciaDto();
     Cuenta cuentaOrigen = createCuenta(1);
 
-    when(cuentaService.buscarCuentaPorId(transferenciaDto.getCuentaOrigen()))
+    when(cuentaService.buscarCuentaCompletaPorId(transferenciaDto.getCuentaOrigen()))
         .thenReturn(cuentaOrigen);
 
     doThrow(MonedasDistintasException.class)
@@ -121,7 +122,7 @@ public class MovimientoServiceTest {
 
     doThrow(CorruptedDataInDbException.class)
         .when(cuentaService)
-        .buscarCuentaPorId(transferenciaDto.getCuentaOrigen());
+        .buscarCuentaCompletaPorId(transferenciaDto.getCuentaOrigen());
 
     assertThrows(
         CorruptedDataInDbException.class,
@@ -134,12 +135,12 @@ public class MovimientoServiceTest {
     TransferenciaDto transferenciaDto = createTransferenciaDto();
     Cuenta cuentaOrigen = createCuenta(1);
 
-    when(cuentaService.buscarCuentaPorId(transferenciaDto.getCuentaOrigen()))
+    when(cuentaService.buscarCuentaCompletaPorId(transferenciaDto.getCuentaOrigen()))
         .thenReturn(cuentaOrigen);
 
     doThrow(CorruptedDataInDbException.class)
         .when(cuentaService)
-        .buscarCuentaPorId(transferenciaDto.getCuentaDestino());
+        .buscarCuentaCompletaPorId(transferenciaDto.getCuentaDestino());
 
     assertThrows(
         CorruptedDataInDbException.class,
@@ -156,12 +157,12 @@ public class MovimientoServiceTest {
     Cuenta cuentaOrigen = createCuenta(1);
     BanelcoResponseDto banelcoResponse = createBanelcoResponse();
 
-    when(cuentaService.buscarCuentaPorId(transferenciaDto.getCuentaOrigen()))
+    when(cuentaService.buscarCuentaCompletaPorId(transferenciaDto.getCuentaOrigen()))
         .thenReturn(cuentaOrigen);
 
     doThrow(CuentaNoExistsException.class)
         .when(cuentaService)
-        .buscarCuentaPorId(transferenciaDto.getCuentaDestino());
+        .buscarCuentaCompletaPorId(transferenciaDto.getCuentaDestino());
 
     when(banelco.transferir(
             cuentaOrigen, transferenciaDto.getCuentaDestino(), transferenciaDto.getMonto()))
@@ -186,12 +187,12 @@ public class MovimientoServiceTest {
     Cuenta cuentaOrigen = createCuenta(1);
     BanelcoResponseDto banelcoResponse = createBanelcoResponse();
 
-    when(cuentaService.buscarCuentaPorId(transferenciaDto.getCuentaOrigen()))
+    when(cuentaService.buscarCuentaCompletaPorId(transferenciaDto.getCuentaOrigen()))
         .thenReturn(cuentaOrigen);
 
     doThrow(CuentaNoExistsException.class)
         .when(cuentaService)
-        .buscarCuentaPorId(transferenciaDto.getCuentaDestino());
+        .buscarCuentaCompletaPorId(transferenciaDto.getCuentaDestino());
 
     when(banelco.transferir(
             cuentaOrigen, transferenciaDto.getCuentaDestino(), transferenciaDto.getMonto()))
@@ -216,12 +217,12 @@ public class MovimientoServiceTest {
     Cuenta cuentaOrigen = createCuenta(1);
     BanelcoResponseDto banelcoResponse = createBanelcoResponse();
 
-    when(cuentaService.buscarCuentaPorId(transferenciaDto.getCuentaOrigen()))
+    when(cuentaService.buscarCuentaCompletaPorId(transferenciaDto.getCuentaOrigen()))
         .thenReturn(cuentaOrigen);
 
     doThrow(CuentaNoExistsException.class)
         .when(cuentaService)
-        .buscarCuentaPorId(transferenciaDto.getCuentaDestino());
+        .buscarCuentaCompletaPorId(transferenciaDto.getCuentaDestino());
 
     when(banelco.transferir(
             cuentaOrigen, transferenciaDto.getCuentaDestino(), transferenciaDto.getMonto()))
@@ -247,14 +248,20 @@ public class MovimientoServiceTest {
 
     TransferenciaDto transferenciaDto = createTransferenciaDto();
     Cuenta cuentaOrigen = createCuenta(1);
+    Cuenta cuentaDestino = createCuenta(2);
+    TransferenciaResponseDto transferenciaResponseDto = createTransferenciaResponseDto();
+    transferenciaResponseDto.setMoneda(cuentaOrigen.getMoneda().toString());
 
-    when(cuentaService.buscarCuentaPorId(transferenciaDto.getCuentaOrigen()))
+    when(cuentaService.buscarCuentaCompletaPorId(transferenciaDto.getCuentaOrigen()))
         .thenReturn(cuentaOrigen);
 
-    TransferenciaDto transferenciaDtoResult =
+    when(cuentaService.buscarCuentaCompletaPorId(transferenciaDto.getCuentaDestino()))
+        .thenReturn(cuentaDestino);
+
+    TransferenciaResponseDto transferenciaDtoResult =
         movimientoService.realizarTransferencia(transferenciaDto);
 
-    assertEquals(transferenciaDto, transferenciaDtoResult);
+    assertEquals(transferenciaResponseDto, transferenciaDtoResult);
   }
 
   @Test
@@ -268,18 +275,20 @@ public class MovimientoServiceTest {
 
     TransferenciaDto transferenciaDto = createTransferenciaDto();
     Cuenta cuentaOrigen = createCuenta(1);
+    TransferenciaResponseDto transferenciaResponseDto = createTransferenciaResponseDto();
+    transferenciaResponseDto.setMoneda(cuentaOrigen.getMoneda().toString());
 
-    when(cuentaService.buscarCuentaPorId(transferenciaDto.getCuentaOrigen()))
+    when(cuentaService.buscarCuentaCompletaPorId(transferenciaDto.getCuentaOrigen()))
         .thenReturn(cuentaOrigen);
 
     doThrow(CuentaNoExistsException.class)
         .when(cuentaService)
-        .buscarCuentaPorId(transferenciaDto.getCuentaDestino());
+        .buscarCuentaCompletaPorId(transferenciaDto.getCuentaDestino());
 
-    TransferenciaDto transferenciaDtoResult =
+    TransferenciaResponseDto transferenciaDtoResult =
         movimientoService.realizarTransferencia(transferenciaDto);
 
-    assertEquals(transferenciaDto, transferenciaDtoResult);
+    assertEquals(transferenciaResponseDto, transferenciaDtoResult);
   }
 
   @Test
@@ -340,6 +349,16 @@ public class MovimientoServiceTest {
     transferenciaDto.setCuentaDestino(2);
     transferenciaDto.setMonto(1000);
     return transferenciaDto;
+  }
+
+  private TransferenciaResponseDto createTransferenciaResponseDto() {
+    TransferenciaResponseDto transferenciaResponseDto = new TransferenciaResponseDto();
+    transferenciaResponseDto.setCuentaOrigen(1);
+    transferenciaResponseDto.setCuentaDestino(2);
+    transferenciaResponseDto.setMonto(1000);
+    transferenciaResponseDto.setMontoDebitado(1000);
+    transferenciaResponseDto.setMoneda("P");
+    return transferenciaResponseDto;
   }
 
   private BanelcoResponseDto createBanelcoResponse() {

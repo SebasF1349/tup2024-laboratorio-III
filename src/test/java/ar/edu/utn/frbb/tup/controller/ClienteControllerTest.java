@@ -12,7 +12,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import ar.edu.utn.frbb.tup.controller.validator.ClienteControllerValidator;
-import ar.edu.utn.frbb.tup.model.Cliente;
 import ar.edu.utn.frbb.tup.model.exception.ClienteAlreadyExistsException;
 import ar.edu.utn.frbb.tup.model.exception.ClienteMenorDeEdadException;
 import ar.edu.utn.frbb.tup.model.exception.ClienteNoExistsException;
@@ -69,15 +68,15 @@ public class ClienteControllerTest {
 
   @Test
   public void testObtenerClienteSuccess() throws Exception {
-    Cliente cliente = createCliente();
-    String clienteMapped = objectMapper.writeValueAsString(cliente);
+    ClienteDto clienteDto = createClienteDto();
+    String clienteDtoMapped = objectMapper.writeValueAsString(clienteDto);
 
-    Mockito.when(clienteService.buscarClientePorDni(dniCliente)).thenReturn(cliente);
+    Mockito.when(clienteService.buscarClientePorDni(dniCliente)).thenReturn(clienteDto);
 
     mockMvc
         .perform(get(createEndpoint(dniCliente)))
         .andExpect(status().isOk())
-        .andExpect(content().string(clienteMapped));
+        .andExpect(content().string(clienteDtoMapped));
   }
 
   @Test
@@ -125,7 +124,7 @@ public class ClienteControllerTest {
   @Test
   public void testCrearClienteMenorDeEdadFail() throws Exception {
     ClienteDto clienteDto = createClienteDto();
-    String clienteMapped = objectMapper.writeValueAsString(clienteDto);
+    String clienteDtoMapped = objectMapper.writeValueAsString(clienteDto);
 
     doThrow(new ClienteMenorDeEdadException("")).when(clienteService).darDeAltaCliente(clienteDto);
 
@@ -133,7 +132,7 @@ public class ClienteControllerTest {
         MockMvcRequestBuilders.post(getEndpoint())
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON)
-            .content(clienteMapped);
+            .content(clienteDtoMapped);
 
     mockMvc
         .perform(mockRequest)
@@ -146,10 +145,8 @@ public class ClienteControllerTest {
   public void testCrearClienteSuccess() throws Exception {
     ClienteDto clienteDto = createClienteDto();
     String clienteDtoMapped = objectMapper.writeValueAsString(clienteDto);
-    Cliente cliente = createCliente();
-    String clienteMapped = objectMapper.writeValueAsString(cliente);
 
-    when(clienteService.darDeAltaCliente(clienteDto)).thenReturn(cliente);
+    when(clienteService.darDeAltaCliente(clienteDto)).thenReturn(clienteDto);
 
     MockHttpServletRequestBuilder mockRequest =
         MockMvcRequestBuilders.post(getEndpoint())
@@ -160,7 +157,7 @@ public class ClienteControllerTest {
     mockMvc
         .perform(mockRequest)
         .andExpect(status().isCreated())
-        .andExpect(content().string(clienteMapped));
+        .andExpect(content().string(clienteDtoMapped));
   }
 
   @Test
@@ -187,15 +184,15 @@ public class ClienteControllerTest {
 
   @Test
   public void testEliminarClienteSuccess() throws Exception {
-    Cliente cliente = createCliente();
-    String clienteMapped = objectMapper.writeValueAsString(cliente);
+    ClienteDto clienteDto = createClienteDto();
+    String clienteDtoMapped = objectMapper.writeValueAsString(clienteDto);
 
-    Mockito.when(clienteService.eliminarCliente(dniCliente)).thenReturn(cliente);
+    Mockito.when(clienteService.eliminarCliente(dniCliente)).thenReturn(clienteDto);
 
     mockMvc
         .perform(delete(createEndpoint(dniCliente)))
         .andExpect(status().isOk())
-        .andExpect(content().string(clienteMapped));
+        .andExpect(content().string(clienteDtoMapped));
   }
 
   @Test
@@ -262,10 +259,8 @@ public class ClienteControllerTest {
   public void testActualizarClienteSuccess() throws Exception {
     ClienteDto clienteDto = createClienteDto();
     String clienteDtoMapped = objectMapper.writeValueAsString(clienteDto);
-    Cliente cliente = createCliente();
-    String clienteMapped = objectMapper.writeValueAsString(cliente);
 
-    when(clienteService.actualizarCliente(clienteDto)).thenReturn(cliente);
+    when(clienteService.actualizarCliente(clienteDto)).thenReturn(clienteDto);
 
     MockHttpServletRequestBuilder mockRequest =
         MockMvcRequestBuilders.put(getEndpoint())
@@ -276,7 +271,7 @@ public class ClienteControllerTest {
     mockMvc
         .perform(mockRequest)
         .andExpect(status().isOk())
-        .andExpect(content().string(clienteMapped));
+        .andExpect(content().string(clienteDtoMapped));
   }
 
   @Test
@@ -292,15 +287,15 @@ public class ClienteControllerTest {
 
   @Test
   public void testActivarClienteSuccess() throws Exception {
-    Cliente cliente = createCliente();
-    String clienteMapped = objectMapper.writeValueAsString(cliente);
+    ClienteDto clienteDto = createClienteDto();
+    String clienteDtoMapped = objectMapper.writeValueAsString(clienteDto);
 
-    Mockito.when(clienteService.activarCliente(dniCliente)).thenReturn(cliente);
+    Mockito.when(clienteService.activarCliente(dniCliente)).thenReturn(clienteDto);
 
     mockMvc
         .perform(patch(createEndpoint(dniCliente)))
         .andExpect(status().isOk())
-        .andExpect(content().string(clienteMapped));
+        .andExpect(content().string(clienteDtoMapped));
   }
 
   private String createEndpoint(long end) {
@@ -322,8 +317,8 @@ public class ClienteControllerTest {
     return clienteDto;
   }
 
-  private Cliente createCliente() {
-    ClienteDto clienteDto = createClienteDto();
-    return new Cliente(clienteDto);
-  }
+  // private Cliente createCliente() {
+  //   ClienteDto clienteDto = createClienteDto();
+  //   return new Cliente(clienteDto);
+  // }
 }

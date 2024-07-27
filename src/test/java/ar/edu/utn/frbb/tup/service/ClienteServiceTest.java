@@ -182,11 +182,13 @@ public class ClienteServiceTest {
   @Test
   public void testBuscarClientePorDniSuccess()
       throws TipoCuentaAlreadyExistsException, ClienteNoExistsException {
+    ClienteDto clienteDto = createClienteDto();
     Cliente cliente = createCliente();
+    clienteDto.setTipoPersona(cliente.getTipoPersona().toString());
 
-    when(clienteDao.find(dniCliente, true)).thenReturn(cliente);
+    when(clienteDao.find(dniCliente, false)).thenReturn(cliente);
 
-    assertEquals(cliente, clienteService.buscarClientePorDni(dniCliente));
+    assertEquals(clienteDto, clienteService.buscarClientePorDni(dniCliente));
   }
 
   @Test
@@ -222,8 +224,10 @@ public class ClienteServiceTest {
       throws ClienteNoExistsException, ClienteMenorDeEdadException {
     ClienteDto clienteDto = createClienteDto();
     Cliente cliente = new Cliente(clienteDto);
+    ClienteDto clienteResDto = createClienteDto();
+    clienteResDto.setTipoPersona(cliente.getTipoPersona().toString());
 
-    assertEquals(cliente, clienteService.actualizarCliente(clienteDto));
+    assertEquals(clienteResDto, clienteService.actualizarCliente(clienteDto));
 
     verify(clienteDao, times(1)).save(cliente);
   }
@@ -256,6 +260,9 @@ public class ClienteServiceTest {
     Cliente cliente = createCliente();
     Cuenta cuenta = createCuenta();
     cliente.addCuenta(cuenta);
+    ClienteDto clienteDto = createClienteDto();
+    clienteDto.setTipoPersona(cliente.getTipoPersona().toString());
+
     Cliente clienteRes = createCliente();
     clienteRes.setActivo(false);
     clienteRes.addCuenta(cuenta);
@@ -266,7 +273,7 @@ public class ClienteServiceTest {
         .when(cuentaService)
         .eliminarCuenta(cuenta.getNumeroCuenta());
 
-    assertEquals(clienteRes, clienteService.eliminarCliente(dniCliente));
+    assertEquals(clienteDto, clienteService.eliminarCliente(dniCliente));
     verify(clienteDao, times(1)).save(cliente);
   }
 
@@ -298,6 +305,26 @@ public class ClienteServiceTest {
 
     assertEquals(true, cliente.isActivo());
     verify(clienteDao, times(1)).save(cliente);
+  }
+
+  @Test
+  public void testBuscarClienteCompletoPorDniClienteNoExistsException() {
+
+    assertThrows(
+        ClienteNoExistsException.class,
+        () -> clienteService.buscarClienteCompletoPorDni(dniCliente));
+  }
+
+  @Test
+  public void testBuscarClienteCompletoPorDniSuccess()
+      throws TipoCuentaAlreadyExistsException, ClienteNoExistsException {
+    ClienteDto clienteDto = createClienteDto();
+    Cliente cliente = createCliente();
+    clienteDto.setTipoPersona(cliente.getTipoPersona().toString());
+
+    when(clienteDao.find(dniCliente, true)).thenReturn(cliente);
+
+    assertEquals(cliente, clienteService.buscarClienteCompletoPorDni(dniCliente));
   }
 
   @Test

@@ -11,7 +11,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import ar.edu.utn.frbb.tup.controller.validator.CuentaControllerValidator;
-import ar.edu.utn.frbb.tup.model.Cuenta;
 import ar.edu.utn.frbb.tup.model.exception.ClienteNoExistsException;
 import ar.edu.utn.frbb.tup.model.exception.CorruptedDataInDbException;
 import ar.edu.utn.frbb.tup.model.exception.CuentaNoExistsException;
@@ -69,15 +68,15 @@ public class CuentaControllerTest {
 
   @Test
   public void testObtenerCuentaSuccess() throws Exception {
-    Cuenta cuenta = createCuenta();
-    String cuentaMapped = objectMapper.writeValueAsString(cuenta);
+    CuentaDto cuentaDto = createCuentaDto();
+    String cuentaDtoMapped = objectMapper.writeValueAsString(cuentaDto);
 
-    Mockito.when(cuentaService.buscarCuentaPorId(clienteDni)).thenReturn(cuenta);
+    Mockito.when(cuentaService.buscarCuentaPorId(clienteDni)).thenReturn(cuentaDto);
 
     mockMvc
         .perform(get(createEndpoint(clienteDni)))
         .andExpect(status().isOk())
-        .andExpect(content().string(cuentaMapped));
+        .andExpect(content().string(cuentaDtoMapped));
   }
 
   @Test
@@ -225,15 +224,15 @@ public class CuentaControllerTest {
 
   @Test
   public void testEliminarCuentaSuccess() throws Exception {
-    Cuenta cuenta = createCuenta();
-    String cuentaMapped = objectMapper.writeValueAsString(cuenta);
+    CuentaDto cuentaDto = createCuentaDto();
+    String cuentaDtoMapped = objectMapper.writeValueAsString(cuentaDto);
 
-    Mockito.when(cuentaService.eliminarCuenta(clienteDni)).thenReturn(cuenta);
+    Mockito.when(cuentaService.eliminarCuenta(clienteDni)).thenReturn(cuentaDto);
 
     mockMvc
         .perform(delete(createEndpoint(clienteDni)))
         .andExpect(status().isOk())
-        .andExpect(content().string(cuentaMapped));
+        .andExpect(content().string(cuentaDtoMapped));
   }
 
   @Test
@@ -362,10 +361,8 @@ public class CuentaControllerTest {
   public void testActualizarCuentaSuccess() throws Exception {
     CuentaDto cuentaDto = createCuentaDto();
     String cuentaDtoMapped = objectMapper.writeValueAsString(cuentaDto);
-    Cuenta cuenta = createCuenta();
-    String cuentaMapped = objectMapper.writeValueAsString(cuenta);
 
-    when(cuentaService.actualizarCuenta(cuentaDto)).thenReturn(cuenta);
+    when(cuentaService.actualizarCuenta(cuentaDto)).thenReturn(cuentaDto);
 
     MockHttpServletRequestBuilder mockRequest =
         MockMvcRequestBuilders.put(getEndpoint())
@@ -376,7 +373,7 @@ public class CuentaControllerTest {
     mockMvc
         .perform(mockRequest)
         .andExpect(status().isOk())
-        .andExpect(content().string(cuentaMapped));
+        .andExpect(content().string(cuentaDtoMapped));
   }
 
   private String createEndpoint(long end) {
@@ -394,10 +391,5 @@ public class CuentaControllerTest {
     cuentaDto.setTipoCuenta("A");
     cuentaDto.setTitular(clienteDni);
     return cuentaDto;
-  }
-
-  private Cuenta createCuenta() {
-    CuentaDto cuentaDto = createCuentaDto();
-    return new Cuenta(cuentaDto);
   }
 }

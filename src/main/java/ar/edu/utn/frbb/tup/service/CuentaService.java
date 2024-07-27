@@ -55,11 +55,10 @@ public class CuentaService {
           "Titular de cuenta guardado en Base de Datos con edad incorrecta");
     }
     cuentaDao.save(cuenta);
-    cuentaDto.setTitular(titular.getDni());
-    return cuentaDto;
+    return cuenta.toCuentaDto();
   }
 
-  public Cuenta buscarCuentaPorId(long numeroCuenta)
+  public CuentaDto buscarCuentaPorId(long numeroCuenta)
       throws CuentaNoExistsException, CorruptedDataInDbException {
     Cuenta cuenta = cuentaDao.find(numeroCuenta);
 
@@ -74,10 +73,10 @@ public class CuentaService {
     }
     cuenta.setTitular(titular);
 
-    return cuenta;
+    return cuenta.toCuentaDto();
   }
 
-  public Cuenta actualizarCuenta(@Valid CuentaDto cuentaDto)
+  public CuentaDto actualizarCuenta(@Valid CuentaDto cuentaDto)
       throws CuentaNoExistsException,
           ClienteNoExistsException,
           CuentaNoSoportadaException,
@@ -100,24 +99,44 @@ public class CuentaService {
           "Titular de cuenta guardado en Base de Datos con edad incorrecta");
     }
 
+    cuenta.setTitular(titular);
     cuentaDao.save(cuenta);
-    return cuenta;
+    return cuenta.toCuentaDto();
   }
 
-  public Cuenta eliminarCuenta(long dni)
+  public CuentaDto eliminarCuenta(long dni)
       throws CuentaNoExistsException, CorruptedDataInDbException {
-    Cuenta cuenta = buscarCuentaPorId(dni);
+    Cuenta cuenta = buscarCuentaCompletaPorId(dni);
 
     cuenta.setActivo(false);
     cuentaDao.save(cuenta);
-    return cuenta;
+    return cuenta.toCuentaDto();
   }
 
-  public Cuenta activarCuenta(long id) throws CuentaNoExistsException, CorruptedDataInDbException {
-    Cuenta cuenta = buscarCuentaPorId(id);
+  public CuentaDto activarCuenta(long id)
+      throws CuentaNoExistsException, CorruptedDataInDbException {
+    Cuenta cuenta = buscarCuentaCompletaPorId(id);
 
     cuenta.setActivo(true);
     cuentaDao.save(cuenta);
+    return cuenta.toCuentaDto();
+  }
+
+  protected Cuenta buscarCuentaCompletaPorId(long numeroCuenta)
+      throws CuentaNoExistsException, CorruptedDataInDbException {
+    Cuenta cuenta = cuentaDao.find(numeroCuenta);
+
+    cuentaServiceValidator.validateCuentaExists(cuenta);
+
+    Cliente titular;
+    try {
+      titular = clienteService.getClienteByCuenta(cuenta.getNumeroCuenta());
+    } catch (ClienteNoExistsException ex) {
+      throw new CorruptedDataInDbException(
+          "Cuenta guardada en Base de Datos con datos de Titular incorrectos");
+    }
+    cuenta.setTitular(titular);
+
     return cuenta;
   }
 

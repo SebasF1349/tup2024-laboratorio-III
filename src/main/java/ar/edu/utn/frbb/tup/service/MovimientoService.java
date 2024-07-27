@@ -1,6 +1,7 @@
 package ar.edu.utn.frbb.tup.service;
 
 import ar.edu.utn.frbb.tup.controller.TransferenciaDto;
+import ar.edu.utn.frbb.tup.controller.TransferenciaResponseDto;
 import ar.edu.utn.frbb.tup.externalService.Banelco;
 import ar.edu.utn.frbb.tup.externalService.BanelcoResponseDto;
 import ar.edu.utn.frbb.tup.model.Cuenta;
@@ -24,21 +25,24 @@ public class MovimientoService {
   @Autowired MovimientoServiceValidator movimientoServiceValidator;
   @Autowired CuentaService cuentaService;
 
-  public TransferenciaDto realizarTransferencia(TransferenciaDto transferenciaDto)
+  public TransferenciaResponseDto realizarTransferencia(TransferenciaDto transferenciaDto)
       throws CuentaNoExistsException,
           MontoInsuficienteException,
           MonedasDistintasException,
           CorruptedDataInDbException,
           BanelcoErrorException {
 
-    Cuenta cuentaOrigen = cuentaService.buscarCuentaPorId(transferenciaDto.getCuentaOrigen());
+    Cuenta cuentaOrigen =
+        cuentaService.buscarCuentaCompletaPorId(transferenciaDto.getCuentaOrigen());
 
     movimientoServiceValidator.validateMonedaIngresadaCorrecta(cuentaOrigen, transferenciaDto);
 
     Transferencia transferencia = new Transferencia(transferenciaDto, cuentaOrigen);
 
     try {
-      Cuenta cuentaDestino = cuentaService.buscarCuentaPorId(transferenciaDto.getCuentaDestino());
+      Cuenta cuentaDestino =
+          cuentaService.buscarCuentaCompletaPorId(transferenciaDto.getCuentaDestino());
+
       transferencia.setCuentaDestino(cuentaDestino);
 
       movimientoServiceValidator.validateSameMonedaBetweenCuentas(transferencia);
@@ -59,10 +63,8 @@ public class MovimientoService {
     movimientoServiceValidator.validateMonto(transferencia);
 
     cuentaService.agregarTransferenciaACuentas(transferencia);
-
     movimientoDao.save(transferencia);
-
-    return transferenciaDto;
+    return transferencia.toTransferenciaResponseDto();
   }
 
   protected double getMontoDebitado(Transferencia transferencia) {

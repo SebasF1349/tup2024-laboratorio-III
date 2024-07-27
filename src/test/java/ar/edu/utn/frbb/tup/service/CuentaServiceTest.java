@@ -15,6 +15,8 @@ import ar.edu.utn.frbb.tup.model.Cliente;
 import ar.edu.utn.frbb.tup.model.Cuenta;
 import ar.edu.utn.frbb.tup.model.Deposito;
 import ar.edu.utn.frbb.tup.model.Retiro;
+import ar.edu.utn.frbb.tup.model.TipoCuenta;
+import ar.edu.utn.frbb.tup.model.TipoMoneda;
 import ar.edu.utn.frbb.tup.model.Transferencia;
 import ar.edu.utn.frbb.tup.model.exception.ClienteMenorDeEdadException;
 import ar.edu.utn.frbb.tup.model.exception.ClienteNoExistsException;
@@ -128,7 +130,7 @@ public class CuentaServiceTest {
           ClienteMenorDeEdadException,
           CorruptedDataInDbException {
     CuentaDto cuentaDto = createCuentaDto();
-    Cliente cliente = new Cliente();
+    Cliente cliente = createCliente();
 
     when(clienteService.obtenerTitularConCuenta(any(Cuenta.class), eq(cuentaDto.getTitular())))
         .thenReturn(cliente);
@@ -136,8 +138,8 @@ public class CuentaServiceTest {
     CuentaDto cuentaDtoResult = cuentaService.darDeAltaCuenta(cuentaDto);
 
     assertEquals(cuentaDto.getBalance(), cuentaDtoResult.getBalance());
-    assertEquals(cuentaDto.getTipoCuenta(), cuentaDtoResult.getTipoCuenta());
-    assertEquals(cuentaDto.getMoneda(), cuentaDtoResult.getMoneda());
+    assertEquals(TipoCuenta.CAJA_AHORROS.toString(), cuentaDtoResult.getTipoCuenta());
+    assertEquals(TipoMoneda.PESOS_ARGENTINOS.toString(), cuentaDtoResult.getMoneda());
     assertEquals(cuentaDto.getTitular(), cuentaDtoResult.getTitular());
 
     verify(cuentaDao, times(1)).save(any(Cuenta.class));
@@ -171,12 +173,18 @@ public class CuentaServiceTest {
 
   @Test
   public void testBuscarCuentaPorIdSuccess()
-      throws CuentaNoExistsException, CorruptedDataInDbException {
+      throws CuentaNoExistsException, CorruptedDataInDbException, ClienteNoExistsException {
+    CuentaDto cuentaDto = createCuentaDto();
     Cuenta cuenta = createCuenta();
+    Cliente cliente = createCliente();
+    cuenta.setTitular(cliente);
+    cuentaDto.setTipoCuenta(cuenta.getTipoCuenta().toString());
+    cuentaDto.setMoneda(cuenta.getMoneda().toString());
 
     when(cuentaDao.find(numeroCuenta)).thenReturn(cuenta);
+    when(clienteService.getClienteByCuenta(cuenta.getNumeroCuenta())).thenReturn(cliente);
 
-    assertEquals(cuenta, cuentaService.buscarCuentaPorId(numeroCuenta));
+    assertEquals(cuentaDto, cuentaService.buscarCuentaPorId(numeroCuenta));
   }
 
   @Test
@@ -269,16 +277,22 @@ public class CuentaServiceTest {
           TipoCuentaAlreadyExistsException,
           CorruptedDataInDbException {
     CuentaDto cuentaDto = createCuentaDto();
-    Cuenta cuenta = new Cuenta(cuentaDto);
+    Cuenta cuenta = createCuenta();
+    Cliente cliente = createCliente();
+    cuenta.setTitular(cliente);
+    cuentaDto.setTipoCuenta(cuenta.getTipoCuenta().toString());
+    cuentaDto.setMoneda(cuenta.getMoneda().toString());
 
-    Cuenta cuentaResult = cuentaService.actualizarCuenta(cuentaDto);
-    assertEquals(cuenta.getNumeroCuenta(), cuentaResult.getNumeroCuenta());
+    when(clienteService.obtenerTitularConCuenta(any(Cuenta.class), eq(clienteDni)))
+        .thenReturn(cliente);
+
+    CuentaDto cuentaResult = cuentaService.actualizarCuenta(cuentaDto);
     assertEquals(cuenta.getBalance(), cuentaResult.getBalance());
-    assertEquals(cuenta.getTipoCuenta(), cuentaResult.getTipoCuenta());
-    assertEquals(cuenta.getMoneda(), cuentaResult.getMoneda());
-    assertEquals(cuenta.getTitular(), cuentaResult.getTitular());
+    assertEquals(cuenta.getTipoCuenta().toString(), cuentaResult.getTipoCuenta());
+    assertEquals(cuenta.getMoneda().toString(), cuentaResult.getMoneda());
+    assertEquals(cuenta.getTitular().getDni(), cuentaResult.getTitular());
 
-    verify(cuentaDao, times(1)).save(cuentaResult);
+    verify(cuentaDao, times(1)).save(any(Cuenta.class));
   }
 
   @Test
@@ -307,13 +321,21 @@ public class CuentaServiceTest {
 
   @Test
   public void testEliminarCuentaSuccess()
-      throws CuentaNoExistsException, CorruptedDataInDbException {
+      throws CuentaNoExistsException, CorruptedDataInDbException, ClienteNoExistsException {
     Cuenta cuenta = createCuenta();
+    cuenta.setNumeroCuenta(123);
+    Cliente cliente = createCliente();
+    cuenta.setTitular(cliente);
+    CuentaDto cuentaDto = createCuentaDto();
+    cuentaDto.setTipoCuenta(cuenta.getTipoCuenta().toString());
+    cuentaDto.setMoneda(cuenta.getMoneda().toString());
 
     when(cuentaDao.find(clienteDni)).thenReturn(cuenta);
+    when(clienteService.getClienteByCuenta(cuenta.getNumeroCuenta())).thenReturn(cliente);
 
-    cuentaService.eliminarCuenta(clienteDni);
+    CuentaDto cuentaResDto = cuentaService.eliminarCuenta(clienteDni);
 
+    assertEquals(cuentaDto, cuentaResDto);
     assertEquals(false, cuenta.isActivo());
     verify(cuentaDao, times(1)).save(cuenta);
   }
@@ -345,15 +367,68 @@ public class CuentaServiceTest {
 
   @Test
   public void testActivarCuentaSuccess()
-      throws CuentaNoExistsException, CorruptedDataInDbException {
+      throws CuentaNoExistsException, CorruptedDataInDbException, ClienteNoExistsException {
     Cuenta cuenta = createCuenta();
+    cuenta.setNumeroCuenta(123);
+    Cliente cliente = createCliente();
+    cuenta.setTitular(cliente);
+    CuentaDto cuentaDto = createCuentaDto();
+    cuentaDto.setTipoCuenta(cuenta.getTipoCuenta().toString());
+    cuentaDto.setMoneda(cuenta.getMoneda().toString());
 
     when(cuentaDao.find(clienteDni)).thenReturn(cuenta);
+    when(clienteService.getClienteByCuenta(cuenta.getNumeroCuenta())).thenReturn(cliente);
 
-    cuentaService.activarCuenta(clienteDni);
+    CuentaDto cuentaResDto = cuentaService.activarCuenta(clienteDni);
 
+    assertEquals(cuentaDto, cuentaResDto);
     assertEquals(true, cuenta.isActivo());
     verify(cuentaDao, times(1)).save(cuenta);
+  }
+
+  @Test
+  public void testBuscarCuentaCompletaPorIdCuentaNoExistsException()
+      throws CuentaNoExistsException {
+    Cuenta cuenta = createCuenta();
+
+    when(cuentaDao.find(numeroCuenta)).thenReturn(cuenta);
+    doThrow(CuentaNoExistsException.class)
+        .when(cuentaServiceValidator)
+        .validateCuentaExists(cuenta);
+
+    assertThrows(
+        CuentaNoExistsException.class, () -> cuentaService.buscarCuentaCompletaPorId(numeroCuenta));
+  }
+
+  @Test
+  public void testBuscarCuentaCompletaPorIdCorruptedDataInDbException()
+      throws ClienteNoExistsException {
+    Cuenta cuenta = createCuenta();
+
+    when(cuentaDao.find(numeroCuenta)).thenReturn(cuenta);
+    doThrow(ClienteNoExistsException.class)
+        .when(clienteService)
+        .getClienteByCuenta(cuenta.getNumeroCuenta());
+
+    assertThrows(
+        CorruptedDataInDbException.class,
+        () -> cuentaService.buscarCuentaCompletaPorId(numeroCuenta));
+  }
+
+  @Test
+  public void testBuscarCuentaCompletaPorIdSuccess()
+      throws CuentaNoExistsException, CorruptedDataInDbException, ClienteNoExistsException {
+    CuentaDto cuentaDto = createCuentaDto();
+    Cuenta cuenta = createCuenta();
+    Cliente cliente = createCliente();
+    cuenta.setTitular(cliente);
+    cuentaDto.setTipoCuenta(cuenta.getTipoCuenta().toString());
+    cuentaDto.setMoneda(cuenta.getMoneda().toString());
+
+    when(cuentaDao.find(numeroCuenta)).thenReturn(cuenta);
+    when(clienteService.getClienteByCuenta(cuenta.getNumeroCuenta())).thenReturn(cliente);
+
+    assertEquals(cuenta, cuentaService.buscarCuentaCompletaPorId(numeroCuenta));
   }
 
   @Test
@@ -438,5 +513,13 @@ public class CuentaServiceTest {
 
   private Cuenta createCuenta() {
     return new Cuenta(createCuentaDto());
+  }
+
+  private Cliente createCliente() {
+    Cliente cliente = new Cliente();
+    cliente.setDni(clienteDni);
+    cliente.setNombre("Nombre");
+    cliente.setApellido("Apellido");
+    return cliente;
   }
 }

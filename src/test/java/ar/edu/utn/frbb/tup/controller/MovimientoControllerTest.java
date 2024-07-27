@@ -205,20 +205,23 @@ public class MovimientoControllerTest {
   @Test
   public void testRealizarTransferenciaSuccess() throws Exception {
     TransferenciaDto transferenciaDto = createTransferenciaDto();
-    String transferenciaDtoMapped = objectMapper.writeValueAsString(transferenciaDto);
+    TransferenciaResponseDto transferenciaResponseDto = createTransferenciaResponseDto();
+    String transferenciaResponseDtoMapped =
+        objectMapper.writeValueAsString(transferenciaResponseDto);
 
-    when(movimientoService.realizarTransferencia(transferenciaDto)).thenReturn(transferenciaDto);
+    when(movimientoService.realizarTransferencia(transferenciaDto))
+        .thenReturn(transferenciaResponseDto);
 
     MockHttpServletRequestBuilder mockRequest =
         MockMvcRequestBuilders.post(transferEndpoint)
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON)
-            .content(transferenciaDtoMapped);
+            .content(transferenciaResponseDtoMapped);
 
     mockMvc
         .perform(mockRequest)
         .andExpect(status().isCreated())
-        .andExpect(content().string(transferenciaDtoMapped));
+        .andExpect(content().string(transferenciaResponseDtoMapped));
   }
 
   private TransferenciaDto createTransferenciaDto() {
@@ -228,5 +231,15 @@ public class MovimientoControllerTest {
     transferenciaDto.setMonto(1000);
     transferenciaDto.setMoneda("D");
     return transferenciaDto;
+  }
+
+  private TransferenciaResponseDto createTransferenciaResponseDto() {
+    TransferenciaResponseDto transferenciaResponseDto = new TransferenciaResponseDto();
+    transferenciaResponseDto.setCuentaOrigen(1);
+    transferenciaResponseDto.setCuentaDestino(2);
+    transferenciaResponseDto.setMonto(1000);
+    transferenciaResponseDto.setMontoDebitado(1000);
+    transferenciaResponseDto.setMoneda("D");
+    return transferenciaResponseDto;
   }
 }
