@@ -1,5 +1,6 @@
 package ar.edu.utn.frbb.tup.controller;
 
+import static org.hamcrest.Matchers.*;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.mockito.Mockito.doThrow;
@@ -88,6 +89,53 @@ public class CuentaControllerTest {
         .perform(get(createEndpoint(numeroCuenta)))
         .andExpect(status().isOk())
         .andExpect(content().string(cuentaDtoMapped));
+  }
+
+  @Test
+  public void testCrearCuentaWithoutData() throws Exception {
+    CuentaDto cuentaDto = new CuentaDto();
+    String cuentaDtoMapped = objectMapper.writeValueAsString(cuentaDto);
+
+    MockHttpServletRequestBuilder mockRequest =
+        MockMvcRequestBuilders.post(getEndpoint())
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON)
+            .content(cuentaDtoMapped);
+
+    mockMvc
+        .perform(mockRequest)
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$", notNullValue()))
+        .andExpect(jsonPath("$.errorCode", is(400104)))
+        .andExpect(jsonPath("$.errors", aMapWithSize(3)))
+        .andExpect(jsonPath("$.errors.tipoCuenta", is("must not be null")))
+        .andExpect(jsonPath("$.errors.moneda", is("must not be null")))
+        .andExpect(jsonPath("$.errors.titular", is("must be greater than 0")));
+  }
+
+  @Test
+  public void testCrearCuentaWithInvalidNumberData() throws Exception {
+    CuentaDto cuentaDto = new CuentaDto();
+    cuentaDto.setBalance(-1000);
+    cuentaDto.setTitular(0);
+    String cuentaDtoMapped = objectMapper.writeValueAsString(cuentaDto);
+
+    MockHttpServletRequestBuilder mockRequest =
+        MockMvcRequestBuilders.post(getEndpoint())
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON)
+            .content(cuentaDtoMapped);
+
+    mockMvc
+        .perform(mockRequest)
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$", notNullValue()))
+        .andExpect(jsonPath("$.errorCode", is(400104)))
+        .andExpect(jsonPath("$.errors", aMapWithSize(4)))
+        .andExpect(jsonPath("$.errors.balance", is("must be greater than or equal to 0")))
+        .andExpect(jsonPath("$.errors.tipoCuenta", is("must not be null")))
+        .andExpect(jsonPath("$.errors.moneda", is("must not be null")))
+        .andExpect(jsonPath("$.errors.titular", is("must be greater than 0")));
   }
 
   @Test
@@ -244,6 +292,53 @@ public class CuentaControllerTest {
         .perform(delete(createEndpoint(numeroCuenta)))
         .andExpect(status().isOk())
         .andExpect(content().string(cuentaDtoMapped));
+  }
+
+  @Test
+  public void testActualizarCuentaWithoutData() throws Exception {
+    CuentaDto cuentaDto = new CuentaDto();
+    String cuentaDtoMapped = objectMapper.writeValueAsString(cuentaDto);
+
+    MockHttpServletRequestBuilder mockRequest =
+        MockMvcRequestBuilders.put(getEndpoint())
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON)
+            .content(cuentaDtoMapped);
+
+    mockMvc
+        .perform(mockRequest)
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$", notNullValue()))
+        .andExpect(jsonPath("$.errorCode", is(400104)))
+        .andExpect(jsonPath("$.errors", aMapWithSize(3)))
+        .andExpect(jsonPath("$.errors.tipoCuenta", is("must not be null")))
+        .andExpect(jsonPath("$.errors.moneda", is("must not be null")))
+        .andExpect(jsonPath("$.errors.titular", is("must be greater than 0")));
+  }
+
+  @Test
+  public void testActualizarCuentaWithInvalidNumberData() throws Exception {
+    CuentaDto cuentaDto = new CuentaDto();
+    cuentaDto.setBalance(-1000);
+    cuentaDto.setTitular(-1);
+    String cuentaDtoMapped = objectMapper.writeValueAsString(cuentaDto);
+
+    MockHttpServletRequestBuilder mockRequest =
+        MockMvcRequestBuilders.put(getEndpoint())
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON)
+            .content(cuentaDtoMapped);
+
+    mockMvc
+        .perform(mockRequest)
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$", notNullValue()))
+        .andExpect(jsonPath("$.errorCode", is(400104)))
+        .andExpect(jsonPath("$.errors", aMapWithSize(4)))
+        .andExpect(jsonPath("$.errors.balance", is("must be greater than or equal to 0")))
+        .andExpect(jsonPath("$.errors.tipoCuenta", is("must not be null")))
+        .andExpect(jsonPath("$.errors.moneda", is("must not be null")))
+        .andExpect(jsonPath("$.errors.titular", is("must be greater than 0")));
   }
 
   @Test

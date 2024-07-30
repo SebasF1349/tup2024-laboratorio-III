@@ -1,5 +1,6 @@
 package ar.edu.utn.frbb.tup.controller;
 
+import static org.hamcrest.Matchers.*;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.mockito.Mockito.doThrow;
@@ -77,6 +78,57 @@ public class ClienteControllerTest {
         .perform(get(createEndpoint(dniCliente)))
         .andExpect(status().isOk())
         .andExpect(content().string(clienteDtoMapped));
+  }
+
+  @Test
+  public void testCrearClienteWithoutData() throws Exception {
+    ClienteDto clienteDto = new ClienteDto();
+    String clienteDtoMapped = objectMapper.writeValueAsString(clienteDto);
+
+    MockHttpServletRequestBuilder mockRequest =
+        MockMvcRequestBuilders.post(getEndpoint())
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON)
+            .content(clienteDtoMapped);
+
+    mockMvc
+        .perform(mockRequest)
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$", notNullValue()))
+        .andExpect(jsonPath("$.errorCode", is(400104)))
+        .andExpect(jsonPath("$.errors", aMapWithSize(6)))
+        .andExpect(jsonPath("$.errors.tipoPersona", is("must not be null")))
+        .andExpect(jsonPath("$.errors.banco", is("must not be null")))
+        .andExpect(jsonPath("$.errors.dni", is("must be greater than 0")))
+        .andExpect(jsonPath("$.errors.nombre", is("must not be null")))
+        .andExpect(jsonPath("$.errors.apellido", is("must not be null")))
+        .andExpect(jsonPath("$.errors.fechaNacimiento", is("must not be null")));
+  }
+
+  @Test
+  public void testCrearClienteWithInvalidNumberData() throws Exception {
+    ClienteDto clienteDto = new ClienteDto();
+    clienteDto.setDni(-1);
+    String clienteDtoMapped = objectMapper.writeValueAsString(clienteDto);
+
+    MockHttpServletRequestBuilder mockRequest =
+        MockMvcRequestBuilders.post(getEndpoint())
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON)
+            .content(clienteDtoMapped);
+
+    mockMvc
+        .perform(mockRequest)
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$", notNullValue()))
+        .andExpect(jsonPath("$.errorCode", is(400104)))
+        .andExpect(jsonPath("$.errors", aMapWithSize(6)))
+        .andExpect(jsonPath("$.errors.tipoPersona", is("must not be null")))
+        .andExpect(jsonPath("$.errors.banco", is("must not be null")))
+        .andExpect(jsonPath("$.errors.dni", is("must be greater than 0")))
+        .andExpect(jsonPath("$.errors.nombre", is("must not be null")))
+        .andExpect(jsonPath("$.errors.apellido", is("must not be null")))
+        .andExpect(jsonPath("$.errors.fechaNacimiento", is("must not be null")));
   }
 
   @Test
@@ -193,6 +245,56 @@ public class ClienteControllerTest {
         .perform(delete(createEndpoint(dniCliente)))
         .andExpect(status().isOk())
         .andExpect(content().string(clienteDtoMapped));
+  }
+
+  @Test
+  public void testActualizarClienteWithoutData() throws Exception {
+    ClienteDto clienteDto = new ClienteDto();
+    String clienteDtoMapped = objectMapper.writeValueAsString(clienteDto);
+
+    MockHttpServletRequestBuilder mockRequest =
+        MockMvcRequestBuilders.put(getEndpoint())
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON)
+            .content(clienteDtoMapped);
+    mockMvc
+        .perform(mockRequest)
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$", notNullValue()))
+        .andExpect(jsonPath("$.errorCode", is(400104)))
+        .andExpect(jsonPath("$.errors", aMapWithSize(6)))
+        .andExpect(jsonPath("$.errors.tipoPersona", is("must not be null")))
+        .andExpect(jsonPath("$.errors.banco", is("must not be null")))
+        .andExpect(jsonPath("$.errors.dni", is("must be greater than 0")))
+        .andExpect(jsonPath("$.errors.nombre", is("must not be null")))
+        .andExpect(jsonPath("$.errors.apellido", is("must not be null")))
+        .andExpect(jsonPath("$.errors.fechaNacimiento", is("must not be null")));
+  }
+
+  @Test
+  public void testActualizarClienteWithInvalidNumberData() throws Exception {
+    ClienteDto clienteDto = new ClienteDto();
+    clienteDto.setDni(-1);
+    String clienteDtoMapped = objectMapper.writeValueAsString(clienteDto);
+
+    MockHttpServletRequestBuilder mockRequest =
+        MockMvcRequestBuilders.put(getEndpoint())
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON)
+            .content(clienteDtoMapped);
+
+    mockMvc
+        .perform(mockRequest)
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$", notNullValue()))
+        .andExpect(jsonPath("$.errorCode", is(400104)))
+        .andExpect(jsonPath("$.errors", aMapWithSize(6)))
+        .andExpect(jsonPath("$.errors.tipoPersona", is("must not be null")))
+        .andExpect(jsonPath("$.errors.banco", is("must not be null")))
+        .andExpect(jsonPath("$.errors.dni", is("must be greater than 0")))
+        .andExpect(jsonPath("$.errors.nombre", is("must not be null")))
+        .andExpect(jsonPath("$.errors.apellido", is("must not be null")))
+        .andExpect(jsonPath("$.errors.fechaNacimiento", is("must not be null")));
   }
 
   @Test
