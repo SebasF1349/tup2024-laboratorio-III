@@ -1,12 +1,14 @@
 package ar.edu.utn.frbb.tup.controller;
 
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 
 public class CuentaDto {
-  @NotNull private double balance;
+  @PositiveOrZero private double balance;
   @NotNull private String tipoCuenta;
   @NotNull private String moneda;
-  @NotNull private long titular;
+  @Positive private long titular;
 
   public double getBalance() {
     return balance;

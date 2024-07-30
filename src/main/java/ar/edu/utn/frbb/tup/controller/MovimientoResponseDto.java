@@ -1,13 +1,14 @@
 package ar.edu.utn.frbb.tup.controller;
 
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 
 public class MovimientoResponseDto {
   @NotNull private String fecha;
   @NotNull private String tipoTransaccion;
   @NotNull private String descripcion;
-  @NotNull private double monto;
-  @NotNull private double montoDebitado;
+  @Positive private double monto;
+  @Positive private double montoDebitado;
 
   public String getFecha() {
     return fecha;

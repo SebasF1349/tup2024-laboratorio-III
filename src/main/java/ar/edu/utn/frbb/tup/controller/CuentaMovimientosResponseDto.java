@@ -1,11 +1,13 @@
 package ar.edu.utn.frbb.tup.controller;
 
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+
 import java.util.HashSet;
 import java.util.Set;
 
 public class CuentaMovimientosResponseDto {
-  @NotNull private long numeroCuenta;
+  @Positive private long numeroCuenta;
   @NotNull private Set<MovimientoResponseDto> movimientos;
 
   public long getNumeroCuenta() {
