@@ -327,28 +327,6 @@ public class CuentaControllerTest {
   }
 
   @Test
-  public void testActualizarCuentaTipoCuentaAlreadyExistsException() throws Exception {
-    CuentaDto cuentaDto = createCuentaDto();
-    String cuentaDtoMapped = objectMapper.writeValueAsString(cuentaDto);
-
-    doThrow(new TipoCuentaAlreadyExistsException(""))
-        .when(cuentaService)
-        .actualizarCuenta(cuentaDto);
-
-    MockHttpServletRequestBuilder mockRequest =
-        MockMvcRequestBuilders.put(getEndpoint())
-            .contentType(MediaType.APPLICATION_JSON)
-            .accept(MediaType.APPLICATION_JSON)
-            .content(cuentaDtoMapped);
-
-    mockMvc
-        .perform(mockRequest)
-        .andExpect(status().isBadRequest())
-        .andExpect(jsonPath("$", notNullValue()))
-        .andExpect(jsonPath("$.errorCode", is(400123)));
-  }
-
-  @Test
   public void testActualizarCuentaCorruptedDataInDbException() throws Exception {
     CuentaDto cuentaDto = createCuentaDto();
     String cuentaDtoMapped = objectMapper.writeValueAsString(cuentaDto);

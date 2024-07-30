@@ -126,54 +126,6 @@ public class ClienteServiceTest {
   }
 
   @Test
-  public void testObtenerTitularConCuentaClienteNoExistsException() {
-
-    Cuenta cuenta = createCuenta();
-
-    when(clienteDao.find(dniCliente, true)).thenReturn(null);
-
-    assertThrows(
-        ClienteNoExistsException.class,
-        () -> clienteService.obtenerTitularConCuenta(cuenta, dniCliente));
-  }
-
-  @Test
-  public void testObtenerTitularConCuentaTipoCuentaAlreadyExistsException()
-      throws TipoCuentaAlreadyExistsException {
-
-    Cliente cliente = createCliente();
-    Cuenta cuenta = createCuenta();
-
-    when(clienteDao.find(dniCliente, true)).thenReturn(cliente);
-    doThrow(TipoCuentaAlreadyExistsException.class)
-        .when(clienteServiceValidator)
-        .validateTipoCuentaUnica(cliente, cuenta);
-
-    assertThrows(
-        TipoCuentaAlreadyExistsException.class,
-        () -> clienteService.obtenerTitularConCuenta(cuenta, dniCliente));
-  }
-
-  @Test
-  public void testObtenerTitularConCuentaSuccess()
-      throws ClienteNoExistsException, TipoCuentaAlreadyExistsException {
-
-    Cliente cliente = createCliente();
-    Cuenta cuenta = createCuenta();
-
-    when(clienteDao.find(dniCliente, true)).thenReturn(cliente);
-
-    Cliente clienteResult = clienteService.obtenerTitularConCuenta(cuenta, cliente.getDni());
-    assertEquals(cuenta, clienteResult.getCuentaById(cuenta.getNumeroCuenta()));
-    assertEquals(cliente.getDni(), clienteResult.getDni());
-    assertEquals(cliente.getEdad(), clienteResult.getEdad());
-    assertEquals(cliente.getNombre(), clienteResult.getNombre());
-    assertEquals(cliente.getApellido(), clienteResult.getApellido());
-    assertEquals(cliente.getTipoPersona(), clienteResult.getTipoPersona());
-    assertEquals(cliente.getBanco(), clienteResult.getBanco());
-  }
-
-  @Test
   public void testBuscarClientePorDniClienteNoExistsException() {
 
     assertThrows(

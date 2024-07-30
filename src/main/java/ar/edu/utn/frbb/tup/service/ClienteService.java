@@ -60,23 +60,6 @@ public class ClienteService {
     return titular;
   }
 
-  public Cliente obtenerTitularConCuenta(Cuenta cuenta, long dniTitular)
-      throws ClienteNoExistsException, TipoCuentaAlreadyExistsException {
-
-    Cliente titular = buscarClienteCompletoPorDni(dniTitular);
-
-    clienteServiceValidator.validateTipoCuentaUnica(titular, cuenta);
-
-    Cuenta cuentaOriginal = titular.getCuenta(cuenta.getNumeroCuenta());
-
-    if (cuentaOriginal != null) {
-      titular.deleteCuenta(cuentaOriginal);
-    }
-
-    titular.addCuenta(cuenta);
-    return titular;
-  }
-
   public ClienteDto buscarClientePorDni(long dni) throws ClienteNoExistsException {
     Cliente cliente = clienteDao.find(dni, false);
 

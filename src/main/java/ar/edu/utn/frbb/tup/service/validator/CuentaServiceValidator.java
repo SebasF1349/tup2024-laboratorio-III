@@ -1,12 +1,15 @@
 package ar.edu.utn.frbb.tup.service.validator;
 
+import ar.edu.utn.frbb.tup.model.Cliente;
 import ar.edu.utn.frbb.tup.model.Cuenta;
 import ar.edu.utn.frbb.tup.model.TipoCuenta;
 import ar.edu.utn.frbb.tup.model.TipoMoneda;
 import ar.edu.utn.frbb.tup.model.exception.CuentaAlreadyExistsException;
 import ar.edu.utn.frbb.tup.model.exception.CuentaNoExistsException;
+import ar.edu.utn.frbb.tup.model.exception.CuentaNoExistsInClienteException;
 import ar.edu.utn.frbb.tup.model.exception.CuentaNoSoportadaException;
 import ar.edu.utn.frbb.tup.model.exception.ImpossibleException;
+import ar.edu.utn.frbb.tup.model.exception.TipoCuentaAlreadyExistsException;
 import ar.edu.utn.frbb.tup.persistence.CuentaDao;
 import java.util.AbstractMap;
 import java.util.Arrays;
@@ -65,5 +68,19 @@ public class CuentaServiceValidator {
       return false;
     }
     return true;
+  }
+
+  public void validateClienteHasCuenta(Cuenta cuenta, Cliente titular)
+      throws CuentaNoExistsInClienteException {
+    if (!titular.hasCuentaSameTipo(cuenta.getTipoCuenta(), cuenta.getMoneda())) {
+      throw new CuentaNoExistsInClienteException("El cliente no tiene la cuenta ingresada");
+    }
+  }
+
+  public void validateClienteHasntCuenta(Cuenta cuenta, Cliente titular)
+      throws TipoCuentaAlreadyExistsException {
+    if (titular.hasCuentaSameTipo(cuenta.getTipoCuenta(), cuenta.getMoneda())) {
+      throw new TipoCuentaAlreadyExistsException("El cliente no tiene la cuenta ingresada");
+    }
   }
 }

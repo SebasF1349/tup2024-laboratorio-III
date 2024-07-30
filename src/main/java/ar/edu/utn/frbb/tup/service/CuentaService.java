@@ -12,6 +12,7 @@ import ar.edu.utn.frbb.tup.model.exception.ClienteMenorDeEdadException;
 import ar.edu.utn.frbb.tup.model.exception.ClienteNoExistsException;
 import ar.edu.utn.frbb.tup.model.exception.CorruptedDataInDbException;
 import ar.edu.utn.frbb.tup.model.exception.CuentaNoExistsException;
+import ar.edu.utn.frbb.tup.model.exception.CuentaNoExistsInClienteException;
 import ar.edu.utn.frbb.tup.model.exception.CuentaNoSoportadaException;
 import ar.edu.utn.frbb.tup.model.exception.ImpossibleException;
 import ar.edu.utn.frbb.tup.model.exception.TipoCuentaAlreadyExistsException;
@@ -46,7 +47,9 @@ public class CuentaService {
 
     cuentaServiceValidator.validateTipoCuentaEstaSoportada(cuenta);
 
-    Cliente titular = clienteService.obtenerTitularConCuenta(cuenta, cuentaDto.getTitular());
+    Cliente titular = clienteService.buscarClienteCompletoPorDni(cuentaDto.getTitular());
+
+    cuentaServiceValidator.validateClienteHasntCuenta(cuenta, titular);
 
     cuenta.setTitular(titular);
     try {
@@ -88,15 +91,17 @@ public class CuentaService {
           ClienteNoExistsException,
           CuentaNoSoportadaException,
           CorruptedDataInDbException,
-          TipoCuentaAlreadyExistsException,
           ImpossibleException,
-          IllegalArgumentException {
+          IllegalArgumentException,
+          CuentaNoExistsInClienteException {
     Cuenta cuenta = new Cuenta(cuentaDto);
 
     cuentaServiceValidator.validateCuentaExists(cuenta);
     cuentaServiceValidator.validateTipoCuentaEstaSoportada(cuenta);
 
-    Cliente titular = clienteService.obtenerTitularConCuenta(cuenta, cuentaDto.getTitular());
+    Cliente titular = clienteService.buscarClienteCompletoPorDni(cuentaDto.getTitular());
+
+    cuentaServiceValidator.validateClienteHasCuenta(cuenta, titular);
 
     try {
       clienteService.actualizarCliente(titular);

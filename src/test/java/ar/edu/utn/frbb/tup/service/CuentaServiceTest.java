@@ -73,10 +73,13 @@ public class CuentaServiceTest {
   public void testDarDeAltaCuentaTipoCuentaAlreadyExistsException()
       throws TipoCuentaAlreadyExistsException, ClienteNoExistsException {
     CuentaDto cuentaDto = createCuentaDto();
+    Cliente titular = createCliente();
+
+    when(clienteService.buscarClienteCompletoPorDni(cuentaDto.getTitular())).thenReturn(titular);
 
     doThrow(TipoCuentaAlreadyExistsException.class)
-        .when(clienteService)
-        .obtenerTitularConCuenta(any(Cuenta.class), eq(clienteDni));
+        .when(cuentaServiceValidator)
+        .validateClienteHasntCuenta(any(Cuenta.class), eq(titular));
 
     assertThrows(
         TipoCuentaAlreadyExistsException.class, () -> cuentaService.darDeAltaCuenta(cuentaDto));
@@ -89,7 +92,7 @@ public class CuentaServiceTest {
 
     doThrow(ClienteNoExistsException.class)
         .when(clienteService)
-        .obtenerTitularConCuenta(any(Cuenta.class), eq(clienteDni));
+        .buscarClienteCompletoPorDni(cuentaDto.getTitular());
 
     assertThrows(ClienteNoExistsException.class, () -> cuentaService.darDeAltaCuenta(cuentaDto));
   }
@@ -100,12 +103,11 @@ public class CuentaServiceTest {
           TipoCuentaAlreadyExistsException,
           ClienteMenorDeEdadException {
     CuentaDto cuentaDto = createCuentaDto();
-    Cliente cliente = new Cliente();
+    Cliente titular = createCliente();
 
-    when(clienteService.obtenerTitularConCuenta(any(Cuenta.class), eq(cuentaDto.getTitular())))
-        .thenReturn(cliente);
+    when(clienteService.buscarClienteCompletoPorDni(cuentaDto.getTitular())).thenReturn(titular);
 
-    doThrow(ClienteNoExistsException.class).when(clienteService).actualizarCliente(cliente);
+    doThrow(ClienteNoExistsException.class).when(clienteService).actualizarCliente(titular);
 
     assertThrows(CorruptedDataInDbException.class, () -> cuentaService.darDeAltaCuenta(cuentaDto));
   }
@@ -116,12 +118,11 @@ public class CuentaServiceTest {
           TipoCuentaAlreadyExistsException,
           ClienteMenorDeEdadException {
     CuentaDto cuentaDto = createCuentaDto();
-    Cliente cliente = new Cliente();
+    Cliente titular = createCliente();
 
-    when(clienteService.obtenerTitularConCuenta(any(Cuenta.class), eq(cuentaDto.getTitular())))
-        .thenReturn(cliente);
+    when(clienteService.buscarClienteCompletoPorDni(cuentaDto.getTitular())).thenReturn(titular);
 
-    doThrow(ClienteMenorDeEdadException.class).when(clienteService).actualizarCliente(cliente);
+    doThrow(ClienteMenorDeEdadException.class).when(clienteService).actualizarCliente(titular);
 
     assertThrows(CorruptedDataInDbException.class, () -> cuentaService.darDeAltaCuenta(cuentaDto));
   }
@@ -135,10 +136,9 @@ public class CuentaServiceTest {
           ClienteMenorDeEdadException,
           CorruptedDataInDbException {
     CuentaDto cuentaDto = createCuentaDto();
-    Cliente cliente = createCliente();
+    Cliente titular = createCliente();
 
-    when(clienteService.obtenerTitularConCuenta(any(Cuenta.class), eq(cuentaDto.getTitular())))
-        .thenReturn(cliente);
+    when(clienteService.buscarClienteCompletoPorDni(cuentaDto.getTitular())).thenReturn(titular);
 
     CuentaDto cuentaDtoResult = cuentaService.darDeAltaCuenta(cuentaDto);
 
@@ -215,7 +215,7 @@ public class CuentaServiceTest {
       throws ClienteNoExistsException, TipoCuentaAlreadyExistsException {
     CuentaDto cuentaDto = createCuentaDto();
 
-    when(clienteService.obtenerTitularConCuenta(any(Cuenta.class), eq(cuentaDto.getTitular())))
+    when(clienteService.buscarClienteCompletoPorDni(cuentaDto.getTitular()))
         .thenThrow(ClienteNoExistsException.class);
 
     assertThrows(ClienteNoExistsException.class, () -> cuentaService.actualizarCuenta(cuentaDto));
@@ -240,10 +240,9 @@ public class CuentaServiceTest {
           CuentaNoExistsInClienteException,
           ClienteMenorDeEdadException {
     CuentaDto cuentaDto = createCuentaDto();
-    Cliente cliente = new Cliente();
+    Cliente cliente = createCliente();
 
-    when(clienteService.obtenerTitularConCuenta(any(Cuenta.class), eq(cuentaDto.getTitular())))
-        .thenReturn(cliente);
+    when(clienteService.buscarClienteCompletoPorDni(cuentaDto.getTitular())).thenReturn(cliente);
 
     doThrow(ClienteNoExistsException.class).when(clienteService).actualizarCliente(cliente);
 
@@ -257,26 +256,13 @@ public class CuentaServiceTest {
           ClienteMenorDeEdadException,
           TipoCuentaAlreadyExistsException {
     CuentaDto cuentaDto = createCuentaDto();
-    Cliente cliente = new Cliente();
+    Cliente cliente = createCliente();
 
-    when(clienteService.obtenerTitularConCuenta(any(Cuenta.class), eq(cuentaDto.getTitular())))
-        .thenReturn(cliente);
+    when(clienteService.buscarClienteCompletoPorDni(cuentaDto.getTitular())).thenReturn(cliente);
 
     doThrow(ClienteMenorDeEdadException.class).when(clienteService).actualizarCliente(cliente);
 
     assertThrows(CorruptedDataInDbException.class, () -> cuentaService.actualizarCuenta(cuentaDto));
-  }
-
-  @Test
-  public void testActualizarCuentaTipoCuentaAlreadyExistsException()
-      throws ClienteNoExistsException, TipoCuentaAlreadyExistsException {
-    CuentaDto cuentaDto = createCuentaDto();
-
-    when(clienteService.obtenerTitularConCuenta(any(Cuenta.class), eq(cuentaDto.getTitular())))
-        .thenThrow(TipoCuentaAlreadyExistsException.class);
-
-    assertThrows(
-        TipoCuentaAlreadyExistsException.class, () -> cuentaService.actualizarCuenta(cuentaDto));
   }
 
   @Test
@@ -297,8 +283,7 @@ public class CuentaServiceTest {
     cuentaDto.setTipoCuenta(cuenta.getTipoCuenta().toString());
     cuentaDto.setMoneda(cuenta.getMoneda().toString());
 
-    when(clienteService.obtenerTitularConCuenta(any(Cuenta.class), eq(clienteDni)))
-        .thenReturn(cliente);
+    when(clienteService.buscarClienteCompletoPorDni(cuentaDto.getTitular())).thenReturn(cliente);
 
     CuentaDto cuentaResult = cuentaService.actualizarCuenta(cuentaDto);
     assertEquals(cuenta.getBalance(), cuentaResult.getBalance());

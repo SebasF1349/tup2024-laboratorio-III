@@ -4,6 +4,7 @@ import ar.edu.utn.frbb.tup.controller.validator.CuentaControllerValidator;
 import ar.edu.utn.frbb.tup.model.exception.ClienteNoExistsException;
 import ar.edu.utn.frbb.tup.model.exception.CorruptedDataInDbException;
 import ar.edu.utn.frbb.tup.model.exception.CuentaNoExistsException;
+import ar.edu.utn.frbb.tup.model.exception.CuentaNoExistsInClienteException;
 import ar.edu.utn.frbb.tup.model.exception.CuentaNoSoportadaException;
 import ar.edu.utn.frbb.tup.model.exception.ImpossibleException;
 import ar.edu.utn.frbb.tup.model.exception.TipoCuentaAlreadyExistsException;
@@ -67,10 +68,10 @@ public class CuentaController {
           CuentaNoExistsException,
           ClienteNoExistsException,
           CuentaNoSoportadaException,
-          TipoCuentaAlreadyExistsException,
           CorruptedDataInDbException,
           ImpossibleException,
-          IllegalArgumentException {
+          IllegalArgumentException,
+          CuentaNoExistsInClienteException {
     cuentaValidator.validate(cuentaDto);
     return cuentaService.actualizarCuenta(cuentaDto);
   }
