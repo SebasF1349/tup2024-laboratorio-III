@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.lang.Nullable;
 import org.springframework.validation.FieldError;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -148,6 +149,16 @@ public class ApiResponseEntityExceptionHandler extends ResponseEntityExceptionHa
             ex.getHttpMethod(), ex.getRequestURL());
     ApiError error = new ApiError(404001, msg);
     return handleExceptionInternal(ex, error, headers, HttpStatus.BAD_REQUEST, request);
+  }
+
+  @Override
+  protected ResponseEntity<Object> handleHttpRequestMethodNotSupported(
+      HttpRequestMethodNotSupportedException ex,
+      HttpHeaders headers,
+      HttpStatusCode status,
+      WebRequest request) {
+    ApiError error = new ApiError(405101, "Método no permitido en este endpoint");
+    return handleExceptionInternal(ex, error, headers, HttpStatus.METHOD_NOT_ALLOWED, request);
   }
 
   @ExceptionHandler(value = {Exception.class})
