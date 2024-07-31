@@ -68,6 +68,7 @@ public class CuentaController {
           CuentaNoExistsException,
           ClienteNoExistsException,
           CuentaNoSoportadaException,
+          TipoCuentaAlreadyExistsException,
           CorruptedDataInDbException,
           ImpossibleException,
           IllegalArgumentException,

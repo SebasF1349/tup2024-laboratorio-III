@@ -2,6 +2,7 @@ package ar.edu.utn.frbb.tup.model;
 
 import ar.edu.utn.frbb.tup.controller.CuentaDto;
 import ar.edu.utn.frbb.tup.controller.CuentaMovimientosResponseDto;
+import ar.edu.utn.frbb.tup.controller.CuentaResponseDto;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -220,5 +221,13 @@ public class Cuenta {
       return false;
     }
     return true;
+  }
+
+  public CuentaResponseDto toCuentaResponseDto() {
+    CuentaResponseDto cuentaResponseDto = new CuentaResponseDto();
+    cuentaResponseDto.setBalance(this.getBalance());
+    cuentaResponseDto.setTipoCuenta(this.getTipoCuenta().toString());
+    cuentaResponseDto.setMoneda(this.getMoneda().toString());
+    return cuentaResponseDto;
   }
 }

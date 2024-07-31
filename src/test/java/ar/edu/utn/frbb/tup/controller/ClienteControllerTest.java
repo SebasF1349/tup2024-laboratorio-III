@@ -400,6 +400,34 @@ public class ClienteControllerTest {
         .andExpect(content().string(clienteDtoMapped));
   }
 
+  @Test
+  public void testObtenerCuentasEnClienteDoesntExistsException() throws Exception {
+    doThrow(new ClienteNoExistsException(""))
+        .when(clienteService)
+        .buscarCuentasDeClientePorDni(dniCliente);
+
+    mockMvc
+        .perform(get(createEndpoint(dniCliente) + "/cuentas"))
+        .andExpect(status().isNotFound())
+        .andExpect(jsonPath("$", notNullValue()))
+        .andExpect(jsonPath("$.errorCode", is(404101)));
+  }
+
+  @Test
+  public void testObtenerCuentasEnClienteSuccess() throws Exception {
+    ClienteCuentasResponseDto clienteCuentasResponseDto = new ClienteCuentasResponseDto();
+    String clienteCuentasResponseDtoMapped =
+        objectMapper.writeValueAsString(clienteCuentasResponseDto);
+
+    Mockito.when(clienteService.buscarCuentasDeClientePorDni(dniCliente))
+        .thenReturn(clienteCuentasResponseDto);
+
+    mockMvc
+        .perform(get(createEndpoint(dniCliente) + "/cuentas"))
+        .andExpect(status().isOk())
+        .andExpect(content().string(clienteCuentasResponseDtoMapped));
+  }
+
   private String createEndpoint(long end) {
     return endpoint + "/" + end;
   }

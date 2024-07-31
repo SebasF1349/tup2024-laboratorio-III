@@ -1,10 +1,19 @@
 package ar.edu.utn.frbb.tup.service;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
+import ar.edu.utn.frbb.tup.controller.ClienteCuentasResponseDto;
 import ar.edu.utn.frbb.tup.controller.ClienteDto;
-import ar.edu.utn.frbb.tup.model.*;
+import ar.edu.utn.frbb.tup.controller.CuentaResponseDto;
+import ar.edu.utn.frbb.tup.model.Cliente;
+import ar.edu.utn.frbb.tup.model.Cuenta;
+import ar.edu.utn.frbb.tup.model.TipoCuenta;
+import ar.edu.utn.frbb.tup.model.TipoMoneda;
 import ar.edu.utn.frbb.tup.model.exception.ClienteAlreadyExistsException;
 import ar.edu.utn.frbb.tup.model.exception.ClienteMenorDeEdadException;
 import ar.edu.utn.frbb.tup.model.exception.ClienteNoExistsException;
@@ -303,6 +312,32 @@ public class ClienteServiceTest {
     when(clienteDao.getClienteByCuenta(dniCliente)).thenReturn(cliente);
 
     assertEquals(cliente, clienteService.getClienteByCuenta(dniCliente));
+  }
+
+  @Test
+  public void testBuscarCuentasDeClienteByDniClienteNoExistsException() {
+    assertThrows(
+        ClienteNoExistsException.class,
+        () -> clienteService.buscarCuentasDeClientePorDni(dniCliente));
+  }
+
+  @Test
+  public void testBuscarCuentasDeClienteByDniSuccess() throws ClienteNoExistsException {
+    Cliente cliente = createCliente();
+    Cuenta cuenta = createCuenta();
+    cliente.addCuenta(cuenta);
+
+    ClienteCuentasResponseDto clienteCuentasResponseDtoExpected =
+        cliente.toClienteCuentasResponseDto();
+    CuentaResponseDto cuentaResponseDto = cuenta.toCuentaResponseDto();
+    clienteCuentasResponseDtoExpected.addCuenta(cuentaResponseDto);
+
+    when(clienteDao.find(dniCliente, true)).thenReturn(cliente);
+
+    ClienteCuentasResponseDto clienteCuentasResponseDto =
+        clienteService.buscarCuentasDeClientePorDni(dniCliente);
+
+    assertEquals(clienteCuentasResponseDtoExpected, clienteCuentasResponseDto);
   }
 
   private ClienteDto createClienteDto() {

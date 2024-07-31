@@ -1,5 +1,6 @@
 package ar.edu.utn.frbb.tup.model;
 
+import ar.edu.utn.frbb.tup.controller.ClienteCuentasResponseDto;
 import ar.edu.utn.frbb.tup.controller.ClienteDto;
 import java.time.LocalDate;
 import java.util.HashSet;
@@ -37,6 +38,12 @@ public class Cliente extends Persona {
     clienteDto.setTipoPersona(this.getTipoPersona().toString());
     clienteDto.setBanco(this.getBanco());
     return clienteDto;
+  }
+
+  public ClienteCuentasResponseDto toClienteCuentasResponseDto() {
+    ClienteCuentasResponseDto clienteCuentasResponseDto = new ClienteCuentasResponseDto();
+    clienteCuentasResponseDto.setDni(this.getDni());
+    return clienteCuentasResponseDto;
   }
 
   public TipoPersona getTipoPersona() {

@@ -1,6 +1,8 @@
 package ar.edu.utn.frbb.tup.service;
 
+import ar.edu.utn.frbb.tup.controller.ClienteCuentasResponseDto;
 import ar.edu.utn.frbb.tup.controller.ClienteDto;
+import ar.edu.utn.frbb.tup.controller.CuentaResponseDto;
 import ar.edu.utn.frbb.tup.model.Cliente;
 import ar.edu.utn.frbb.tup.model.Cuenta;
 import ar.edu.utn.frbb.tup.model.exception.ClienteAlreadyExistsException;
@@ -146,5 +148,19 @@ public class ClienteService {
     }
 
     return cliente;
+  }
+
+  public ClienteCuentasResponseDto buscarCuentasDeClientePorDni(long dni)
+      throws ClienteNoExistsException {
+    Cliente cliente = buscarClienteCompletoPorDni(dni);
+
+    ClienteCuentasResponseDto clienteCuentasResponseDto = cliente.toClienteCuentasResponseDto();
+
+    for (Cuenta cuenta : cliente.getCuentas()) {
+      CuentaResponseDto cuentaResponseDto = cuenta.toCuentaResponseDto();
+      clienteCuentasResponseDto.addCuenta(cuentaResponseDto);
+    }
+
+    return clienteCuentasResponseDto;
   }
 }

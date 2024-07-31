@@ -65,4 +65,10 @@ public class ClienteController {
   public ClienteDto activarCliente(@PathVariable long dni) throws ClienteNoExistsException {
     return clienteService.activarCliente(dni);
   }
+
+  @GetMapping(value = "/{dni}/cuentas")
+  public ClienteCuentasResponseDto obtenerCuentasEnCliente(@PathVariable long dni)
+      throws ClienteNoExistsException {
+    return clienteService.buscarCuentasDeClientePorDni(dni);
+  }
 }
