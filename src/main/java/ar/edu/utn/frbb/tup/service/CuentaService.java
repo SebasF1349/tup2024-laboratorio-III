@@ -8,6 +8,7 @@ import ar.edu.utn.frbb.tup.model.Cuenta;
 import ar.edu.utn.frbb.tup.model.Movimiento;
 import ar.edu.utn.frbb.tup.model.MovimientoUnidireccional;
 import ar.edu.utn.frbb.tup.model.Transferencia;
+import ar.edu.utn.frbb.tup.model.exception.ClienteInactivoException;
 import ar.edu.utn.frbb.tup.model.exception.ClienteMenorDeEdadException;
 import ar.edu.utn.frbb.tup.model.exception.ClienteNoExistsException;
 import ar.edu.utn.frbb.tup.model.exception.CorruptedDataInDbException;
@@ -41,7 +42,8 @@ public class CuentaService {
       throws CuentaNoSoportadaException,
           TipoCuentaAlreadyExistsException,
           ClienteNoExistsException,
-          CorruptedDataInDbException {
+          CorruptedDataInDbException,
+          ClienteInactivoException {
 
     Cuenta cuenta = new Cuenta(cuentaDto);
 
@@ -93,7 +95,8 @@ public class CuentaService {
           CorruptedDataInDbException,
           ImpossibleException,
           IllegalArgumentException,
-          CuentaNoExistsInClienteException {
+          CuentaNoExistsInClienteException,
+          ClienteInactivoException {
     Cuenta cuenta = new Cuenta(cuentaDto);
 
     cuentaServiceValidator.validateCuentaExists(cuenta);
@@ -111,6 +114,9 @@ public class CuentaService {
     } catch (ClienteMenorDeEdadException ex) {
       throw new CorruptedDataInDbException(
           "Titular de cuenta guardado en Base de Datos con edad incorrecta");
+    } catch (ClienteInactivoException ex) {
+      throw new CorruptedDataInDbException(
+          "Titular de cuenta guardado en Base de Datos inactivo, pero cuenta es activa ");
     }
 
     cuenta.setTitular(titular);

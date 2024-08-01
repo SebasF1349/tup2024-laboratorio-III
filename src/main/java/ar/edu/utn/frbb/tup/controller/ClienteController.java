@@ -1,7 +1,9 @@
 package ar.edu.utn.frbb.tup.controller;
 
 import ar.edu.utn.frbb.tup.controller.validator.ClienteControllerValidator;
+import ar.edu.utn.frbb.tup.model.exception.ClienteActivoException;
 import ar.edu.utn.frbb.tup.model.exception.ClienteAlreadyExistsException;
+import ar.edu.utn.frbb.tup.model.exception.ClienteInactivoException;
 import ar.edu.utn.frbb.tup.model.exception.ClienteMenorDeEdadException;
 import ar.edu.utn.frbb.tup.model.exception.ClienteNoExistsException;
 import ar.edu.utn.frbb.tup.model.exception.CorruptedDataInDbException;
@@ -53,12 +55,16 @@ public class ClienteController {
           ClienteNoExistsException,
           ImpossibleException,
           IllegalArgumentException {
+          ClienteInactivoException {
     return clienteService.eliminarCliente(dni);
   }
 
   @PutMapping
-      throws ClienteNoExistsException, ClienteMenorDeEdadException, WrongInputDataException {
   public ClienteResponseDto actualizarCliente(@Valid @RequestBody ClienteRequestDto clienteDto)
+      throws ClienteNoExistsException,
+          ClienteMenorDeEdadException,
+          WrongInputDataException,
+          ClienteInactivoException {
     clienteControllerValidator.validate(clienteDto);
     return clienteService.actualizarCliente(clienteDto);
   }
@@ -71,7 +77,7 @@ public class ClienteController {
 
   @GetMapping(value = "/{dni}/cuentas")
   public ClienteCuentasResponseDto obtenerCuentasEnCliente(@PathVariable long dni)
-      throws ClienteNoExistsException {
+      throws ClienteNoExistsException, ClienteInactivoException {
     return clienteService.buscarCuentasDeClientePorDni(dni);
   }
 }

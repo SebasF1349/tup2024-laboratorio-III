@@ -1,6 +1,7 @@
 package ar.edu.utn.frbb.tup.controller;
 
 import ar.edu.utn.frbb.tup.controller.validator.CuentaControllerValidator;
+import ar.edu.utn.frbb.tup.model.exception.ClienteInactivoException;
 import ar.edu.utn.frbb.tup.model.exception.ClienteNoExistsException;
 import ar.edu.utn.frbb.tup.model.exception.CorruptedDataInDbException;
 import ar.edu.utn.frbb.tup.model.exception.CuentaNoExistsException;
@@ -47,7 +48,8 @@ public class CuentaController {
           CuentaNoSoportadaException,
           TipoCuentaAlreadyExistsException,
           ClienteNoExistsException,
-          CorruptedDataInDbException {
+          CorruptedDataInDbException,
+          ClienteInactivoException {
     cuentaValidator.validate(cuentaDto);
     CuentaDto cuentaResponse = cuentaService.darDeAltaCuenta(cuentaDto);
     return new ResponseEntity<CuentaDto>(cuentaResponse, new HttpHeaders(), HttpStatus.CREATED);
@@ -72,7 +74,8 @@ public class CuentaController {
           CorruptedDataInDbException,
           ImpossibleException,
           IllegalArgumentException,
-          CuentaNoExistsInClienteException {
+          CuentaNoExistsInClienteException,
+          ClienteInactivoException {
     cuentaValidator.validate(cuentaDto);
     return cuentaService.actualizarCuenta(cuentaDto);
   }

@@ -6,7 +6,9 @@ import ar.edu.utn.frbb.tup.controller.ClienteResponseDto;
 import ar.edu.utn.frbb.tup.controller.CuentaResponseDto;
 import ar.edu.utn.frbb.tup.model.Cliente;
 import ar.edu.utn.frbb.tup.model.Cuenta;
+import ar.edu.utn.frbb.tup.model.exception.ClienteActivoException;
 import ar.edu.utn.frbb.tup.model.exception.ClienteAlreadyExistsException;
+import ar.edu.utn.frbb.tup.model.exception.ClienteInactivoException;
 import ar.edu.utn.frbb.tup.model.exception.ClienteMenorDeEdadException;
 import ar.edu.utn.frbb.tup.model.exception.ClienteNoExistsException;
 import ar.edu.utn.frbb.tup.model.exception.CorruptedDataInDbException;
@@ -73,12 +75,13 @@ public class ClienteService {
     return cliente.toClienteDto();
   }
 
-      throws ClienteNoExistsException, ClienteMenorDeEdadException {
   public ClienteResponseDto actualizarCliente(ClienteRequestDto clienteDto)
+      throws ClienteNoExistsException, ClienteMenorDeEdadException, ClienteInactivoException {
 
     Cliente cliente = new Cliente(clienteDto);
 
     clienteServiceValidator.validateClienteExists(cliente);
+    clienteServiceValidator.validateClienteIsActivo(cliente);
     clienteServiceValidator.validateClienteMayorDeEdad(cliente);
 
     clienteDao.save(cliente);
@@ -91,7 +94,10 @@ public class ClienteService {
           ClienteNoExistsException,
           ImpossibleException,
           IllegalArgumentException {
+          ClienteInactivoException {
     Cliente cliente = buscarClienteCompletoPorDni(dni);
+
+    clienteServiceValidator.validateClienteIsActivo(cliente);
 
     cliente.setActivo(false);
 
@@ -113,7 +119,10 @@ public class ClienteService {
   }
 
   public ClienteResponseDto activarCliente(long dni)
+      throws ClienteNoExistsException, ClienteActivoException {
     Cliente cliente = buscarClienteCompletoPorDni(dni);
+
+    clienteServiceValidator.validateClienteIsNotActivo(cliente);
 
     cliente.setActivo(true);
 
@@ -123,9 +132,10 @@ public class ClienteService {
   }
 
   protected void actualizarCliente(Cliente cliente)
-      throws ClienteNoExistsException, ClienteMenorDeEdadException {
+      throws ClienteNoExistsException, ClienteMenorDeEdadException, ClienteInactivoException {
 
     clienteServiceValidator.validateClienteExists(cliente);
+    clienteServiceValidator.validateClienteIsActivo(cliente);
     clienteServiceValidator.validateClienteMayorDeEdad(cliente);
 
     clienteDao.save(cliente);
@@ -152,8 +162,10 @@ public class ClienteService {
   }
 
   public ClienteCuentasResponseDto buscarCuentasDeClientePorDni(long dni)
-      throws ClienteNoExistsException {
+      throws ClienteNoExistsException, ClienteInactivoException {
     Cliente cliente = buscarClienteCompletoPorDni(dni);
+
+    clienteServiceValidator.validateClienteIsActivo(cliente);
 
     ClienteCuentasResponseDto clienteCuentasResponseDto = cliente.toClienteCuentasResponseDto();
 
