@@ -1,8 +1,8 @@
 package ar.edu.utn.frbb.tup.model.exception;
 
-public class ImpossibleException extends ServerException {
+public class ImpossibleException extends InternalServerErrorException {
   public ImpossibleException() {
-    super("Error irrecuperable", 500, 100);
+    super("Error irrecuperable", 100);
     // TODO: add logging
   }
 }
