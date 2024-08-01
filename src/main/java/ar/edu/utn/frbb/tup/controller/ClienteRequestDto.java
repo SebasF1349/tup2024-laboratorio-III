@@ -2,7 +2,7 @@ package ar.edu.utn.frbb.tup.controller;
 
 import jakarta.validation.constraints.NotNull;
 
-public class ClienteDto extends PersonaDto {
+public class ClienteRequestDto extends PersonaDto {
   @NotNull private String tipoPersona;
   @NotNull private String banco;
 
@@ -42,7 +42,7 @@ public class ClienteDto extends PersonaDto {
     if (getClass() != obj.getClass()) {
       return false;
     }
-    ClienteDto other = (ClienteDto) obj;
+    ClienteRequestDto other = (ClienteRequestDto) obj;
     if (tipoPersona == null) {
       if (other.tipoPersona != null) {
         return false;

@@ -32,21 +32,23 @@ public class ClienteController {
   @Autowired private ClienteControllerValidator clienteControllerValidator;
 
   @GetMapping(value = "/{dni}")
-  public ClienteDto obtenerCliente(@PathVariable long dni)
+  public ClienteResponseDto obtenerCliente(@PathVariable long dni)
       throws ClienteNoExistsException, WrongInputDataException {
     return clienteService.buscarClientePorDni(dni);
   }
 
   @PostMapping
-  public ResponseEntity<ClienteDto> crearCliente(@Valid @RequestBody ClienteDto clienteDto)
+  public ResponseEntity<ClienteResponseDto> crearCliente(
+      @Valid @RequestBody ClienteRequestDto clienteDto)
       throws ClienteAlreadyExistsException, ClienteMenorDeEdadException, WrongInputDataException {
     clienteControllerValidator.validate(clienteDto);
-    ClienteDto clienteResponse = clienteService.darDeAltaCliente(clienteDto);
-    return new ResponseEntity<ClienteDto>(clienteResponse, new HttpHeaders(), HttpStatus.CREATED);
+    ClienteResponseDto clienteResponse = clienteService.darDeAltaCliente(clienteDto);
+    return new ResponseEntity<ClienteResponseDto>(
+        clienteResponse, new HttpHeaders(), HttpStatus.CREATED);
   }
 
   @DeleteMapping(value = "/{dni}")
-  public ClienteDto eliminarCliente(@PathVariable long dni)
+  public ClienteResponseDto eliminarCliente(@PathVariable long dni)
       throws CorruptedDataInDbException,
           ClienteNoExistsException,
           ImpossibleException,
@@ -55,14 +57,15 @@ public class ClienteController {
   }
 
   @PutMapping
-  public ClienteDto actualizarCliente(@Valid @RequestBody ClienteDto clienteDto)
       throws ClienteNoExistsException, ClienteMenorDeEdadException, WrongInputDataException {
+  public ClienteResponseDto actualizarCliente(@Valid @RequestBody ClienteRequestDto clienteDto)
     clienteControllerValidator.validate(clienteDto);
     return clienteService.actualizarCliente(clienteDto);
   }
 
   @PatchMapping(value = "/{dni}")
-  public ClienteDto activarCliente(@PathVariable long dni) throws ClienteNoExistsException {
+  public ClienteResponseDto activarCliente(@PathVariable long dni)
+      throws ClienteNoExistsException, ClienteActivoException {
     return clienteService.activarCliente(dni);
   }
 

@@ -1,7 +1,8 @@
 package ar.edu.utn.frbb.tup.service;
 
 import ar.edu.utn.frbb.tup.controller.ClienteCuentasResponseDto;
-import ar.edu.utn.frbb.tup.controller.ClienteDto;
+import ar.edu.utn.frbb.tup.controller.ClienteRequestDto;
+import ar.edu.utn.frbb.tup.controller.ClienteResponseDto;
 import ar.edu.utn.frbb.tup.controller.CuentaResponseDto;
 import ar.edu.utn.frbb.tup.model.Cliente;
 import ar.edu.utn.frbb.tup.model.Cuenta;
@@ -35,7 +36,7 @@ public class ClienteService {
     this.cuentaService = cuentaService;
   }
 
-  public ClienteDto darDeAltaCliente(ClienteDto clienteDto)
+  public ClienteResponseDto darDeAltaCliente(ClienteRequestDto clienteDto)
       throws ClienteAlreadyExistsException, ClienteMenorDeEdadException {
 
     Cliente cliente = new Cliente(clienteDto);
@@ -62,7 +63,7 @@ public class ClienteService {
     return titular;
   }
 
-  public ClienteDto buscarClientePorDni(long dni) throws ClienteNoExistsException {
+  public ClienteResponseDto buscarClientePorDni(long dni) throws ClienteNoExistsException {
     Cliente cliente = clienteDao.find(dni, false);
 
     if (cliente == null) {
@@ -72,8 +73,8 @@ public class ClienteService {
     return cliente.toClienteDto();
   }
 
-  public ClienteDto actualizarCliente(ClienteDto clienteDto)
       throws ClienteNoExistsException, ClienteMenorDeEdadException {
+  public ClienteResponseDto actualizarCliente(ClienteRequestDto clienteDto)
 
     Cliente cliente = new Cliente(clienteDto);
 
@@ -85,7 +86,7 @@ public class ClienteService {
     return cliente.toClienteDto();
   }
 
-  public ClienteDto eliminarCliente(long dni)
+  public ClienteResponseDto eliminarCliente(long dni)
       throws CorruptedDataInDbException,
           ClienteNoExistsException,
           ImpossibleException,
@@ -111,7 +112,7 @@ public class ClienteService {
     return cliente.toClienteDto();
   }
 
-  public ClienteDto activarCliente(long dni) throws ClienteNoExistsException {
+  public ClienteResponseDto activarCliente(long dni)
     Cliente cliente = buscarClienteCompletoPorDni(dni);
 
     cliente.setActivo(true);
