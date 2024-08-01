@@ -8,13 +8,16 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import ar.edu.utn.frbb.tup.controller.ClienteCuentasResponseDto;
-import ar.edu.utn.frbb.tup.controller.ClienteDto;
+import ar.edu.utn.frbb.tup.controller.ClienteRequestDto;
+import ar.edu.utn.frbb.tup.controller.ClienteResponseDto;
 import ar.edu.utn.frbb.tup.controller.CuentaResponseDto;
 import ar.edu.utn.frbb.tup.model.Cliente;
 import ar.edu.utn.frbb.tup.model.Cuenta;
 import ar.edu.utn.frbb.tup.model.TipoCuenta;
 import ar.edu.utn.frbb.tup.model.TipoMoneda;
+import ar.edu.utn.frbb.tup.model.exception.ClienteActivoException;
 import ar.edu.utn.frbb.tup.model.exception.ClienteAlreadyExistsException;
+import ar.edu.utn.frbb.tup.model.exception.ClienteInactivoException;
 import ar.edu.utn.frbb.tup.model.exception.ClienteMenorDeEdadException;
 import ar.edu.utn.frbb.tup.model.exception.ClienteNoExistsException;
 import ar.edu.utn.frbb.tup.model.exception.CorruptedDataInDbException;
@@ -50,7 +53,7 @@ public class ClienteServiceTest {
 
   @Test
   public void testDarDeAltaClienteAlreadyExistsException() throws ClienteAlreadyExistsException {
-    ClienteDto clienteDto = createClienteDto();
+    ClienteRequestDto clienteDto = createClienteRequestDto();
     Cliente cliente = new Cliente(clienteDto);
 
     doThrow(ClienteAlreadyExistsException.class)
@@ -63,7 +66,7 @@ public class ClienteServiceTest {
 
   @Test
   public void testDarDeAltaClienteMenorDeEdadException() throws ClienteMenorDeEdadException {
-    ClienteDto clienteDtoMenorDeEdad = createClienteDto();
+    ClienteRequestDto clienteDtoMenorDeEdad = createClienteRequestDto();
     Cliente clienteMenorDeEdad = new Cliente(clienteDtoMenorDeEdad);
 
     doThrow(ClienteMenorDeEdadException.class)
@@ -79,7 +82,7 @@ public class ClienteServiceTest {
   public void testDarDeAltaClienteSuccess()
       throws ClienteAlreadyExistsException, ClienteMenorDeEdadException {
 
-    ClienteDto clienteDto = createClienteDto();
+    ClienteRequestDto clienteDto = createClienteRequestDto();
     Cliente cliente = new Cliente(clienteDto);
 
     clienteService.darDeAltaCliente(clienteDto);
@@ -144,18 +147,18 @@ public class ClienteServiceTest {
   @Test
   public void testBuscarClientePorDniSuccess()
       throws TipoCuentaAlreadyExistsException, ClienteNoExistsException {
-    ClienteDto clienteDto = createClienteDto();
+    ClienteResponseDto clienteResponseDto = createClienteResponseDto();
     Cliente cliente = createCliente();
-    clienteDto.setTipoPersona(cliente.getTipoPersona().toString());
+    clienteResponseDto.setTipoPersona(cliente.getTipoPersona().toString());
 
     when(clienteDao.find(dniCliente, false)).thenReturn(cliente);
 
-    assertEquals(clienteDto, clienteService.buscarClientePorDni(dniCliente));
+    assertEquals(clienteResponseDto, clienteService.buscarClientePorDni(dniCliente));
   }
 
   @Test
   public void testActualizarClienteNoExistsOnUpdateException() throws ClienteNoExistsException {
-    ClienteDto clienteDto = createClienteDto();
+    ClienteRequestDto clienteDto = createClienteRequestDto();
     Cliente cliente = new Cliente(clienteDto);
 
     doThrow(ClienteNoExistsException.class)
@@ -169,7 +172,7 @@ public class ClienteServiceTest {
   @Test
   public void testActualizarClienteMenorDeEdadOnUpdateException()
       throws ClienteMenorDeEdadException {
-    ClienteDto clienteDtoMenorDeEdad = createClienteDto();
+    ClienteRequestDto clienteDtoMenorDeEdad = createClienteRequestDto();
     Cliente clienteMenorDeEdad = new Cliente(clienteDtoMenorDeEdad);
 
     doThrow(ClienteMenorDeEdadException.class)
@@ -182,14 +185,27 @@ public class ClienteServiceTest {
   }
 
   @Test
-  public void testActualizarClienteSuccess()
-      throws ClienteNoExistsException, ClienteMenorDeEdadException {
-    ClienteDto clienteDto = createClienteDto();
+  public void testActualizarClienteClienteInactivoException() throws ClienteInactivoException {
+    ClienteRequestDto clienteDto = createClienteRequestDto();
     Cliente cliente = new Cliente(clienteDto);
-    ClienteDto clienteResDto = createClienteDto();
-    clienteResDto.setTipoPersona(cliente.getTipoPersona().toString());
 
-    assertEquals(clienteResDto, clienteService.actualizarCliente(clienteDto));
+    doThrow(ClienteInactivoException.class)
+        .when(clienteServiceValidator)
+        .validateClienteIsActivo(cliente);
+
+    assertThrows(
+        ClienteInactivoException.class, () -> clienteService.actualizarCliente(clienteDto));
+  }
+
+  @Test
+  public void testActualizarClienteSuccess()
+      throws ClienteNoExistsException, ClienteMenorDeEdadException, ClienteInactivoException {
+    ClienteRequestDto clienteDto = createClienteRequestDto();
+    Cliente cliente = new Cliente(clienteDto);
+    ClienteResponseDto clienteResponseDto = createClienteResponseDto();
+    clienteResponseDto.setTipoPersona(cliente.getTipoPersona().toString());
+
+    assertEquals(clienteResponseDto, clienteService.actualizarCliente(clienteDto));
 
     verify(clienteDao, times(1)).save(cliente);
   }
@@ -220,17 +236,33 @@ public class ClienteServiceTest {
   }
 
   @Test
+  public void testEliminarClienteClienteInactivoException() throws ClienteInactivoException {
+    ClienteRequestDto clienteDto = createClienteRequestDto();
+    Cliente cliente = new Cliente(clienteDto);
+
+    when(clienteDao.find(dniCliente, true)).thenReturn(cliente);
+
+    doThrow(ClienteInactivoException.class)
+        .when(clienteServiceValidator)
+        .validateClienteIsActivo(cliente);
+
+    assertThrows(ClienteInactivoException.class, () -> clienteService.eliminarCliente(dniCliente));
+  }
+
+  @Test
   public void testEliminarClienteCuentaNoExistsSuccess()
       throws CorruptedDataInDbException,
           ClienteNoExistsException,
           CuentaNoExistsException,
           ImpossibleException,
-          IllegalArgumentException {
+          IllegalArgumentException,
+          ClienteInactivoException {
     Cliente cliente = createCliente();
     Cuenta cuenta = createCuenta();
     cliente.addCuenta(cuenta);
-    ClienteDto clienteDto = createClienteDto();
-    clienteDto.setTipoPersona(cliente.getTipoPersona().toString());
+    ClienteResponseDto clienteResponseDto = createClienteResponseDto();
+    clienteResponseDto.setTipoPersona(cliente.getTipoPersona().toString());
+    clienteResponseDto.setActivo(false);
 
     Cliente clienteRes = createCliente();
     clienteRes.setActivo(false);
@@ -242,7 +274,7 @@ public class ClienteServiceTest {
         .when(cuentaService)
         .eliminarCuenta(cuenta.getNumeroCuenta());
 
-    assertEquals(clienteDto, clienteService.eliminarCliente(dniCliente));
+    assertEquals(clienteResponseDto, clienteService.eliminarCliente(dniCliente));
     verify(clienteDao, times(1)).save(cliente);
   }
 
@@ -251,7 +283,8 @@ public class ClienteServiceTest {
       throws CorruptedDataInDbException,
           ClienteNoExistsException,
           ImpossibleException,
-          IllegalArgumentException {
+          IllegalArgumentException,
+          ClienteInactivoException {
     Cliente cliente = createCliente();
 
     when(clienteDao.find(dniCliente, true)).thenReturn(cliente);
@@ -268,7 +301,22 @@ public class ClienteServiceTest {
   }
 
   @Test
-  public void testActivarClienteSuccess() throws ClienteNoExistsException {
+  public void testActivarClienteClienteInactivoException() throws ClienteActivoException {
+    ClienteRequestDto clienteDto = createClienteRequestDto();
+    Cliente cliente = new Cliente(clienteDto);
+
+    when(clienteDao.find(dniCliente, true)).thenReturn(cliente);
+
+    doThrow(ClienteActivoException.class)
+        .when(clienteServiceValidator)
+        .validateClienteIsNotActivo(cliente);
+
+    assertThrows(ClienteActivoException.class, () -> clienteService.activarCliente(dniCliente));
+  }
+
+  @Test
+  public void testActivarClienteSuccess()
+      throws ClienteNoExistsException, ClienteInactivoException, ClienteActivoException {
     Cliente cliente = createCliente();
 
     when(clienteDao.find(dniCliente, true)).thenReturn(cliente);
@@ -290,7 +338,7 @@ public class ClienteServiceTest {
   @Test
   public void testBuscarClienteCompletoPorDniSuccess()
       throws TipoCuentaAlreadyExistsException, ClienteNoExistsException {
-    ClienteDto clienteDto = createClienteDto();
+    ClienteRequestDto clienteDto = createClienteRequestDto();
     Cliente cliente = createCliente();
     clienteDto.setTipoPersona(cliente.getTipoPersona().toString());
 
@@ -322,7 +370,24 @@ public class ClienteServiceTest {
   }
 
   @Test
-  public void testBuscarCuentasDeClienteByDniSuccess() throws ClienteNoExistsException {
+  public void testBuscarCuentasDeClienteByDniClienteInactivoException()
+      throws ClienteInactivoException {
+    Cliente cliente = createCliente();
+
+    when(clienteDao.find(dniCliente, true)).thenReturn(cliente);
+
+    doThrow(ClienteInactivoException.class)
+        .when(clienteServiceValidator)
+        .validateClienteIsActivo(cliente);
+
+    assertThrows(
+        ClienteInactivoException.class,
+        () -> clienteService.buscarCuentasDeClientePorDni(dniCliente));
+  }
+
+  @Test
+  public void testBuscarCuentasDeClienteByDniSuccess()
+      throws ClienteNoExistsException, ClienteInactivoException {
     Cliente cliente = createCliente();
     Cuenta cuenta = createCuenta();
     cliente.addCuenta(cuenta);
@@ -340,8 +405,8 @@ public class ClienteServiceTest {
     assertEquals(clienteCuentasResponseDtoExpected, clienteCuentasResponseDto);
   }
 
-  private ClienteDto createClienteDto() {
-    ClienteDto clienteDto = new ClienteDto();
+  private ClienteRequestDto createClienteRequestDto() {
+    ClienteRequestDto clienteDto = new ClienteRequestDto();
     clienteDto.setDni(dniCliente);
     clienteDto.setNombre("Nombre");
     clienteDto.setApellido("Apellido");
@@ -350,8 +415,19 @@ public class ClienteServiceTest {
     return clienteDto;
   }
 
+  private ClienteResponseDto createClienteResponseDto() {
+    ClienteResponseDto clienteDto = new ClienteResponseDto();
+    clienteDto.setDni(dniCliente);
+    clienteDto.setNombre("Nombre");
+    clienteDto.setApellido("Apellido");
+    clienteDto.setFechaNacimiento("1990-01-01");
+    clienteDto.setTipoPersona("F");
+    clienteDto.setActivo(true);
+    return clienteDto;
+  }
+
   private Cliente createCliente() {
-    ClienteDto clienteDto = createClienteDto();
+    ClienteRequestDto clienteDto = createClienteRequestDto();
     return new Cliente(clienteDto);
   }
 

@@ -1,6 +1,6 @@
 package ar.edu.utn.frbb.tup.controller;
 
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.aMapWithSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.mockito.Mockito.doThrow;
@@ -12,9 +12,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import ar.edu.utn.frbb.tup.controller.validator.CuentaControllerValidator;
+import ar.edu.utn.frbb.tup.model.exception.ClienteInactivoException;
 import ar.edu.utn.frbb.tup.model.exception.ClienteNoExistsException;
 import ar.edu.utn.frbb.tup.model.exception.CorruptedDataInDbException;
 import ar.edu.utn.frbb.tup.model.exception.CuentaNoExistsException;
+import ar.edu.utn.frbb.tup.model.exception.CuentaNoExistsInClienteException;
 import ar.edu.utn.frbb.tup.model.exception.CuentaNoSoportadaException;
 import ar.edu.utn.frbb.tup.model.exception.TipoCuentaAlreadyExistsException;
 import ar.edu.utn.frbb.tup.model.exception.WrongInputDataException;
@@ -241,6 +243,26 @@ public class CuentaControllerTest {
   }
 
   @Test
+  public void testCrearCuentaClienteInactivoException() throws Exception {
+    CuentaDto cuentaDto = createCuentaDto();
+    String cuentaDtoMapped = objectMapper.writeValueAsString(cuentaDto);
+
+    doThrow(new ClienteInactivoException("")).when(cuentaService).darDeAltaCuenta(cuentaDto);
+
+    MockHttpServletRequestBuilder mockRequest =
+        MockMvcRequestBuilders.post(getEndpoint())
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON)
+            .content(cuentaDtoMapped);
+
+    mockMvc
+        .perform(mockRequest)
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$", notNullValue()))
+        .andExpect(jsonPath("$.errorCode", is(400112)));
+  }
+
+  @Test
   public void testCrearCuentaSuccess() throws Exception {
     CuentaDto cuentaDto = createCuentaDto();
     String cuentaDtoMapped = objectMapper.writeValueAsString(cuentaDto);
@@ -439,6 +461,48 @@ public class CuentaControllerTest {
         .andExpect(status().isInternalServerError())
         .andExpect(jsonPath("$", notNullValue()))
         .andExpect(jsonPath("$.errorCode", is(500101)));
+  }
+
+  @Test
+  public void testActualizarCuentaNoExistsInClienteException() throws Exception {
+    CuentaDto cuentaDto = createCuentaDto();
+    String cuentaDtoMapped = objectMapper.writeValueAsString(cuentaDto);
+
+    doThrow(new CuentaNoExistsInClienteException(""))
+        .when(cuentaService)
+        .actualizarCuenta(cuentaDto);
+
+    MockHttpServletRequestBuilder mockRequest =
+        MockMvcRequestBuilders.put(getEndpoint())
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON)
+            .content(cuentaDtoMapped);
+
+    mockMvc
+        .perform(mockRequest)
+        .andExpect(status().isNotFound())
+        .andExpect(jsonPath("$", notNullValue()))
+        .andExpect(jsonPath("$.errorCode", is(404103)));
+  }
+
+  @Test
+  public void testActualizarCuentaClienteInactivoException() throws Exception {
+    CuentaDto cuentaDto = createCuentaDto();
+    String cuentaDtoMapped = objectMapper.writeValueAsString(cuentaDto);
+
+    doThrow(new ClienteInactivoException("")).when(cuentaService).actualizarCuenta(cuentaDto);
+
+    MockHttpServletRequestBuilder mockRequest =
+        MockMvcRequestBuilders.put(getEndpoint())
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON)
+            .content(cuentaDtoMapped);
+
+    mockMvc
+        .perform(mockRequest)
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$", notNullValue()))
+        .andExpect(jsonPath("$.errorCode", is(400112)));
   }
 
   @Test

@@ -1,6 +1,6 @@
 package ar.edu.utn.frbb.tup.controller;
 
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.aMapWithSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.mockito.Mockito.doThrow;
@@ -13,7 +13,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import ar.edu.utn.frbb.tup.controller.validator.ClienteControllerValidator;
+import ar.edu.utn.frbb.tup.model.exception.ClienteActivoException;
 import ar.edu.utn.frbb.tup.model.exception.ClienteAlreadyExistsException;
+import ar.edu.utn.frbb.tup.model.exception.ClienteInactivoException;
 import ar.edu.utn.frbb.tup.model.exception.ClienteMenorDeEdadException;
 import ar.edu.utn.frbb.tup.model.exception.ClienteNoExistsException;
 import ar.edu.utn.frbb.tup.model.exception.CorruptedDataInDbException;
@@ -69,7 +71,7 @@ public class ClienteControllerTest {
 
   @Test
   public void testObtenerClienteSuccess() throws Exception {
-    ClienteDto clienteDto = createClienteDto();
+    ClienteResponseDto clienteDto = createClienteResponseDto();
     String clienteDtoMapped = objectMapper.writeValueAsString(clienteDto);
 
     Mockito.when(clienteService.buscarClientePorDni(dniCliente)).thenReturn(clienteDto);
@@ -82,7 +84,7 @@ public class ClienteControllerTest {
 
   @Test
   public void testCrearClienteWithoutData() throws Exception {
-    ClienteDto clienteDto = new ClienteDto();
+    ClienteRequestDto clienteDto = new ClienteRequestDto();
     String clienteDtoMapped = objectMapper.writeValueAsString(clienteDto);
 
     MockHttpServletRequestBuilder mockRequest =
@@ -107,7 +109,7 @@ public class ClienteControllerTest {
 
   @Test
   public void testCrearClienteWithInvalidNumberData() throws Exception {
-    ClienteDto clienteDto = new ClienteDto();
+    ClienteRequestDto clienteDto = new ClienteRequestDto();
     clienteDto.setDni(-1);
     String clienteDtoMapped = objectMapper.writeValueAsString(clienteDto);
 
@@ -133,7 +135,7 @@ public class ClienteControllerTest {
 
   @Test
   public void testCrearClienteIncorrectDataFail() throws Exception {
-    ClienteDto clienteDto = createClienteDto();
+    ClienteRequestDto clienteDto = createClienteRequestDto();
     String clienteDtoMapped = objectMapper.writeValueAsString(clienteDto);
 
     doThrow(new WrongInputDataException("")).when(clienteControllerValidator).validate(clienteDto);
@@ -153,7 +155,7 @@ public class ClienteControllerTest {
 
   @Test
   public void testCrearClienteAlreadyExistsFail() throws Exception {
-    ClienteDto clienteDto = createClienteDto();
+    ClienteRequestDto clienteDto = createClienteRequestDto();
     String clienteDtoMapped = objectMapper.writeValueAsString(clienteDto);
 
     doThrow(new ClienteAlreadyExistsException(""))
@@ -175,7 +177,7 @@ public class ClienteControllerTest {
 
   @Test
   public void testCrearClienteMenorDeEdadFail() throws Exception {
-    ClienteDto clienteDto = createClienteDto();
+    ClienteRequestDto clienteDto = createClienteRequestDto();
     String clienteDtoMapped = objectMapper.writeValueAsString(clienteDto);
 
     doThrow(new ClienteMenorDeEdadException("")).when(clienteService).darDeAltaCliente(clienteDto);
@@ -195,21 +197,22 @@ public class ClienteControllerTest {
 
   @Test
   public void testCrearClienteSuccess() throws Exception {
-    ClienteDto clienteDto = createClienteDto();
-    String clienteDtoMapped = objectMapper.writeValueAsString(clienteDto);
+    ClienteRequestDto clienteRequestDto = createClienteRequestDto();
+    ClienteResponseDto clienteResponseDto = createClienteResponseDto();
+    String clienteResponseDtoMapped = objectMapper.writeValueAsString(clienteResponseDto);
 
-    when(clienteService.darDeAltaCliente(clienteDto)).thenReturn(clienteDto);
+    when(clienteService.darDeAltaCliente(clienteRequestDto)).thenReturn(clienteResponseDto);
 
     MockHttpServletRequestBuilder mockRequest =
         MockMvcRequestBuilders.post(getEndpoint())
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON)
-            .content(clienteDtoMapped);
+            .content(clienteResponseDtoMapped);
 
     mockMvc
         .perform(mockRequest)
         .andExpect(status().isCreated())
-        .andExpect(content().string(clienteDtoMapped));
+        .andExpect(content().string(clienteResponseDtoMapped));
   }
 
   @Test
@@ -235,8 +238,19 @@ public class ClienteControllerTest {
   }
 
   @Test
+  public void testEliminarClienteInactiveException() throws Exception {
+    doThrow(new ClienteInactivoException("")).when(clienteService).eliminarCliente(dniCliente);
+
+    mockMvc
+        .perform(delete(createEndpoint(dniCliente)))
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$", notNullValue()))
+        .andExpect(jsonPath("$.errorCode", is(400112)));
+  }
+
+  @Test
   public void testEliminarClienteSuccess() throws Exception {
-    ClienteDto clienteDto = createClienteDto();
+    ClienteResponseDto clienteDto = createClienteResponseDto();
     String clienteDtoMapped = objectMapper.writeValueAsString(clienteDto);
 
     Mockito.when(clienteService.eliminarCliente(dniCliente)).thenReturn(clienteDto);
@@ -249,7 +263,7 @@ public class ClienteControllerTest {
 
   @Test
   public void testActualizarClienteWithoutData() throws Exception {
-    ClienteDto clienteDto = new ClienteDto();
+    ClienteRequestDto clienteDto = new ClienteRequestDto();
     String clienteDtoMapped = objectMapper.writeValueAsString(clienteDto);
 
     MockHttpServletRequestBuilder mockRequest =
@@ -273,7 +287,7 @@ public class ClienteControllerTest {
 
   @Test
   public void testActualizarClienteWithInvalidNumberData() throws Exception {
-    ClienteDto clienteDto = new ClienteDto();
+    ClienteRequestDto clienteDto = new ClienteRequestDto();
     clienteDto.setDni(-1);
     String clienteDtoMapped = objectMapper.writeValueAsString(clienteDto);
 
@@ -299,7 +313,7 @@ public class ClienteControllerTest {
 
   @Test
   public void testActualizarClienteIncorrectDataFail() throws Exception {
-    ClienteDto clienteDto = createClienteDto();
+    ClienteRequestDto clienteDto = createClienteRequestDto();
     String clienteDtoMapped = objectMapper.writeValueAsString(clienteDto);
 
     doThrow(new WrongInputDataException("")).when(clienteControllerValidator).validate(clienteDto);
@@ -319,7 +333,7 @@ public class ClienteControllerTest {
 
   @Test
   public void testActualizarClienteNoExistsFail() throws Exception {
-    ClienteDto clienteDto = createClienteDto();
+    ClienteRequestDto clienteDto = createClienteRequestDto();
     String clienteDtoMapped = objectMapper.writeValueAsString(clienteDto);
 
     doThrow(new ClienteNoExistsException("")).when(clienteService).actualizarCliente(clienteDto);
@@ -339,7 +353,7 @@ public class ClienteControllerTest {
 
   @Test
   public void testActualizarClienteMenorDeEdadFail() throws Exception {
-    ClienteDto clienteDto = createClienteDto();
+    ClienteRequestDto clienteDto = createClienteRequestDto();
     String clienteDtoMapped = objectMapper.writeValueAsString(clienteDto);
 
     doThrow(new ClienteMenorDeEdadException("")).when(clienteService).actualizarCliente(clienteDto);
@@ -358,11 +372,11 @@ public class ClienteControllerTest {
   }
 
   @Test
-  public void testActualizarClienteSuccess() throws Exception {
-    ClienteDto clienteDto = createClienteDto();
+  public void testActualizarClienteInactivoException() throws Exception {
+    ClienteRequestDto clienteDto = createClienteRequestDto();
     String clienteDtoMapped = objectMapper.writeValueAsString(clienteDto);
 
-    when(clienteService.actualizarCliente(clienteDto)).thenReturn(clienteDto);
+    doThrow(new ClienteInactivoException("")).when(clienteService).actualizarCliente(clienteDto);
 
     MockHttpServletRequestBuilder mockRequest =
         MockMvcRequestBuilders.put(getEndpoint())
@@ -372,8 +386,30 @@ public class ClienteControllerTest {
 
     mockMvc
         .perform(mockRequest)
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$", notNullValue()))
+        .andExpect(jsonPath("$.errorCode", is(400112)));
+  }
+
+  @Test
+  public void testActualizarClienteSuccess() throws Exception {
+    ClienteRequestDto clienteRequestDto = createClienteRequestDto();
+    ClienteResponseDto clienteResponseDto = createClienteResponseDto();
+    String clienteRequestDtoMapped = objectMapper.writeValueAsString(clienteRequestDto);
+    String clienteResponseDtoMapped = objectMapper.writeValueAsString(clienteResponseDto);
+
+    when(clienteService.actualizarCliente(clienteRequestDto)).thenReturn(clienteResponseDto);
+
+    MockHttpServletRequestBuilder mockRequest =
+        MockMvcRequestBuilders.put(getEndpoint())
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON)
+            .content(clienteRequestDtoMapped);
+
+    mockMvc
+        .perform(mockRequest)
         .andExpect(status().isOk())
-        .andExpect(content().string(clienteDtoMapped));
+        .andExpect(content().string(clienteResponseDtoMapped));
   }
 
   @Test
@@ -388,8 +424,19 @@ public class ClienteControllerTest {
   }
 
   @Test
+  public void testActivarClienteClienteActivoException() throws Exception {
+    doThrow(new ClienteActivoException("")).when(clienteService).activarCliente(dniCliente);
+
+    mockMvc
+        .perform(patch(createEndpoint(dniCliente)))
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$", notNullValue()))
+        .andExpect(jsonPath("$.errorCode", is(400113)));
+  }
+
+  @Test
   public void testActivarClienteSuccess() throws Exception {
-    ClienteDto clienteDto = createClienteDto();
+    ClienteResponseDto clienteDto = createClienteResponseDto();
     String clienteDtoMapped = objectMapper.writeValueAsString(clienteDto);
 
     Mockito.when(clienteService.activarCliente(dniCliente)).thenReturn(clienteDto);
@@ -411,6 +458,19 @@ public class ClienteControllerTest {
         .andExpect(status().isNotFound())
         .andExpect(jsonPath("$", notNullValue()))
         .andExpect(jsonPath("$.errorCode", is(404101)));
+  }
+
+  @Test
+  public void testObtenerCuentasEnClienteInactivoException() throws Exception {
+    doThrow(new ClienteInactivoException(""))
+        .when(clienteService)
+        .buscarCuentasDeClientePorDni(dniCliente);
+
+    mockMvc
+        .perform(get(createEndpoint(dniCliente) + "/cuentas"))
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$", notNullValue()))
+        .andExpect(jsonPath("$.errorCode", is(400112)));
   }
 
   @Test
@@ -436,8 +496,19 @@ public class ClienteControllerTest {
     return endpoint;
   }
 
-  private ClienteDto createClienteDto() {
-    ClienteDto clienteDto = new ClienteDto();
+  private ClienteRequestDto createClienteRequestDto() {
+    ClienteRequestDto clienteDto = new ClienteRequestDto();
+    clienteDto.setDni(dniCliente);
+    clienteDto.setNombre("Nombre");
+    clienteDto.setApellido("Apellido");
+    clienteDto.setFechaNacimiento("1990-01-01");
+    clienteDto.setTipoPersona("F");
+    clienteDto.setBanco("");
+    return clienteDto;
+  }
+
+  private ClienteResponseDto createClienteResponseDto() {
+    ClienteResponseDto clienteDto = new ClienteResponseDto();
     clienteDto.setDni(dniCliente);
     clienteDto.setNombre("Nombre");
     clienteDto.setApellido("Apellido");

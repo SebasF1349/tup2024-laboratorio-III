@@ -7,7 +7,9 @@ import ar.edu.utn.frbb.tup.model.Cliente;
 import ar.edu.utn.frbb.tup.model.Cuenta;
 import ar.edu.utn.frbb.tup.model.TipoCuenta;
 import ar.edu.utn.frbb.tup.model.TipoMoneda;
+import ar.edu.utn.frbb.tup.model.exception.ClienteActivoException;
 import ar.edu.utn.frbb.tup.model.exception.ClienteAlreadyExistsException;
+import ar.edu.utn.frbb.tup.model.exception.ClienteInactivoException;
 import ar.edu.utn.frbb.tup.model.exception.ClienteMenorDeEdadException;
 import ar.edu.utn.frbb.tup.model.exception.ClienteNoExistsException;
 import ar.edu.utn.frbb.tup.model.exception.TipoCuentaAlreadyExistsException;
@@ -115,6 +117,42 @@ public class ClienteServiceValidatorTest {
     cuentaDos.setTipoCuenta(TipoCuenta.CUENTA_CORRIENTE);
 
     assertDoesNotThrow(() -> clienteServiceValidator.validateTipoCuentaUnica(cliente, cuentaDos));
+  }
+
+  @Test
+  public void testValidateClienteIsActivoClienteInactivoException() {
+    Cliente cliente = createCliente();
+    cliente.setActivo(false);
+
+    assertThrows(
+        ClienteInactivoException.class,
+        () -> clienteServiceValidator.validateClienteIsActivo(cliente));
+  }
+
+  @Test
+  public void testValidateClienteIsActivoSuccess() {
+    Cliente cliente = createCliente();
+    cliente.setActivo(true);
+
+    assertDoesNotThrow(() -> clienteServiceValidator.validateClienteIsActivo(cliente));
+  }
+
+  @Test
+  public void testValidateClienteIsNotActivoClienteActivoException() {
+    Cliente cliente = createCliente();
+    cliente.setActivo(true);
+
+    assertThrows(
+        ClienteActivoException.class,
+        () -> clienteServiceValidator.validateClienteIsNotActivo(cliente));
+  }
+
+  @Test
+  public void testValidateClienteIsNotActivoSuccess() {
+    Cliente cliente = createCliente();
+    cliente.setActivo(false);
+
+    assertDoesNotThrow(() -> clienteServiceValidator.validateClienteIsNotActivo(cliente));
   }
 
   private Cliente createCliente() {

@@ -3,7 +3,7 @@ package ar.edu.utn.frbb.tup.controller.validator;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import ar.edu.utn.frbb.tup.controller.ClienteDto;
+import ar.edu.utn.frbb.tup.controller.ClienteRequestDto;
 import ar.edu.utn.frbb.tup.model.exception.WrongInputDataException;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -26,7 +26,7 @@ public class ClienteControllerValidatorTest {
 
   @Test
   public void testValidateTipoPersonaFail() {
-    ClienteDto clienteDto = new ClienteDto();
+    ClienteRequestDto clienteDto = new ClienteRequestDto();
     clienteDto.setTipoPersona("A");
 
     assertThrows(
@@ -36,7 +36,7 @@ public class ClienteControllerValidatorTest {
 
   @Test
   public void testValidateTipoPersonaFSuccess() {
-    ClienteDto clienteDto = new ClienteDto();
+    ClienteRequestDto clienteDto = new ClienteRequestDto();
     clienteDto.setTipoPersona("F");
 
     assertDoesNotThrow(() -> clienteControllerValidator.validateTipoPersona(clienteDto));
@@ -44,7 +44,7 @@ public class ClienteControllerValidatorTest {
 
   @Test
   public void testValidateTipoPersonaJSuccess() {
-    ClienteDto clienteDto = new ClienteDto();
+    ClienteRequestDto clienteDto = new ClienteRequestDto();
     clienteDto.setTipoPersona("J");
 
     assertDoesNotThrow(() -> clienteControllerValidator.validateTipoPersona(clienteDto));
@@ -81,7 +81,7 @@ public class ClienteControllerValidatorTest {
 
   @Test
   public void testValidateFechaNacimientoYearFail() {
-    ClienteDto clienteDto = new ClienteDto();
+    ClienteRequestDto clienteDto = new ClienteRequestDto();
     clienteDto.setFechaNacimiento("90-01-01");
 
     assertThrows(
@@ -91,7 +91,7 @@ public class ClienteControllerValidatorTest {
 
   @Test
   public void testValidateFechaNacimientoMonthOrderFail() {
-    ClienteDto clienteDto = new ClienteDto();
+    ClienteRequestDto clienteDto = new ClienteRequestDto();
     clienteDto.setFechaNacimiento("1990-23-01");
 
     assertThrows(
@@ -101,7 +101,7 @@ public class ClienteControllerValidatorTest {
 
   @Test
   public void testValidateFechaNacimientoOneDigitFail() {
-    ClienteDto clienteDto = new ClienteDto();
+    ClienteRequestDto clienteDto = new ClienteRequestDto();
     clienteDto.setFechaNacimiento("1990-1-01");
 
     assertThrows(
@@ -111,7 +111,7 @@ public class ClienteControllerValidatorTest {
 
   @Test
   public void testValidateFechaNacimientoYearOrderFail() {
-    ClienteDto clienteDto = new ClienteDto();
+    ClienteRequestDto clienteDto = new ClienteRequestDto();
     clienteDto.setFechaNacimiento("01-01-1990");
 
     assertThrows(
@@ -121,7 +121,7 @@ public class ClienteControllerValidatorTest {
 
   @Test
   public void testValidateFechaNacimientoSuccess() {
-    ClienteDto clienteDto = new ClienteDto();
+    ClienteRequestDto clienteDto = new ClienteRequestDto();
     clienteDto.setFechaNacimiento("1990-12-30");
 
     assertDoesNotThrow(() -> clienteControllerValidator.validateFechaNacimiento(clienteDto));

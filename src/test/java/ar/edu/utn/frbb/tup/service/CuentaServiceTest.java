@@ -10,7 +10,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import ar.edu.utn.frbb.tup.controller.ClienteDto;
+import ar.edu.utn.frbb.tup.controller.ClienteRequestDto;
 import ar.edu.utn.frbb.tup.controller.CuentaDto;
 import ar.edu.utn.frbb.tup.controller.CuentaMovimientosResponseDto;
 import ar.edu.utn.frbb.tup.controller.MovimientoResponseDto;
@@ -22,6 +22,7 @@ import ar.edu.utn.frbb.tup.model.Retiro;
 import ar.edu.utn.frbb.tup.model.TipoCuenta;
 import ar.edu.utn.frbb.tup.model.TipoMoneda;
 import ar.edu.utn.frbb.tup.model.Transferencia;
+import ar.edu.utn.frbb.tup.model.exception.ClienteInactivoException;
 import ar.edu.utn.frbb.tup.model.exception.ClienteMenorDeEdadException;
 import ar.edu.utn.frbb.tup.model.exception.ClienteNoExistsException;
 import ar.edu.utn.frbb.tup.model.exception.CorruptedDataInDbException;
@@ -101,7 +102,8 @@ public class CuentaServiceTest {
   public void testDarDeAltaCuentaClienteNoExistsCorruptedDataInDbException()
       throws ClienteNoExistsException,
           TipoCuentaAlreadyExistsException,
-          ClienteMenorDeEdadException {
+          ClienteMenorDeEdadException,
+          ClienteInactivoException {
     CuentaDto cuentaDto = createCuentaDto();
     Cliente titular = createCliente();
 
@@ -116,7 +118,8 @@ public class CuentaServiceTest {
   public void testDarDeAltaCuentaClienteMenorDeEdadCorruptedDataInDbException()
       throws ClienteNoExistsException,
           TipoCuentaAlreadyExistsException,
-          ClienteMenorDeEdadException {
+          ClienteMenorDeEdadException,
+          ClienteInactivoException {
     CuentaDto cuentaDto = createCuentaDto();
     Cliente titular = createCliente();
 
@@ -128,12 +131,29 @@ public class CuentaServiceTest {
   }
 
   @Test
+  public void testDarDeAltaCuentaClienteInactivoExceptionException()
+      throws ClienteNoExistsException,
+          TipoCuentaAlreadyExistsException,
+          ClienteMenorDeEdadException,
+          ClienteInactivoException {
+    CuentaDto cuentaDto = createCuentaDto();
+    Cliente titular = createCliente();
+
+    when(clienteService.buscarClienteCompletoPorDni(cuentaDto.getTitular())).thenReturn(titular);
+
+    doThrow(ClienteInactivoException.class).when(clienteService).actualizarCliente(titular);
+
+    assertThrows(ClienteInactivoException.class, () -> cuentaService.darDeAltaCuenta(cuentaDto));
+  }
+
+  @Test
   public void testDarDeAltaCuentaSuccess()
       throws CuentaNoSoportadaException,
           TipoCuentaAlreadyExistsException,
           ClienteNoExistsException,
           CuentaNoExistsInClienteException,
           ClienteMenorDeEdadException,
+          ClienteInactivoException,
           CorruptedDataInDbException {
     CuentaDto cuentaDto = createCuentaDto();
     Cliente titular = createCliente();
@@ -152,7 +172,7 @@ public class CuentaServiceTest {
 
   @Test
   public void testBuscarCuentaPorIdCuentaNoExistsException()
-      throws CuentaNoExistsException, ImpossibleException, IllegalArgumentException {
+      throws CuentaNoExistsException, ImpossibleException {
     Cuenta cuenta = createCuenta();
 
     when(cuentaDao.find(numeroCuenta, false)).thenReturn(cuenta);
@@ -166,7 +186,7 @@ public class CuentaServiceTest {
 
   @Test
   public void testBuscarCuentaPorIdCorruptedDataInDbException()
-      throws ClienteNoExistsException, ImpossibleException, IllegalArgumentException {
+      throws ClienteNoExistsException, ImpossibleException {
     Cuenta cuenta = createCuenta();
 
     when(cuentaDao.find(numeroCuenta, false)).thenReturn(cuenta);
@@ -183,8 +203,7 @@ public class CuentaServiceTest {
       throws CuentaNoExistsException,
           CorruptedDataInDbException,
           ClienteNoExistsException,
-          ImpossibleException,
-          IllegalArgumentException {
+          ImpossibleException {
     CuentaDto cuentaDto = createCuentaDto();
     Cuenta cuenta = createCuenta();
     Cliente cliente = createCliente();
@@ -200,7 +219,7 @@ public class CuentaServiceTest {
 
   @Test
   public void testActualizarCuentaNoExistsException()
-      throws CuentaNoExistsException, ImpossibleException, IllegalArgumentException {
+      throws CuentaNoExistsException, ImpossibleException {
     CuentaDto cuentaDto = createCuentaDto();
 
     doThrow(CuentaNoExistsException.class)
@@ -238,7 +257,8 @@ public class CuentaServiceTest {
           ClienteNoExistsException,
           TipoCuentaAlreadyExistsException,
           CuentaNoExistsInClienteException,
-          ClienteMenorDeEdadException {
+          ClienteMenorDeEdadException,
+          ClienteInactivoException {
     CuentaDto cuentaDto = createCuentaDto();
     Cliente cliente = createCliente();
 
@@ -254,13 +274,31 @@ public class CuentaServiceTest {
       throws ClienteNoExistsException,
           CuentaNoExistsInClienteException,
           ClienteMenorDeEdadException,
-          TipoCuentaAlreadyExistsException {
+          TipoCuentaAlreadyExistsException,
+          ClienteInactivoException {
     CuentaDto cuentaDto = createCuentaDto();
     Cliente cliente = createCliente();
 
     when(clienteService.buscarClienteCompletoPorDni(cuentaDto.getTitular())).thenReturn(cliente);
 
     doThrow(ClienteMenorDeEdadException.class).when(clienteService).actualizarCliente(cliente);
+
+    assertThrows(CorruptedDataInDbException.class, () -> cuentaService.actualizarCuenta(cuentaDto));
+  }
+
+  @Test
+  public void testActualizarCuentaClienteClienteInactivoExceptionCorruptedDataInDbException()
+      throws ClienteNoExistsException,
+          CuentaNoExistsInClienteException,
+          ClienteMenorDeEdadException,
+          TipoCuentaAlreadyExistsException,
+          ClienteInactivoException {
+    CuentaDto cuentaDto = createCuentaDto();
+    Cliente cliente = createCliente();
+
+    when(clienteService.buscarClienteCompletoPorDni(cuentaDto.getTitular())).thenReturn(cliente);
+
+    doThrow(ClienteInactivoException.class).when(clienteService).actualizarCliente(cliente);
 
     assertThrows(CorruptedDataInDbException.class, () -> cuentaService.actualizarCuenta(cuentaDto));
   }
@@ -275,7 +313,7 @@ public class CuentaServiceTest {
           TipoCuentaAlreadyExistsException,
           CorruptedDataInDbException,
           ImpossibleException,
-          IllegalArgumentException {
+          ClienteInactivoException {
     CuentaDto cuentaDto = createCuentaDto();
     Cuenta cuenta = createCuenta();
     Cliente cliente = createCliente();
@@ -296,7 +334,7 @@ public class CuentaServiceTest {
 
   @Test
   public void testEliminarCuentaNoExistsException()
-      throws CuentaNoExistsException, ImpossibleException, IllegalArgumentException {
+      throws CuentaNoExistsException, ImpossibleException {
     Cuenta cuenta = createCuenta();
 
     when(cuentaDao.find(numeroCuenta, true)).thenReturn(cuenta);
@@ -309,7 +347,7 @@ public class CuentaServiceTest {
 
   @Test
   public void testEliminarCuentaCorruptedDataInDbException()
-      throws ClienteNoExistsException, ImpossibleException, IllegalArgumentException {
+      throws ClienteNoExistsException, ImpossibleException {
     Cuenta cuenta = createCuenta();
 
     when(cuentaDao.find(numeroCuenta, true)).thenReturn(cuenta);
@@ -326,8 +364,7 @@ public class CuentaServiceTest {
       throws CuentaNoExistsException,
           CorruptedDataInDbException,
           ClienteNoExistsException,
-          ImpossibleException,
-          IllegalArgumentException {
+          ImpossibleException {
     Cuenta cuenta = createCuenta();
     cuenta.setNumeroCuenta(123);
     Cliente cliente = createCliente();
@@ -348,7 +385,7 @@ public class CuentaServiceTest {
 
   @Test
   public void testActivarCuentaNoExistsException()
-      throws CuentaNoExistsException, ImpossibleException, IllegalArgumentException {
+      throws CuentaNoExistsException, ImpossibleException {
 
     Cuenta cuenta = createCuenta();
 
@@ -362,7 +399,7 @@ public class CuentaServiceTest {
 
   @Test
   public void testActivarCuentaCorruptedDataInDbException()
-      throws ClienteNoExistsException, ImpossibleException, IllegalArgumentException {
+      throws ClienteNoExistsException, ImpossibleException {
     Cuenta cuenta = createCuenta();
 
     when(cuentaDao.find(numeroCuenta, true)).thenReturn(cuenta);
@@ -378,8 +415,7 @@ public class CuentaServiceTest {
       throws CuentaNoExistsException,
           CorruptedDataInDbException,
           ClienteNoExistsException,
-          ImpossibleException,
-          IllegalArgumentException {
+          ImpossibleException {
     Cuenta cuenta = createCuenta();
     cuenta.setNumeroCuenta(123);
     Cliente cliente = createCliente();
@@ -400,7 +436,7 @@ public class CuentaServiceTest {
 
   @Test
   public void testBuscarCuentaCompletaPorIdCuentaNoExistsException()
-      throws CuentaNoExistsException, ImpossibleException, IllegalArgumentException {
+      throws CuentaNoExistsException, ImpossibleException {
     Cuenta cuenta = createCuenta();
 
     when(cuentaDao.find(numeroCuenta, true)).thenReturn(cuenta);
@@ -414,7 +450,7 @@ public class CuentaServiceTest {
 
   @Test
   public void testBuscarCuentaCompletaPorIdCorruptedDataInDbException()
-      throws ClienteNoExistsException, ImpossibleException, IllegalArgumentException {
+      throws ClienteNoExistsException, ImpossibleException {
     Cuenta cuenta = createCuenta();
 
     when(cuentaDao.find(numeroCuenta, true)).thenReturn(cuenta);
@@ -432,8 +468,7 @@ public class CuentaServiceTest {
       throws CuentaNoExistsException,
           CorruptedDataInDbException,
           ClienteNoExistsException,
-          ImpossibleException,
-          IllegalArgumentException {
+          ImpossibleException {
     CuentaDto cuentaDto = createCuentaDto();
     Cuenta cuenta = createCuenta();
     Cliente cliente = createCliente();
@@ -520,7 +555,7 @@ public class CuentaServiceTest {
 
   @Test
   public void testBuscarTransaccionesDeCuentaNoExistsException()
-      throws CuentaNoExistsException, ImpossibleException, IllegalArgumentException {
+      throws CuentaNoExistsException, ImpossibleException {
     Cuenta cuenta = createCuenta();
 
     when(cuentaDao.find(numeroCuenta, true)).thenReturn(cuenta);
@@ -536,7 +571,7 @@ public class CuentaServiceTest {
 
   @Test
   public void testBuscarTransaccionesDeCuentaCorruptedDataInDbException()
-      throws ClienteNoExistsException, ImpossibleException, IllegalArgumentException {
+      throws ClienteNoExistsException, ImpossibleException {
     Cuenta cuenta = createCuenta();
 
     when(cuentaDao.find(numeroCuenta, true)).thenReturn(cuenta);
@@ -554,8 +589,7 @@ public class CuentaServiceTest {
       throws CuentaNoExistsException,
           CorruptedDataInDbException,
           ClienteNoExistsException,
-          ImpossibleException,
-          IllegalArgumentException {
+          ImpossibleException {
     Cuenta cuenta = createCuenta();
     cuenta.setNumeroCuenta(123);
     Movimiento movimiento = createDeposito();
@@ -593,8 +627,8 @@ public class CuentaServiceTest {
     return new Cuenta(createCuentaDto());
   }
 
-  private ClienteDto createClienteDto() {
-    ClienteDto clienteDto = new ClienteDto();
+  private ClienteRequestDto createClienteDto() {
+    ClienteRequestDto clienteDto = new ClienteRequestDto();
     clienteDto.setDni(12345678);
     clienteDto.setNombre("Nombre");
     clienteDto.setApellido("Apellido");
@@ -605,7 +639,7 @@ public class CuentaServiceTest {
   }
 
   private Cliente createCliente() {
-    ClienteDto clienteDto = createClienteDto();
+    ClienteRequestDto clienteDto = createClienteDto();
     return new Cliente(clienteDto);
   }
 
