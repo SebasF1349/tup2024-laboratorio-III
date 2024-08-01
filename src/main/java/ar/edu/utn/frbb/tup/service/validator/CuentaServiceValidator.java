@@ -34,7 +34,7 @@ public class CuentaServiceValidator {
   }
 
   public void validateCuentaNoExists(Cuenta cuenta)
-      throws CuentaAlreadyExistsException, ImpossibleException, IllegalArgumentException {
+      throws CuentaAlreadyExistsException, ImpossibleException {
     if (cuenta != null && cuentaDao.find(cuenta.getNumeroCuenta(), false) != null) {
       throw new CuentaAlreadyExistsException(
           "La cuenta " + cuenta.getNumeroCuenta() + " ya existe.");
@@ -42,7 +42,7 @@ public class CuentaServiceValidator {
   }
 
   public void validateCuentaExists(Cuenta cuenta)
-      throws CuentaNoExistsException, ImpossibleException, IllegalArgumentException {
+      throws CuentaNoExistsException, ImpossibleException {
     if (cuenta == null || cuentaDao.find(cuenta.getNumeroCuenta(), false) == null) {
       throw new CuentaNoExistsException("No existe una cuenta con el id suministrado.");
     }

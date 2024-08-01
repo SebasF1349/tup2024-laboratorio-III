@@ -35,10 +35,7 @@ public class CuentaController {
 
   @GetMapping(value = "/{id}")
   public CuentaDto obtenerCuenta(@PathVariable long id)
-      throws CuentaNoExistsException,
-          CorruptedDataInDbException,
-          ImpossibleException,
-          IllegalArgumentException {
+      throws CuentaNoExistsException, CorruptedDataInDbException, ImpossibleException {
     return cuentaService.buscarCuentaPorId(id);
   }
 
@@ -57,10 +54,7 @@ public class CuentaController {
 
   @DeleteMapping(value = "/{id}")
   public CuentaDto eliminarCuenta(@PathVariable long id)
-      throws CuentaNoExistsException,
-          CorruptedDataInDbException,
-          ImpossibleException,
-          IllegalArgumentException {
+      throws CuentaNoExistsException, CorruptedDataInDbException, ImpossibleException {
     return cuentaService.eliminarCuenta(id);
   }
 
@@ -70,10 +64,8 @@ public class CuentaController {
           CuentaNoExistsException,
           ClienteNoExistsException,
           CuentaNoSoportadaException,
-          TipoCuentaAlreadyExistsException,
           CorruptedDataInDbException,
           ImpossibleException,
-          IllegalArgumentException,
           CuentaNoExistsInClienteException,
           ClienteInactivoException {
     cuentaValidator.validate(cuentaDto);
@@ -82,10 +74,7 @@ public class CuentaController {
 
   @GetMapping(value = "/{id}/transacciones")
   public CuentaMovimientosResponseDto obtenerTransaccionesEnCuenta(@PathVariable long id)
-      throws CuentaNoExistsException,
-          CorruptedDataInDbException,
-          ImpossibleException,
-          IllegalArgumentException {
+      throws CuentaNoExistsException, CorruptedDataInDbException, ImpossibleException {
     return cuentaService.buscarTransaccionesDeCuentaPorId(id);
   }
 }

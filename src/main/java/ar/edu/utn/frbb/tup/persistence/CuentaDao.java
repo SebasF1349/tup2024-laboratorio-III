@@ -19,8 +19,7 @@ public class CuentaDao extends AbstractBaseDao {
     return "CUENTA";
   }
 
-  public Cuenta find(long numeroCuenta, boolean loadComplete)
-      throws ImpossibleException, IllegalArgumentException {
+  public Cuenta find(long numeroCuenta, boolean loadComplete) throws ImpossibleException {
     if (getInMemoryDatabase().get(numeroCuenta) == null) return null;
     Cuenta cuenta = ((CuentaEntity) getInMemoryDatabase().get(numeroCuenta)).toCuenta();
     if (loadComplete) {

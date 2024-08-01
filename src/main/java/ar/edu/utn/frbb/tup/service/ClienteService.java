@@ -93,7 +93,6 @@ public class ClienteService {
       throws CorruptedDataInDbException,
           ClienteNoExistsException,
           ImpossibleException,
-          IllegalArgumentException {
           ClienteInactivoException {
     Cliente cliente = buscarClienteCompletoPorDni(dni);
 

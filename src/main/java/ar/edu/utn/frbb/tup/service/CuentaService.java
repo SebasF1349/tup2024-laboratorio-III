@@ -94,7 +94,6 @@ public class CuentaService {
           CuentaNoSoportadaException,
           CorruptedDataInDbException,
           ImpossibleException,
-          IllegalArgumentException,
           CuentaNoExistsInClienteException,
           ClienteInactivoException {
     Cuenta cuenta = new Cuenta(cuentaDto);
@@ -125,10 +124,7 @@ public class CuentaService {
   }
 
   public CuentaDto eliminarCuenta(long id)
-      throws CuentaNoExistsException,
-          CorruptedDataInDbException,
-          ImpossibleException,
-          IllegalArgumentException {
+      throws CuentaNoExistsException, CorruptedDataInDbException, ImpossibleException {
     Cuenta cuenta = buscarCuentaCompletaPorId(id);
 
     cuenta.setActivo(false);
@@ -137,10 +133,7 @@ public class CuentaService {
   }
 
   public CuentaDto activarCuenta(long id)
-      throws CuentaNoExistsException,
-          CorruptedDataInDbException,
-          ImpossibleException,
-          IllegalArgumentException {
+      throws CuentaNoExistsException, CorruptedDataInDbException, ImpossibleException {
     Cuenta cuenta = buscarCuentaCompletaPorId(id);
 
     cuenta.setActivo(true);
@@ -149,10 +142,7 @@ public class CuentaService {
   }
 
   protected Cuenta buscarCuentaCompletaPorId(long numeroCuenta)
-      throws CuentaNoExistsException,
-          CorruptedDataInDbException,
-          ImpossibleException,
-          IllegalArgumentException {
+      throws CuentaNoExistsException, CorruptedDataInDbException, ImpossibleException {
     Cuenta cuenta = cuentaDao.find(numeroCuenta, true);
 
     cuentaServiceValidator.validateCuentaExists(cuenta);

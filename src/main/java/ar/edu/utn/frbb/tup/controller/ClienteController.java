@@ -54,7 +54,6 @@ public class ClienteController {
       throws CorruptedDataInDbException,
           ClienteNoExistsException,
           ImpossibleException,
-          IllegalArgumentException {
           ClienteInactivoException {
     return clienteService.eliminarCliente(dni);
   }
