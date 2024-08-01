@@ -122,7 +122,7 @@ public class Cuenta {
     return this;
   }
 
-  public void addMovimiento(Movimiento movimiento) throws IllegalArgumentException {
+  public void addMovimiento(Movimiento movimiento) {
     this.movimientos.add(movimiento);
   }
 
