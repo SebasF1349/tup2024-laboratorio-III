@@ -2,7 +2,9 @@ package ar.edu.utn.frbb.tup.service.validator;
 
 import ar.edu.utn.frbb.tup.model.Cliente;
 import ar.edu.utn.frbb.tup.model.Cuenta;
+import ar.edu.utn.frbb.tup.model.exception.ClienteActivoException;
 import ar.edu.utn.frbb.tup.model.exception.ClienteAlreadyExistsException;
+import ar.edu.utn.frbb.tup.model.exception.ClienteInactivoException;
 import ar.edu.utn.frbb.tup.model.exception.ClienteMenorDeEdadException;
 import ar.edu.utn.frbb.tup.model.exception.ClienteNoExistsException;
 import ar.edu.utn.frbb.tup.model.exception.TipoCuentaAlreadyExistsException;
@@ -40,6 +42,18 @@ public class ClienteServiceValidator {
     if (titular.hasCuentaSameTipo(cuenta.getTipoCuenta(), cuenta.getMoneda())) {
       throw new TipoCuentaAlreadyExistsException(
           "El cliente ya posee una cuenta de ese tipo y moneda");
+    }
+  }
+
+  public void validateClienteIsActivo(Cliente cliente) throws ClienteInactivoException {
+    if (!cliente.isActivo()) {
+      throw new ClienteInactivoException("El cliente está inactivo");
+    }
+  }
+
+  public void validateClienteIsNotActivo(Cliente cliente) throws ClienteActivoException {
+    if (cliente.isActivo()) {
+      throw new ClienteActivoException("El cliente está inactivo");
     }
   }
 }
