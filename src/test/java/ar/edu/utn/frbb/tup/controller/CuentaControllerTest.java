@@ -7,6 +7,7 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -605,7 +606,64 @@ public class CuentaControllerTest {
   }
 
   @Test
-  public void testObtenerTransaccionesEnCuentaDoesntExistsFail() throws Exception {
+  public void testActivarCuentaDoesntExistsException() throws Exception {
+    doThrow(new CuentaNoExistsException("")).when(cuentaService).activarCuenta(numeroCuenta);
+
+    mockMvc
+        .perform(patch(createEndpoint(numeroCuenta)))
+        .andExpect(status().isNotFound())
+        .andExpect(jsonPath("$", notNullValue()))
+        .andExpect(jsonPath("$.errorCode", is(404102)));
+  }
+
+  @Test
+  public void testActivarCuentaCorruptedDataInDbException() throws Exception {
+    doThrow(new CorruptedDataInDbException("")).when(cuentaService).activarCuenta(numeroCuenta);
+
+    mockMvc
+        .perform(patch(createEndpoint(numeroCuenta)))
+        .andExpect(status().isInternalServerError())
+        .andExpect(jsonPath("$", notNullValue()))
+        .andExpect(jsonPath("$.errorCode", is(500101)));
+  }
+
+  @Test
+  public void testActivarCuentaImpossibleException() throws Exception {
+    doThrow(new ImpossibleException()).when(cuentaService).activarCuenta(numeroCuenta);
+
+    mockMvc
+        .perform(patch(createEndpoint(numeroCuenta)))
+        .andExpect(status().isInternalServerError())
+        .andExpect(jsonPath("$", notNullValue()))
+        .andExpect(jsonPath("$.errorCode", is(500100)));
+  }
+
+  @Test
+  public void testActivarCuentaActivaException() throws Exception {
+    doThrow(new CuentaActivaException("")).when(cuentaService).activarCuenta(numeroCuenta);
+
+    mockMvc
+        .perform(patch(createEndpoint(numeroCuenta)))
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$", notNullValue()))
+        .andExpect(jsonPath("$.errorCode", is(400115)));
+  }
+
+  @Test
+  public void testActivarCuentaSuccess() throws Exception {
+    CuentaResponseDto cuentaResponseDto = createCuentaResponseDto();
+    String cuentaMovimientosResponseDtoMapped = objectMapper.writeValueAsString(cuentaResponseDto);
+
+    Mockito.when(cuentaService.activarCuenta(numeroCuenta)).thenReturn(cuentaResponseDto);
+
+    mockMvc
+        .perform(patch(createEndpoint(numeroCuenta)))
+        .andExpect(status().isOk())
+        .andExpect(content().string(cuentaMovimientosResponseDtoMapped));
+  }
+
+  @Test
+  public void testObtenerTransaccionesEnCuentaDoesntExistsException() throws Exception {
     doThrow(new CuentaNoExistsException(""))
         .when(cuentaService)
         .buscarTransaccionesDeCuentaPorId(numeroCuenta);

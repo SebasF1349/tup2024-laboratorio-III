@@ -20,6 +20,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -78,6 +79,15 @@ public class CuentaController {
           CuentaInactivaException {
     cuentaValidator.validate(cuentaDto);
     return cuentaService.actualizarCuenta(cuentaDto);
+  }
+
+  @PatchMapping(value = "/{id}")
+  public CuentaResponseDto activarCuenta(@PathVariable long id)
+      throws CuentaNoExistsException,
+          CorruptedDataInDbException,
+          ImpossibleException,
+          CuentaActivaException {
+    return cuentaService.activarCuenta(id);
   }
 
   @GetMapping(value = "/{id}/transacciones")
