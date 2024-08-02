@@ -224,8 +224,8 @@ public class Cuenta {
     return true;
   }
 
-  public CuentaRequestDto toCuentaResponseDto() {
-    CuentaRequestDto cuentaResponseDto = new CuentaRequestDto();
+  public CuentaResponseDto toCuentaResponseDto() {
+    CuentaResponseDto cuentaResponseDto = new CuentaResponseDto();
     cuentaResponseDto.setBalance(this.getBalance());
     cuentaResponseDto.setTipoCuenta(this.getTipoCuenta().toString());
     cuentaResponseDto.setMoneda(this.getMoneda().toString());
