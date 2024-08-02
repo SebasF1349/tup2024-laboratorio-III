@@ -41,7 +41,10 @@ public class ClienteController {
   @PostMapping
   public ResponseEntity<ClienteResponseDto> crearCliente(
       @Valid @RequestBody ClienteRequestDto clienteDto)
-      throws ClienteAlreadyExistsException, ClienteMenorDeEdadException, WrongInputDataException {
+      throws ClienteAlreadyExistsException,
+          ClienteMenorDeEdadException,
+          WrongInputDataException,
+          ClienteInactivoException {
     clienteControllerValidator.validate(clienteDto);
     ClienteResponseDto clienteResponse = clienteService.darDeAltaCliente(clienteDto);
     return new ResponseEntity<ClienteResponseDto>(

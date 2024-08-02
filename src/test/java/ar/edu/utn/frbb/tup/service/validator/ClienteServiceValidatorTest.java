@@ -38,13 +38,26 @@ public class ClienteServiceValidatorTest {
   }
 
   @Test
-  public void validateClienteNoExistsFail() {
+  public void validateClienteNoExistsException() {
     Cliente cliente = createCliente();
+    cliente.setActivo(true);
 
     when(clienteDao.find(cliente.getDni(), false)).thenReturn(cliente);
 
     assertThrows(
         ClienteAlreadyExistsException.class,
+        () -> clienteServiceValidator.validateClienteNoExists(cliente));
+  }
+
+  @Test
+  public void validateClienteInactivoException() {
+    Cliente cliente = createCliente();
+    cliente.setActivo(false);
+
+    when(clienteDao.find(cliente.getDni(), false)).thenReturn(cliente);
+
+    assertThrows(
+        ClienteInactivoException.class,
         () -> clienteServiceValidator.validateClienteNoExists(cliente));
   }
 
@@ -58,7 +71,7 @@ public class ClienteServiceValidatorTest {
   }
 
   @Test
-  public void validateClienteExistsFail() {
+  public void validateClienteExistsException() {
     Cliente cliente = createCliente();
 
     when(clienteDao.find(cliente.getDni(), false)).thenReturn(null);
@@ -78,7 +91,7 @@ public class ClienteServiceValidatorTest {
   }
 
   @Test
-  public void testValidateClienteMayorDeEdadFail() {
+  public void testValidateClienteMayorDeEdadException() {
     Cliente cliente = createCliente();
     cliente.setFechaNacimiento(LocalDate.now().minusYears(17));
 
@@ -96,7 +109,7 @@ public class ClienteServiceValidatorTest {
   }
 
   @Test
-  public void testValidateTipoCuentaUnicaFail() {
+  public void testValidateTipoCuentaUnicaException() {
     Cliente cliente = createCliente();
     Cuenta cuenta = createCuenta();
     cliente.addCuenta(cuenta);

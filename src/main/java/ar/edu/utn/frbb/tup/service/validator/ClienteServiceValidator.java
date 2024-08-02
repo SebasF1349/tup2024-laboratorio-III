@@ -19,10 +19,17 @@ public class ClienteServiceValidator {
     this.clienteDao = clienteDao;
   }
 
-  public void validateClienteNoExists(Cliente cliente) throws ClienteAlreadyExistsException {
-    if (clienteDao.find(cliente.getDni(), false) != null) {
-      throw new ClienteAlreadyExistsException("Ya existe un cliente con DNI " + cliente.getDni());
+  public void validateClienteNoExists(Cliente cliente)
+      throws ClienteAlreadyExistsException, ClienteInactivoException {
+    Cliente possibleCliente = clienteDao.find(cliente.getDni(), false);
+    if (possibleCliente == null) {
+      return;
     }
+    if (!possibleCliente.isActivo()) {
+      throw new ClienteInactivoException(
+          "Ya existe un cliente inactivo con DNI " + cliente.getDni());
+    }
+    throw new ClienteAlreadyExistsException("Ya existe un cliente con DNI " + cliente.getDni());
   }
 
   public void validateClienteExists(Cliente cliente) throws ClienteNoExistsException {

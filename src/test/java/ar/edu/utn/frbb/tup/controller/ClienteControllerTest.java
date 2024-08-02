@@ -177,6 +177,26 @@ public class ClienteControllerTest {
   }
 
   @Test
+  public void testCrearClienteInactivoException() throws Exception {
+    ClienteRequestDto clienteDto = createClienteRequestDto();
+    String clienteDtoMapped = objectMapper.writeValueAsString(clienteDto);
+
+    doThrow(new ClienteInactivoException("")).when(clienteService).darDeAltaCliente(clienteDto);
+
+    MockHttpServletRequestBuilder mockRequest =
+        MockMvcRequestBuilders.post(getEndpoint())
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON)
+            .content(clienteDtoMapped);
+
+    mockMvc
+        .perform(mockRequest)
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$", notNullValue()))
+        .andExpect(jsonPath("$.errorCode", is(400112)));
+  }
+
+  @Test
   public void testCrearClienteMenorDeEdadException() throws Exception {
     ClienteRequestDto clienteDto = createClienteRequestDto();
     String clienteDtoMapped = objectMapper.writeValueAsString(clienteDto);

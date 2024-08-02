@@ -39,7 +39,7 @@ public class ClienteService {
   }
 
   public ClienteResponseDto darDeAltaCliente(ClienteRequestDto clienteDto)
-      throws ClienteAlreadyExistsException, ClienteMenorDeEdadException {
+      throws ClienteAlreadyExistsException, ClienteMenorDeEdadException, ClienteInactivoException {
 
     Cliente cliente = new Cliente(clienteDto);
 

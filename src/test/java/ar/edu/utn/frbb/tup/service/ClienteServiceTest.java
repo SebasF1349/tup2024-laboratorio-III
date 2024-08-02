@@ -52,7 +52,8 @@ public class ClienteServiceTest {
   }
 
   @Test
-  public void testDarDeAltaClienteAlreadyExistsException() throws ClienteAlreadyExistsException {
+  public void testDarDeAltaClienteAlreadyExistsException()
+      throws ClienteAlreadyExistsException, ClienteInactivoException {
     ClienteRequestDto clienteDto = createClienteRequestDto();
     Cliente cliente = createCliente();
 
@@ -62,6 +63,19 @@ public class ClienteServiceTest {
 
     assertThrows(
         ClienteAlreadyExistsException.class, () -> clienteService.darDeAltaCliente(clienteDto));
+  }
+
+  @Test
+  public void testDarDeAltaClienteInactivoException()
+      throws ClienteAlreadyExistsException, ClienteInactivoException {
+    ClienteRequestDto clienteDto = createClienteRequestDto();
+    Cliente cliente = createCliente();
+
+    doThrow(ClienteInactivoException.class)
+        .when(clienteServiceValidator)
+        .validateClienteNoExists(cliente);
+
+    assertThrows(ClienteInactivoException.class, () -> clienteService.darDeAltaCliente(clienteDto));
   }
 
   @Test
@@ -80,7 +94,7 @@ public class ClienteServiceTest {
 
   @Test
   public void testDarDeAltaClienteSuccess()
-      throws ClienteAlreadyExistsException, ClienteMenorDeEdadException {
+      throws ClienteAlreadyExistsException, ClienteMenorDeEdadException, ClienteInactivoException {
 
     ClienteRequestDto clienteDto = createClienteRequestDto();
     Cliente cliente = createCliente();
