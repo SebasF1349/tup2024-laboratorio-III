@@ -27,6 +27,8 @@ import ar.edu.utn.frbb.tup.model.exception.ClienteInactivoException;
 import ar.edu.utn.frbb.tup.model.exception.ClienteMenorDeEdadException;
 import ar.edu.utn.frbb.tup.model.exception.ClienteNoExistsException;
 import ar.edu.utn.frbb.tup.model.exception.CorruptedDataInDbException;
+import ar.edu.utn.frbb.tup.model.exception.CuentaActivaException;
+import ar.edu.utn.frbb.tup.model.exception.CuentaInactivaException;
 import ar.edu.utn.frbb.tup.model.exception.CuentaNoExistsException;
 import ar.edu.utn.frbb.tup.model.exception.CuentaNoExistsInClienteException;
 import ar.edu.utn.frbb.tup.model.exception.CuentaNoSoportadaException;
@@ -141,10 +143,7 @@ public class CuentaServiceTest {
 
   @Test
   public void testDarDeAltaCuentaClienteInactivoExceptionException()
-      throws ClienteNoExistsException,
-          TipoCuentaAlreadyExistsException,
-          ClienteMenorDeEdadException,
-          ClienteInactivoException {
+      throws ClienteNoExistsException, ClienteMenorDeEdadException, ClienteInactivoException {
     CuentaRequestDto cuentaRequestDto = createCuentaRequestDto();
     Cliente titular = createCliente();
 
@@ -158,6 +157,23 @@ public class CuentaServiceTest {
   }
 
   @Test
+  public void testDarDeAltaCuentaInactivaException()
+      throws ClienteNoExistsException, TipoCuentaAlreadyExistsException, CuentaInactivaException {
+    CuentaRequestDto cuentaRequestDto = createCuentaRequestDto();
+    Cliente titular = createCliente();
+
+    when(clienteService.buscarClienteCompletoPorDni(cuentaRequestDto.getTitular()))
+        .thenReturn(titular);
+
+    doThrow(CuentaInactivaException.class)
+        .when(cuentaServiceValidator)
+        .validateClienteHasntCuenta(any(Cuenta.class), eq(titular));
+
+    assertThrows(
+        CuentaInactivaException.class, () -> cuentaService.darDeAltaCuenta(cuentaRequestDto));
+  }
+
+  @Test
   public void testDarDeAltaCuentaSuccess()
       throws CuentaNoSoportadaException,
           TipoCuentaAlreadyExistsException,
@@ -165,7 +181,8 @@ public class CuentaServiceTest {
           CuentaNoExistsInClienteException,
           ClienteMenorDeEdadException,
           ClienteInactivoException,
-          CorruptedDataInDbException {
+          CorruptedDataInDbException,
+          CuentaInactivaException {
     CuentaRequestDto cuentaRequestDto = createCuentaRequestDto();
     Cliente titular = createCliente();
 
@@ -345,8 +362,8 @@ public class CuentaServiceTest {
   }
 
   @Test
-  public void testActualizarCuentaNoExistsInclienteException()
-      throws CuentaNoExistsInClienteException, ClienteNoExistsException {
+  public void testActualizarCuentaNoExistsInClienteException()
+      throws CuentaNoExistsInClienteException, ClienteNoExistsException, CuentaInactivaException {
     CuentaRequestDto cuentaRequestDto = createCuentaRequestDto();
     Cliente cliente = createCliente();
 
@@ -363,14 +380,31 @@ public class CuentaServiceTest {
   }
 
   @Test
+  public void testActualizarCuentaInactivaException()
+      throws CuentaNoExistsInClienteException, ClienteNoExistsException, CuentaInactivaException {
+    CuentaRequestDto cuentaRequestDto = createCuentaRequestDto();
+    Cliente cliente = createCliente();
+
+    when(clienteService.buscarClienteCompletoPorDni(cuentaRequestDto.getTitular()))
+        .thenReturn(cliente);
+
+    doThrow(CuentaInactivaException.class)
+        .when(cuentaServiceValidator)
+        .validateClienteHasCuenta(any(Cuenta.class), eq(cliente));
+
+    assertThrows(
+        CuentaInactivaException.class, () -> cuentaService.actualizarCuenta(cuentaRequestDto));
+  }
+
+  @Test
   public void testActualizarCuentaSuccess()
       throws CuentaNoExistsException,
           ClienteNoExistsException,
           CuentaNoExistsInClienteException,
           CuentaNoSoportadaException,
           CorruptedDataInDbException,
-          ImpossibleException {
-    CuentaDto cuentaDto = createCuentaDto();
+          ImpossibleException,
+          CuentaInactivaException {
     Cuenta cuenta = createCuenta();
     Cliente cliente = createCliente();
     cuenta.setTitular(cliente);
@@ -428,11 +462,26 @@ public class CuentaServiceTest {
   }
 
   @Test
+  public void testEliminarCuentaInactivaException()
+      throws ImpossibleException, CuentaInactivaException {
+    Cuenta cuenta = createCuenta();
+
+    when(cuentaDao.find(numeroCuenta, true)).thenReturn(cuenta);
+
+    doThrow(CuentaInactivaException.class)
+        .when(cuentaServiceValidator)
+        .validateCuentaIsActiva(cuenta);
+
+    assertThrows(CuentaInactivaException.class, () -> cuentaService.eliminarCuenta(numeroCuenta));
+  }
+
+  @Test
   public void testEliminarCuentaSuccess()
       throws CuentaNoExistsException,
           CorruptedDataInDbException,
           ClienteNoExistsException,
-          ImpossibleException {
+          ImpossibleException,
+          CuentaInactivaException {
     Cuenta cuenta = createCuenta();
     cuenta.setNumeroCuenta(123);
     Cliente cliente = createCliente();
@@ -490,11 +539,25 @@ public class CuentaServiceTest {
   }
 
   @Test
+  public void testActivarCuentaActivaException() throws ImpossibleException, CuentaActivaException {
+    Cuenta cuenta = createCuenta();
+
+    when(cuentaDao.find(numeroCuenta, true)).thenReturn(cuenta);
+
+    doThrow(CuentaActivaException.class)
+        .when(cuentaServiceValidator)
+        .validateCuentaIsNotActiva(cuenta);
+
+    assertThrows(CuentaActivaException.class, () -> cuentaService.activarCuenta(numeroCuenta));
+  }
+
+  @Test
   public void testActivarCuentaSuccess()
       throws CuentaNoExistsException,
           CorruptedDataInDbException,
           ClienteNoExistsException,
-          ImpossibleException {
+          ImpossibleException,
+          CuentaActivaException {
     Cuenta cuenta = createCuenta();
     cuenta.setNumeroCuenta(123);
     Cliente cliente = createCliente();
@@ -553,6 +616,22 @@ public class CuentaServiceTest {
 
     assertThrows(
         ImpossibleException.class, () -> cuentaService.buscarCuentaCompletaPorId(numeroCuenta));
+  }
+
+  @Test
+  public void testBuscarTransaccionesDeCuentaPorIdCuentaInactivaException()
+      throws ImpossibleException, CuentaInactivaException {
+    Cuenta cuenta = createCuenta();
+
+    when(cuentaDao.find(numeroCuenta, true)).thenReturn(cuenta);
+
+    doThrow(CuentaInactivaException.class)
+        .when(cuentaServiceValidator)
+        .validateCuentaIsActiva(cuenta);
+
+    assertThrows(
+        CuentaInactivaException.class,
+        () -> cuentaService.buscarTransaccionesDeCuentaPorId(numeroCuenta));
   }
 
   @Test
@@ -690,7 +769,8 @@ public class CuentaServiceTest {
       throws CuentaNoExistsException,
           CorruptedDataInDbException,
           ClienteNoExistsException,
-          ImpossibleException {
+          ImpossibleException,
+          CuentaInactivaException {
     Cuenta cuenta = createCuenta();
     Movimiento movimiento = createDeposito();
     cuenta.addMovimiento(movimiento);
