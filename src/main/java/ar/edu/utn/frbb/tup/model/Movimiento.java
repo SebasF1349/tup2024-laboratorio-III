@@ -39,7 +39,7 @@ public abstract class Movimiento {
         movimientoResponseDto.setMontoDebitado(transferencia.getMonto());
       }
     } else {
-      movimientoResponseDto.setTipoTransaccion(this.getTipoMovimiento().toString());
+      movimientoResponseDto.setTipoTransaccion(this.getTipoMovimiento());
       movimientoResponseDto.setMontoDebitado(this.getMonto());
     }
     movimientoResponseDto.setMontoDebitado(this.getMonto());
