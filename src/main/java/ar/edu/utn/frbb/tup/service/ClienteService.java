@@ -111,6 +111,13 @@ public class ClienteService {
                 + " de Cliente con DNI "
                 + cliente.getDni()
                 + " no existe");
+      } catch (CuentaInactivaException e) {
+        System.out.printf(
+            "Cuenta "
+                + cuenta.getNumeroCuenta()
+                + " de Cliente con DNI "
+                + cliente.getDni()
+                + "ya estaba inactiva");
       }
     }
 
