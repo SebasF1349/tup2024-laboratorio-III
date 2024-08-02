@@ -94,7 +94,7 @@ public class CuentaControllerTest {
 
   @Test
   public void testObtenerCuentaSuccess() throws Exception {
-    CuentaDto cuentaDto = createCuentaDto();
+    CuentaResponseDto cuentaDto = createCuentaResponseDto();
     String cuentaDtoMapped = objectMapper.writeValueAsString(cuentaDto);
 
     Mockito.when(cuentaService.buscarCuentaPorId(numeroCuenta)).thenReturn(cuentaDto);
@@ -107,7 +107,7 @@ public class CuentaControllerTest {
 
   @Test
   public void testCrearCuentaWithoutData() throws Exception {
-    CuentaDto cuentaDto = new CuentaDto();
+    CuentaRequestDto cuentaDto = new CuentaRequestDto();
     String cuentaDtoMapped = objectMapper.writeValueAsString(cuentaDto);
 
     MockHttpServletRequestBuilder mockRequest =
@@ -129,7 +129,7 @@ public class CuentaControllerTest {
 
   @Test
   public void testCrearCuentaWithInvalidNumberData() throws Exception {
-    CuentaDto cuentaDto = new CuentaDto();
+    CuentaRequestDto cuentaDto = new CuentaRequestDto();
     cuentaDto.setBalance(-1000);
     cuentaDto.setTitular(0);
     String cuentaDtoMapped = objectMapper.writeValueAsString(cuentaDto);
@@ -154,7 +154,7 @@ public class CuentaControllerTest {
 
   @Test
   public void testCrearCuentaWrongInputDataException() throws Exception {
-    CuentaDto cuentaDto = createCuentaDto();
+    CuentaRequestDto cuentaDto = createCuentaRequestDto();
     String cuentaDtoMapped = objectMapper.writeValueAsString(cuentaDto);
 
     doThrow(new WrongInputDataException("")).when(cuentaControllerValidator).validate(cuentaDto);
@@ -174,7 +174,7 @@ public class CuentaControllerTest {
 
   @Test
   public void testCrearCuentaNoSoportadaException() throws Exception {
-    CuentaDto cuentaDto = createCuentaDto();
+    CuentaRequestDto cuentaDto = createCuentaRequestDto();
     String cuentaDtoMapped = objectMapper.writeValueAsString(cuentaDto);
 
     doThrow(new CuentaNoSoportadaException("")).when(cuentaService).darDeAltaCuenta(cuentaDto);
@@ -194,7 +194,7 @@ public class CuentaControllerTest {
 
   @Test
   public void testCrearCuentaTipoCuentaAlreadyExistsException() throws Exception {
-    CuentaDto cuentaDto = createCuentaDto();
+    CuentaRequestDto cuentaDto = createCuentaRequestDto();
     String cuentaDtoMapped = objectMapper.writeValueAsString(cuentaDto);
 
     doThrow(new TipoCuentaAlreadyExistsException(""))
@@ -216,7 +216,7 @@ public class CuentaControllerTest {
 
   @Test
   public void testCrearCuentaClienteNoExistsException() throws Exception {
-    CuentaDto cuentaDto = createCuentaDto();
+    CuentaRequestDto cuentaDto = createCuentaRequestDto();
     String cuentaDtoMapped = objectMapper.writeValueAsString(cuentaDto);
 
     doThrow(new CorruptedDataInDbException("")).when(cuentaService).darDeAltaCuenta(cuentaDto);
@@ -236,7 +236,7 @@ public class CuentaControllerTest {
 
   @Test
   public void testCrearCuentaCorruptedDataInDBException() throws Exception {
-    CuentaDto cuentaDto = createCuentaDto();
+    CuentaRequestDto cuentaDto = createCuentaRequestDto();
     String cuentaDtoMapped = objectMapper.writeValueAsString(cuentaDto);
 
     doThrow(new ClienteNoExistsException("")).when(cuentaService).darDeAltaCuenta(cuentaDto);
@@ -256,7 +256,7 @@ public class CuentaControllerTest {
 
   @Test
   public void testCrearCuentaClienteInactivoException() throws Exception {
-    CuentaDto cuentaDto = createCuentaDto();
+    CuentaRequestDto cuentaDto = createCuentaRequestDto();
     String cuentaDtoMapped = objectMapper.writeValueAsString(cuentaDto);
 
     doThrow(new ClienteInactivoException("")).when(cuentaService).darDeAltaCuenta(cuentaDto);
@@ -276,10 +276,12 @@ public class CuentaControllerTest {
 
   @Test
   public void testCrearCuentaSuccess() throws Exception {
-    CuentaDto cuentaDto = createCuentaDto();
+    CuentaRequestDto cuentaDto = createCuentaRequestDto();
     String cuentaDtoMapped = objectMapper.writeValueAsString(cuentaDto);
+    CuentaResponseDto cuentaResponseDto = createCuentaResponseDto();
+    String cuentaResponseDtoMapped = objectMapper.writeValueAsString(cuentaResponseDto);
 
-    when(cuentaService.darDeAltaCuenta(cuentaDto)).thenReturn(cuentaDto);
+    when(cuentaService.darDeAltaCuenta(cuentaDto)).thenReturn(cuentaResponseDto);
 
     MockHttpServletRequestBuilder mockRequest =
         MockMvcRequestBuilders.post(getEndpoint())
@@ -290,7 +292,7 @@ public class CuentaControllerTest {
     mockMvc
         .perform(mockRequest)
         .andExpect(status().isCreated())
-        .andExpect(content().string(cuentaDtoMapped));
+        .andExpect(content().string(cuentaResponseDtoMapped));
   }
 
   @Test
@@ -328,20 +330,20 @@ public class CuentaControllerTest {
 
   @Test
   public void testEliminarCuentaSuccess() throws Exception {
-    CuentaDto cuentaDto = createCuentaDto();
-    String cuentaDtoMapped = objectMapper.writeValueAsString(cuentaDto);
+    CuentaResponseDto cuentaResponseDto = createCuentaResponseDto();
+    String cuentaResponseDtoMapped = objectMapper.writeValueAsString(cuentaResponseDto);
 
-    Mockito.when(cuentaService.eliminarCuenta(numeroCuenta)).thenReturn(cuentaDto);
+    Mockito.when(cuentaService.eliminarCuenta(numeroCuenta)).thenReturn(cuentaResponseDto);
 
     mockMvc
         .perform(delete(createEndpoint(numeroCuenta)))
         .andExpect(status().isOk())
-        .andExpect(content().string(cuentaDtoMapped));
+        .andExpect(content().string(cuentaResponseDtoMapped));
   }
 
   @Test
   public void testActualizarCuentaWithoutData() throws Exception {
-    CuentaDto cuentaDto = new CuentaDto();
+    CuentaRequestDto cuentaDto = new CuentaRequestDto();
     String cuentaDtoMapped = objectMapper.writeValueAsString(cuentaDto);
 
     MockHttpServletRequestBuilder mockRequest =
@@ -363,7 +365,7 @@ public class CuentaControllerTest {
 
   @Test
   public void testActualizarCuentaWithInvalidNumberData() throws Exception {
-    CuentaDto cuentaDto = new CuentaDto();
+    CuentaRequestDto cuentaDto = new CuentaRequestDto();
     cuentaDto.setBalance(-1000);
     cuentaDto.setTitular(-1);
     String cuentaDtoMapped = objectMapper.writeValueAsString(cuentaDto);
@@ -388,7 +390,7 @@ public class CuentaControllerTest {
 
   @Test
   public void testActualizarCuentaWrongInputDataException() throws Exception {
-    CuentaDto cuentaDto = createCuentaDto();
+    CuentaRequestDto cuentaDto = createCuentaRequestDto();
     String cuentaDtoMapped = objectMapper.writeValueAsString(cuentaDto);
 
     doThrow(new WrongInputDataException("")).when(cuentaControllerValidator).validate(cuentaDto);
@@ -408,7 +410,7 @@ public class CuentaControllerTest {
 
   @Test
   public void testActualizarCuentaNoExistsException() throws Exception {
-    CuentaDto cuentaDto = createCuentaDto();
+    CuentaRequestDto cuentaDto = createCuentaRequestDto();
     String cuentaDtoMapped = objectMapper.writeValueAsString(cuentaDto);
 
     doThrow(new CuentaNoExistsException("")).when(cuentaService).actualizarCuenta(cuentaDto);
@@ -428,7 +430,7 @@ public class CuentaControllerTest {
 
   @Test
   public void testActualizarCuentaClienteNoExistsException() throws Exception {
-    CuentaDto cuentaDto = createCuentaDto();
+    CuentaRequestDto cuentaDto = createCuentaRequestDto();
     String cuentaDtoMapped = objectMapper.writeValueAsString(cuentaDto);
 
     doThrow(new ClienteNoExistsException("")).when(cuentaService).actualizarCuenta(cuentaDto);
@@ -448,7 +450,7 @@ public class CuentaControllerTest {
 
   @Test
   public void testActualizarCuentaNoSoportadaException() throws Exception {
-    CuentaDto cuentaDto = createCuentaDto();
+    CuentaRequestDto cuentaDto = createCuentaRequestDto();
     String cuentaDtoMapped = objectMapper.writeValueAsString(cuentaDto);
 
     doThrow(new CuentaNoSoportadaException("")).when(cuentaService).actualizarCuenta(cuentaDto);
@@ -468,7 +470,7 @@ public class CuentaControllerTest {
 
   @Test
   public void testActualizarCuentaCorruptedDataInDbException() throws Exception {
-    CuentaDto cuentaDto = createCuentaDto();
+    CuentaRequestDto cuentaDto = createCuentaRequestDto();
     String cuentaDtoMapped = objectMapper.writeValueAsString(cuentaDto);
 
     doThrow(new CorruptedDataInDbException("")).when(cuentaService).actualizarCuenta(cuentaDto);
@@ -488,7 +490,7 @@ public class CuentaControllerTest {
 
   @Test
   public void testActualizarCuentaImpossibleException() throws Exception {
-    CuentaDto cuentaDto = createCuentaDto();
+    CuentaRequestDto cuentaDto = createCuentaRequestDto();
     String cuentaDtoMapped = objectMapper.writeValueAsString(cuentaDto);
 
     doThrow(new ImpossibleException()).when(cuentaService).actualizarCuenta(cuentaDto);
@@ -508,7 +510,7 @@ public class CuentaControllerTest {
 
   @Test
   public void testActualizarCuentaNoExistsInClienteException() throws Exception {
-    CuentaDto cuentaDto = createCuentaDto();
+    CuentaRequestDto cuentaDto = createCuentaRequestDto();
     String cuentaDtoMapped = objectMapper.writeValueAsString(cuentaDto);
 
     doThrow(new CuentaNoExistsInClienteException(""))
@@ -530,10 +532,12 @@ public class CuentaControllerTest {
 
   @Test
   public void testActualizarCuentaSuccess() throws Exception {
-    CuentaDto cuentaDto = createCuentaDto();
+    CuentaRequestDto cuentaDto = createCuentaRequestDto();
     String cuentaDtoMapped = objectMapper.writeValueAsString(cuentaDto);
+    CuentaResponseDto cuentaResponseDto = createCuentaResponseDto();
+    String cuentaResponseDtoMapped = objectMapper.writeValueAsString(cuentaResponseDto);
 
-    when(cuentaService.actualizarCuenta(cuentaDto)).thenReturn(cuentaDto);
+    when(cuentaService.actualizarCuenta(cuentaDto)).thenReturn(cuentaResponseDto);
 
     MockHttpServletRequestBuilder mockRequest =
         MockMvcRequestBuilders.put(getEndpoint())
@@ -544,7 +548,7 @@ public class CuentaControllerTest {
     mockMvc
         .perform(mockRequest)
         .andExpect(status().isOk())
-        .andExpect(content().string(cuentaDtoMapped));
+        .andExpect(content().string(cuentaResponseDtoMapped));
   }
 
   @Test
@@ -609,12 +613,22 @@ public class CuentaControllerTest {
     return endpoint;
   }
 
-  private CuentaDto createCuentaDto() {
-    CuentaDto cuentaDto = new CuentaDto();
+  private CuentaRequestDto createCuentaRequestDto() {
+    CuentaRequestDto cuentaDto = new CuentaRequestDto();
     cuentaDto.setBalance(500000);
     cuentaDto.setMoneda("P");
     cuentaDto.setTipoCuenta("A");
     cuentaDto.setTitular(12345678);
+    return cuentaDto;
+  }
+
+  private CuentaResponseDto createCuentaResponseDto() {
+    CuentaResponseDto cuentaDto = new CuentaResponseDto();
+    cuentaDto.setBalance(500000);
+    cuentaDto.setMoneda("P");
+    cuentaDto.setTipoCuenta("A");
+    cuentaDto.setTitular(12345678);
+    cuentaDto.setActivo(true);
     return cuentaDto;
   }
 }

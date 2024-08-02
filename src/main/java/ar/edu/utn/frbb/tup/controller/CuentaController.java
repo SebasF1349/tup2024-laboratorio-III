@@ -34,32 +34,34 @@ public class CuentaController {
   @Autowired private CuentaControllerValidator cuentaValidator;
 
   @GetMapping(value = "/{id}")
-  public CuentaDto obtenerCuenta(@PathVariable long id)
+  public CuentaResponseDto obtenerCuenta(@PathVariable long id)
       throws CuentaNoExistsException, CorruptedDataInDbException, ImpossibleException {
     return cuentaService.buscarCuentaPorId(id);
   }
 
   @PostMapping
-  public ResponseEntity<CuentaDto> crearCuenta(@Valid @RequestBody CuentaDto cuentaDto)
+  public ResponseEntity<CuentaResponseDto> crearCuenta(
+      @Valid @RequestBody CuentaRequestDto cuentaRequestDto)
       throws WrongInputDataException,
           CuentaNoSoportadaException,
           TipoCuentaAlreadyExistsException,
           ClienteNoExistsException,
           CorruptedDataInDbException,
           ClienteInactivoException {
-    cuentaValidator.validate(cuentaDto);
-    CuentaDto cuentaResponse = cuentaService.darDeAltaCuenta(cuentaDto);
-    return new ResponseEntity<CuentaDto>(cuentaResponse, new HttpHeaders(), HttpStatus.CREATED);
+    cuentaValidator.validate(cuentaRequestDto);
+    CuentaResponseDto cuentaResponse = cuentaService.darDeAltaCuenta(cuentaRequestDto);
+    return new ResponseEntity<CuentaResponseDto>(
+        cuentaResponse, new HttpHeaders(), HttpStatus.CREATED);
   }
 
   @DeleteMapping(value = "/{id}")
-  public CuentaDto eliminarCuenta(@PathVariable long id)
       throws CuentaNoExistsException, CorruptedDataInDbException, ImpossibleException {
+  public CuentaResponseDto eliminarCuenta(@PathVariable long id)
     return cuentaService.eliminarCuenta(id);
   }
 
   @PutMapping
-  public CuentaDto actualizarCuenta(@Valid @RequestBody CuentaDto cuentaDto)
+  public CuentaResponseDto actualizarCuenta(@Valid @RequestBody CuentaRequestDto cuentaDto)
       throws WrongInputDataException,
           CuentaNoExistsException,
           ClienteNoExistsException,

@@ -1,7 +1,8 @@
 package ar.edu.utn.frbb.tup.service;
 
-import ar.edu.utn.frbb.tup.controller.CuentaDto;
 import ar.edu.utn.frbb.tup.controller.CuentaMovimientosResponseDto;
+import ar.edu.utn.frbb.tup.controller.CuentaRequestDto;
+import ar.edu.utn.frbb.tup.controller.CuentaResponseDto;
 import ar.edu.utn.frbb.tup.controller.MovimientoResponseDto;
 import ar.edu.utn.frbb.tup.model.Cliente;
 import ar.edu.utn.frbb.tup.model.Cuenta;
@@ -12,6 +13,8 @@ import ar.edu.utn.frbb.tup.model.exception.ClienteInactivoException;
 import ar.edu.utn.frbb.tup.model.exception.ClienteMenorDeEdadException;
 import ar.edu.utn.frbb.tup.model.exception.ClienteNoExistsException;
 import ar.edu.utn.frbb.tup.model.exception.CorruptedDataInDbException;
+import ar.edu.utn.frbb.tup.model.exception.CuentaActivaException;
+import ar.edu.utn.frbb.tup.model.exception.CuentaInactivaException;
 import ar.edu.utn.frbb.tup.model.exception.CuentaNoExistsException;
 import ar.edu.utn.frbb.tup.model.exception.CuentaNoExistsInClienteException;
 import ar.edu.utn.frbb.tup.model.exception.CuentaNoSoportadaException;
@@ -38,18 +41,18 @@ public class CuentaService {
     this.clienteService = clienteService;
   }
 
-  public CuentaDto darDeAltaCuenta(CuentaDto cuentaDto)
+  public CuentaResponseDto darDeAltaCuenta(CuentaRequestDto cuentaRequestDto)
       throws CuentaNoSoportadaException,
           TipoCuentaAlreadyExistsException,
           ClienteNoExistsException,
           CorruptedDataInDbException,
           ClienteInactivoException {
 
-    Cuenta cuenta = new Cuenta(cuentaDto);
+    Cuenta cuenta = new Cuenta(cuentaRequestDto);
 
     cuentaServiceValidator.validateTipoCuentaEstaSoportada(cuenta);
 
-    Cliente titular = clienteService.buscarClienteCompletoPorDni(cuentaDto.getTitular());
+    Cliente titular = clienteService.buscarClienteCompletoPorDni(cuentaRequestDto.getTitular());
 
     cuentaServiceValidator.validateClienteHasntCuenta(cuenta, titular);
 
@@ -67,7 +70,7 @@ public class CuentaService {
     return cuenta.toCuentaDto();
   }
 
-  public CuentaDto buscarCuentaPorId(long numeroCuenta)
+  public CuentaResponseDto buscarCuentaPorId(long numeroCuenta)
       throws CuentaNoExistsException, CorruptedDataInDbException, ImpossibleException {
     Cuenta cuenta = cuentaDao.find(numeroCuenta, false);
 
@@ -85,19 +88,19 @@ public class CuentaService {
     return cuenta.toCuentaDto();
   }
 
-  public CuentaDto actualizarCuenta(@Valid CuentaDto cuentaDto)
+  public CuentaResponseDto actualizarCuenta(@Valid CuentaRequestDto cuentaRequestDto)
       throws CuentaNoExistsException,
           ClienteNoExistsException,
           CuentaNoSoportadaException,
           CorruptedDataInDbException,
           ImpossibleException,
           CuentaNoExistsInClienteException {
-    Cuenta cuenta = new Cuenta(cuentaDto);
+    Cuenta cuenta = new Cuenta(cuentaRequestDto);
 
     cuentaServiceValidator.validateCuentaExists(cuenta);
     cuentaServiceValidator.validateTipoCuentaEstaSoportada(cuenta);
 
-    Cliente titular = clienteService.buscarClienteCompletoPorDni(cuentaDto.getTitular());
+    Cliente titular = clienteService.buscarClienteCompletoPorDni(cuentaRequestDto.getTitular());
 
     cuentaServiceValidator.validateClienteHasCuenta(cuenta, titular);
 
@@ -119,8 +122,8 @@ public class CuentaService {
     return cuenta.toCuentaDto();
   }
 
-  public CuentaDto eliminarCuenta(long id)
       throws CuentaNoExistsException, CorruptedDataInDbException, ImpossibleException {
+  public CuentaResponseDto eliminarCuenta(long id)
     Cuenta cuenta = buscarCuentaCompletaPorId(id);
 
     cuenta.setActivo(false);
@@ -128,8 +131,8 @@ public class CuentaService {
     return cuenta.toCuentaDto();
   }
 
-  public CuentaDto activarCuenta(long id)
       throws CuentaNoExistsException, CorruptedDataInDbException, ImpossibleException {
+  public CuentaResponseDto activarCuenta(long id)
     Cuenta cuenta = buscarCuentaCompletaPorId(id);
 
     cuenta.setActivo(true);

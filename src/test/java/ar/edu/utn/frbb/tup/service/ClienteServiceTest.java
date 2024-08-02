@@ -10,7 +10,7 @@ import static org.mockito.Mockito.when;
 import ar.edu.utn.frbb.tup.controller.ClienteCuentasResponseDto;
 import ar.edu.utn.frbb.tup.controller.ClienteRequestDto;
 import ar.edu.utn.frbb.tup.controller.ClienteResponseDto;
-import ar.edu.utn.frbb.tup.controller.CuentaResponseDto;
+import ar.edu.utn.frbb.tup.controller.CuentaRequestDto;
 import ar.edu.utn.frbb.tup.model.Cliente;
 import ar.edu.utn.frbb.tup.model.Cuenta;
 import ar.edu.utn.frbb.tup.model.TipoCuenta;
@@ -497,7 +497,7 @@ public class ClienteServiceTest {
 
     ClienteCuentasResponseDto clienteCuentasResponseDtoExpected =
         cliente.toClienteCuentasResponseDto();
-    CuentaResponseDto cuentaResponseDto = cuenta.toCuentaResponseDto();
+    CuentaRequestDto cuentaResponseDto = cuenta.toCuentaResponseDto();
     clienteCuentasResponseDtoExpected.addCuenta(cuentaResponseDto);
 
     when(clienteDao.find(dniCliente, true)).thenReturn(cliente);

@@ -3,7 +3,7 @@ package ar.edu.utn.frbb.tup.controller.validator;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import ar.edu.utn.frbb.tup.controller.CuentaDto;
+import ar.edu.utn.frbb.tup.controller.CuentaRequestDto;
 import ar.edu.utn.frbb.tup.model.exception.WrongInputDataException;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -26,7 +26,7 @@ public class CuentaControllerValidatorTest {
 
   @Test
   public void testValidateTipoCuentaFail() {
-    CuentaDto cuentaDto = new CuentaDto();
+    CuentaRequestDto cuentaDto = new CuentaRequestDto();
     cuentaDto.setTipoCuenta("B");
 
     assertThrows(
@@ -36,7 +36,7 @@ public class CuentaControllerValidatorTest {
 
   @Test
   public void testValidateTipoCuentaCSuccess() {
-    CuentaDto cuentaDto = new CuentaDto();
+    CuentaRequestDto cuentaDto = new CuentaRequestDto();
     cuentaDto.setTipoCuenta("C");
 
     assertDoesNotThrow(() -> cuentaControllerValidator.validateTipoCuenta(cuentaDto));
@@ -44,7 +44,7 @@ public class CuentaControllerValidatorTest {
 
   @Test
   public void testValidateTipoCuentaASuccess() {
-    CuentaDto cuentaDto = new CuentaDto();
+    CuentaRequestDto cuentaDto = new CuentaRequestDto();
     cuentaDto.setTipoCuenta("A");
 
     assertDoesNotThrow(() -> cuentaControllerValidator.validateTipoCuenta(cuentaDto));
@@ -52,7 +52,7 @@ public class CuentaControllerValidatorTest {
 
   @Test
   public void testValidateTipoMonedaFail() {
-    CuentaDto cuentaDto = new CuentaDto();
+    CuentaRequestDto cuentaDto = new CuentaRequestDto();
     cuentaDto.setMoneda("A");
 
     assertThrows(
@@ -61,7 +61,7 @@ public class CuentaControllerValidatorTest {
 
   @Test
   public void testValidateTipoMonedaPSuccess() {
-    CuentaDto cuentaDto = new CuentaDto();
+    CuentaRequestDto cuentaDto = new CuentaRequestDto();
     cuentaDto.setMoneda("P");
 
     assertDoesNotThrow(() -> cuentaControllerValidator.validateMoneda(cuentaDto));
@@ -69,7 +69,7 @@ public class CuentaControllerValidatorTest {
 
   @Test
   public void testValidateTipoMonedaDJSuccess() {
-    CuentaDto cuentaDto = new CuentaDto();
+    CuentaRequestDto cuentaDto = new CuentaRequestDto();
     cuentaDto.setMoneda("D");
 
     assertDoesNotThrow(() -> cuentaControllerValidator.validateMoneda(cuentaDto));

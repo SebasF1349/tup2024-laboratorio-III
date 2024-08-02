@@ -3,7 +3,7 @@ package ar.edu.utn.frbb.tup.service;
 import ar.edu.utn.frbb.tup.controller.ClienteCuentasResponseDto;
 import ar.edu.utn.frbb.tup.controller.ClienteRequestDto;
 import ar.edu.utn.frbb.tup.controller.ClienteResponseDto;
-import ar.edu.utn.frbb.tup.controller.CuentaResponseDto;
+import ar.edu.utn.frbb.tup.controller.CuentaRequestDto;
 import ar.edu.utn.frbb.tup.model.Cliente;
 import ar.edu.utn.frbb.tup.model.Cuenta;
 import ar.edu.utn.frbb.tup.model.exception.ClienteActivoException;
@@ -169,7 +169,7 @@ public class ClienteService {
     ClienteCuentasResponseDto clienteCuentasResponseDto = cliente.toClienteCuentasResponseDto();
 
     for (Cuenta cuenta : cliente.getCuentas()) {
-      CuentaResponseDto cuentaResponseDto = cuenta.toCuentaResponseDto();
+      CuentaRequestDto cuentaResponseDto = cuenta.toCuentaResponseDto();
       clienteCuentasResponseDto.addCuenta(cuentaResponseDto);
     }
 

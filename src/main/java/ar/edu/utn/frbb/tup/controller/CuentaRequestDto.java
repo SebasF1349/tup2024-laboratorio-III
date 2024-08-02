@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 
-public class CuentaDto {
+public class CuentaRequestDto {
   @PositiveOrZero private double balance;
   @NotNull private String tipoCuenta;
   @NotNull private String moneda;
@@ -66,7 +66,7 @@ public class CuentaDto {
     if (getClass() != obj.getClass()) {
       return false;
     }
-    CuentaDto other = (CuentaDto) obj;
+    CuentaRequestDto other = (CuentaRequestDto) obj;
     if (Double.doubleToLongBits(balance) != Double.doubleToLongBits(other.balance)) {
       return false;
     }
@@ -92,7 +92,7 @@ public class CuentaDto {
 
   @Override
   public String toString() {
-    return "CuentaDto{balance="
+    return "CuentaRequestDto{balance="
         + balance
         + ", tipoCuenta="
         + tipoCuenta

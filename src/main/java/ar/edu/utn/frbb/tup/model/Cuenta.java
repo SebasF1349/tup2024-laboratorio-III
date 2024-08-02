@@ -1,7 +1,7 @@
 package ar.edu.utn.frbb.tup.model;
 
-import ar.edu.utn.frbb.tup.controller.CuentaDto;
 import ar.edu.utn.frbb.tup.controller.CuentaMovimientosResponseDto;
+import ar.edu.utn.frbb.tup.controller.CuentaRequestDto;
 import ar.edu.utn.frbb.tup.controller.CuentaResponseDto;
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -32,21 +32,22 @@ public class Cuenta {
     this.titular = titular;
   }
 
-  public Cuenta(CuentaDto cuentaDto) {
+  public Cuenta(CuentaRequestDto cuentaRequestDto) {
     this.fechaApertura = LocalDateTime.now();
-    this.balance = cuentaDto.getBalance();
+    this.balance = cuentaRequestDto.getBalance();
     this.movimientos = new HashSet<>();
     this.titular = null;
-    this.tipoCuenta = TipoCuenta.fromString(cuentaDto.getTipoCuenta());
-    this.moneda = TipoMoneda.fromString(cuentaDto.getMoneda());
+    this.tipoCuenta = TipoCuenta.fromString(cuentaRequestDto.getTipoCuenta());
+    this.moneda = TipoMoneda.fromString(cuentaRequestDto.getMoneda());
   }
 
-  public CuentaDto toCuentaDto() {
-    CuentaDto cuentaDto = new CuentaDto();
+  public CuentaResponseDto toCuentaDto() {
+    CuentaResponseDto cuentaDto = new CuentaResponseDto();
     cuentaDto.setBalance(this.balance);
     cuentaDto.setTipoCuenta(this.tipoCuenta.toString());
     cuentaDto.setMoneda(this.moneda.toString());
     cuentaDto.setTitular(this.titular.getDni());
+    cuentaDto.setActivo(this.activo);
     return cuentaDto;
   }
 
@@ -223,8 +224,8 @@ public class Cuenta {
     return true;
   }
 
-  public CuentaResponseDto toCuentaResponseDto() {
-    CuentaResponseDto cuentaResponseDto = new CuentaResponseDto();
+  public CuentaRequestDto toCuentaResponseDto() {
+    CuentaRequestDto cuentaResponseDto = new CuentaRequestDto();
     cuentaResponseDto.setBalance(this.getBalance());
     cuentaResponseDto.setTipoCuenta(this.getTipoCuenta().toString());
     cuentaResponseDto.setMoneda(this.getMoneda().toString());
