@@ -48,6 +48,15 @@ public class Cliente extends Persona {
     return clienteCuentasResponseDto;
   }
 
+  public void actualizarConRequestDto(ClienteRequestDto clienteRequestDto) {
+    this.setDni(clienteRequestDto.getDni());
+    this.setApellido(clienteRequestDto.getApellido());
+    this.setNombre(clienteRequestDto.getNombre());
+    this.setFechaNacimiento(LocalDate.parse(clienteRequestDto.getFechaNacimiento()));
+    tipoPersona = TipoPersona.fromString(clienteRequestDto.getTipoPersona());
+    banco = clienteRequestDto.getBanco();
+  }
+
   public TipoPersona getTipoPersona() {
     return tipoPersona;
   }

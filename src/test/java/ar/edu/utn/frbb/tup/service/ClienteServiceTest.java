@@ -191,11 +191,6 @@ public class ClienteServiceTest {
   @Test
   public void testActualizarClienteNoExistsException() throws ClienteNoExistsException {
     ClienteRequestDto clienteDto = createClienteRequestDto();
-    Cliente cliente = createCliente();
-
-    doThrow(ClienteNoExistsException.class)
-        .when(clienteServiceValidator)
-        .validateClienteExists(cliente);
 
     assertThrows(
         ClienteNoExistsException.class, () -> clienteService.actualizarCliente(clienteDto));
@@ -205,6 +200,8 @@ public class ClienteServiceTest {
   public void testActualizarClienteMenorDeEdadException() throws ClienteMenorDeEdadException {
     ClienteRequestDto clienteDtoMenorDeEdad = createClienteRequestDto();
     Cliente clienteMenorDeEdad = createCliente();
+
+    when(clienteDao.find(dniCliente, false)).thenReturn(clienteMenorDeEdad);
 
     doThrow(ClienteMenorDeEdadException.class)
         .when(clienteServiceValidator)
@@ -219,6 +216,8 @@ public class ClienteServiceTest {
   public void testActualizarClienteClienteInactivoException() throws ClienteInactivoException {
     ClienteRequestDto clienteDto = createClienteRequestDto();
     Cliente cliente = createCliente();
+
+    when(clienteDao.find(dniCliente, false)).thenReturn(cliente);
 
     doThrow(ClienteInactivoException.class)
         .when(clienteServiceValidator)
@@ -235,6 +234,8 @@ public class ClienteServiceTest {
     Cliente cliente = createCliente();
     ClienteResponseDto clienteResponseDto = createClienteResponseDto();
     clienteResponseDto.setTipoPersona(cliente.getTipoPersona().toString());
+
+    when(clienteDao.find(dniCliente, false)).thenReturn(cliente);
 
     assertEquals(clienteResponseDto, clienteService.actualizarCliente(clienteDto));
 

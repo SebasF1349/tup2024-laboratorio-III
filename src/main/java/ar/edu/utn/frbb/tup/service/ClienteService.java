@@ -76,13 +76,19 @@ public class ClienteService {
     return cliente.toClienteDto();
   }
 
-  public ClienteResponseDto actualizarCliente(ClienteRequestDto clienteDto)
+  public ClienteResponseDto actualizarCliente(ClienteRequestDto clienteRequestDto)
       throws ClienteNoExistsException, ClienteMenorDeEdadException, ClienteInactivoException {
+    Cliente cliente = clienteDao.find(clienteRequestDto.getDni(), false);
 
-    Cliente cliente = new Cliente(clienteDto);
+    if (cliente == null) {
+      throw new ClienteNoExistsException(
+          "No existe un cliente con DNI " + clienteRequestDto.getDni());
+    }
 
-    clienteServiceValidator.validateClienteExists(cliente);
     clienteServiceValidator.validateClienteIsActivo(cliente);
+
+    cliente.actualizarConRequestDto(clienteRequestDto);
+
     clienteServiceValidator.validateClienteMayorDeEdad(cliente);
 
     clienteDao.save(cliente);
