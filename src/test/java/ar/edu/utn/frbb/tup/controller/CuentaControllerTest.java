@@ -15,6 +15,8 @@ import ar.edu.utn.frbb.tup.controller.validator.CuentaControllerValidator;
 import ar.edu.utn.frbb.tup.model.exception.ClienteInactivoException;
 import ar.edu.utn.frbb.tup.model.exception.ClienteNoExistsException;
 import ar.edu.utn.frbb.tup.model.exception.CorruptedDataInDbException;
+import ar.edu.utn.frbb.tup.model.exception.CuentaActivaException;
+import ar.edu.utn.frbb.tup.model.exception.CuentaInactivaException;
 import ar.edu.utn.frbb.tup.model.exception.CuentaNoExistsException;
 import ar.edu.utn.frbb.tup.model.exception.CuentaNoExistsInClienteException;
 import ar.edu.utn.frbb.tup.model.exception.CuentaNoSoportadaException;
@@ -275,6 +277,26 @@ public class CuentaControllerTest {
   }
 
   @Test
+  public void testCrearCuentaInactivaException() throws Exception {
+    CuentaRequestDto cuentaDto = createCuentaRequestDto();
+    String cuentaDtoMapped = objectMapper.writeValueAsString(cuentaDto);
+
+    doThrow(new CuentaInactivaException("")).when(cuentaService).darDeAltaCuenta(cuentaDto);
+
+    MockHttpServletRequestBuilder mockRequest =
+        MockMvcRequestBuilders.post(getEndpoint())
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON)
+            .content(cuentaDtoMapped);
+
+    mockMvc
+        .perform(mockRequest)
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$", notNullValue()))
+        .andExpect(jsonPath("$.errorCode", is(400114)));
+  }
+
+  @Test
   public void testCrearCuentaSuccess() throws Exception {
     CuentaRequestDto cuentaDto = createCuentaRequestDto();
     String cuentaDtoMapped = objectMapper.writeValueAsString(cuentaDto);
@@ -296,7 +318,7 @@ public class CuentaControllerTest {
   }
 
   @Test
-  public void testEliminarCuentaDoesntExistsFail() throws Exception {
+  public void testEliminarCuentaDoesntExistsException() throws Exception {
     doThrow(new CuentaNoExistsException("")).when(cuentaService).eliminarCuenta(numeroCuenta);
 
     mockMvc
@@ -326,6 +348,17 @@ public class CuentaControllerTest {
         .andExpect(status().isInternalServerError())
         .andExpect(jsonPath("$", notNullValue()))
         .andExpect(jsonPath("$.errorCode", is(500100)));
+  }
+
+  @Test
+  public void testEliminarCuentaInactivaException() throws Exception {
+    doThrow(new CuentaInactivaException("")).when(cuentaService).eliminarCuenta(numeroCuenta);
+
+    mockMvc
+        .perform(delete(createEndpoint(numeroCuenta)))
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$", notNullValue()))
+        .andExpect(jsonPath("$.errorCode", is(400114)));
   }
 
   @Test
@@ -531,6 +564,26 @@ public class CuentaControllerTest {
   }
 
   @Test
+  public void testActualizarCuentaInactivaException() throws Exception {
+    CuentaRequestDto cuentaDto = createCuentaRequestDto();
+    String cuentaDtoMapped = objectMapper.writeValueAsString(cuentaDto);
+
+    doThrow(new CuentaInactivaException("")).when(cuentaService).actualizarCuenta(cuentaDto);
+
+    MockHttpServletRequestBuilder mockRequest =
+        MockMvcRequestBuilders.put(getEndpoint())
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON)
+            .content(cuentaDtoMapped);
+
+    mockMvc
+        .perform(mockRequest)
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$", notNullValue()))
+        .andExpect(jsonPath("$.errorCode", is(400114)));
+  }
+
+  @Test
   public void testActualizarCuentaSuccess() throws Exception {
     CuentaRequestDto cuentaDto = createCuentaRequestDto();
     String cuentaDtoMapped = objectMapper.writeValueAsString(cuentaDto);
@@ -588,6 +641,19 @@ public class CuentaControllerTest {
         .andExpect(status().isInternalServerError())
         .andExpect(jsonPath("$", notNullValue()))
         .andExpect(jsonPath("$.errorCode", is(500100)));
+  }
+
+  @Test
+  public void testObtenerTransaccionesEnCuentaInactivaException() throws Exception {
+    doThrow(new CuentaInactivaException(""))
+        .when(cuentaService)
+        .buscarTransaccionesDeCuentaPorId(numeroCuenta);
+
+    mockMvc
+        .perform(get(createEndpoint(numeroCuenta) + "/transacciones"))
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$", notNullValue()))
+        .andExpect(jsonPath("$.errorCode", is(400114)));
   }
 
   @Test

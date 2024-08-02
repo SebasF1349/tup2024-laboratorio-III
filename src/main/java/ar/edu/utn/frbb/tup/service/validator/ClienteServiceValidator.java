@@ -7,6 +7,7 @@ import ar.edu.utn.frbb.tup.model.exception.ClienteAlreadyExistsException;
 import ar.edu.utn.frbb.tup.model.exception.ClienteInactivoException;
 import ar.edu.utn.frbb.tup.model.exception.ClienteMenorDeEdadException;
 import ar.edu.utn.frbb.tup.model.exception.ClienteNoExistsException;
+import ar.edu.utn.frbb.tup.model.exception.CuentaInactivaException;
 import ar.edu.utn.frbb.tup.model.exception.TipoCuentaAlreadyExistsException;
 import ar.edu.utn.frbb.tup.persistence.ClienteDao;
 import org.springframework.stereotype.Service;
@@ -45,11 +46,16 @@ public class ClienteServiceValidator {
   }
 
   public void validateTipoCuentaUnica(Cliente titular, Cuenta cuenta)
-      throws TipoCuentaAlreadyExistsException {
-    if (titular.hasCuentaSameTipo(cuenta.getTipoCuenta(), cuenta.getMoneda())) {
-      throw new TipoCuentaAlreadyExistsException(
-          "El cliente ya posee una cuenta de ese tipo y moneda");
+      throws TipoCuentaAlreadyExistsException, CuentaInactivaException {
+    Cuenta possibleCuenta = titular.cuentaSameTipo(cuenta.getTipoCuenta(), cuenta.getMoneda());
+    if (possibleCuenta == null) {
+      return;
     }
+    if (!possibleCuenta.isActivo()) {
+      throw new CuentaInactivaException(
+          "El cliente ya posee una cuenta del mismo tipo, pero está inhabilitada");
+    }
+    throw new TipoCuentaAlreadyExistsException("El cliente ya posee una cuenta del mismo tipo");
   }
 
   public void validateClienteIsActivo(Cliente cliente) throws ClienteInactivoException {

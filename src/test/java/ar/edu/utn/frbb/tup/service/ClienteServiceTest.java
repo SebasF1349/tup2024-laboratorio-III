@@ -21,6 +21,7 @@ import ar.edu.utn.frbb.tup.model.exception.ClienteInactivoException;
 import ar.edu.utn.frbb.tup.model.exception.ClienteMenorDeEdadException;
 import ar.edu.utn.frbb.tup.model.exception.ClienteNoExistsException;
 import ar.edu.utn.frbb.tup.model.exception.CorruptedDataInDbException;
+import ar.edu.utn.frbb.tup.model.exception.CuentaInactivaException;
 import ar.edu.utn.frbb.tup.model.exception.CuentaNoExistsException;
 import ar.edu.utn.frbb.tup.model.exception.ImpossibleException;
 import ar.edu.utn.frbb.tup.model.exception.TipoCuentaAlreadyExistsException;
@@ -118,7 +119,7 @@ public class ClienteServiceTest {
 
   @Test
   public void testAgregarCuentaTipoCuentaAlreadExistsException()
-      throws TipoCuentaAlreadyExistsException, ClienteNoExistsException {
+      throws TipoCuentaAlreadyExistsException, ClienteNoExistsException, CuentaInactivaException {
 
     Cliente cliente = createCliente();
     Cuenta cuenta = createCuenta();
@@ -135,8 +136,25 @@ public class ClienteServiceTest {
   }
 
   @Test
+  public void testAgregarCuentaInactivaException()
+      throws TipoCuentaAlreadyExistsException, ClienteNoExistsException, CuentaInactivaException {
+
+    Cliente cliente = createCliente();
+    Cuenta cuenta = createCuenta();
+
+    when(clienteDao.find(dniCliente, true)).thenReturn(cliente);
+
+    doThrow(CuentaInactivaException.class)
+        .when(clienteServiceValidator)
+        .validateTipoCuentaUnica(cliente, cuenta);
+
+    assertThrows(
+        CuentaInactivaException.class, () -> clienteService.agregarCuenta(cuenta, dniCliente));
+  }
+
+  @Test
   public void testAgregarCuentaAClienteSuccess()
-      throws TipoCuentaAlreadyExistsException, ClienteNoExistsException {
+      throws TipoCuentaAlreadyExistsException, ClienteNoExistsException, CuentaInactivaException {
 
     Cliente cliente = createCliente();
     Cuenta cuenta = createCuenta();
@@ -228,7 +246,7 @@ public class ClienteServiceTest {
       throws CorruptedDataInDbException,
           CuentaNoExistsException,
           ImpossibleException,
-          IllegalArgumentException {
+          CuentaInactivaException {
     Cliente cliente = createCliente();
     Cuenta cuenta = createCuenta();
     cliente.addCuenta(cuenta);
@@ -253,7 +271,7 @@ public class ClienteServiceTest {
       throws CorruptedDataInDbException,
           CuentaNoExistsException,
           ImpossibleException,
-          IllegalArgumentException {
+          CuentaInactivaException {
     Cliente cliente = createCliente();
     Cuenta cuenta = createCuenta();
     cliente.addCuenta(cuenta);
@@ -285,7 +303,8 @@ public class ClienteServiceTest {
           CuentaNoExistsException,
           ImpossibleException,
           IllegalArgumentException,
-          ClienteInactivoException {
+          ClienteInactivoException,
+          CuentaInactivaException {
     Cliente cliente = createCliente();
     Cuenta cuenta = createCuenta();
     cliente.addCuenta(cuenta);
@@ -300,6 +319,36 @@ public class ClienteServiceTest {
     when(clienteDao.find(dniCliente, true)).thenReturn(cliente);
 
     doThrow(CuentaNoExistsException.class)
+        .when(cuentaService)
+        .eliminarCuenta(cuenta.getNumeroCuenta());
+
+    assertEquals(clienteResponseDto, clienteService.eliminarCliente(dniCliente));
+    verify(clienteDao, times(1)).save(cliente);
+  }
+
+  @Test
+  public void testEliminarClienteCuentaInactivaSuccess()
+      throws CorruptedDataInDbException,
+          ClienteNoExistsException,
+          CuentaNoExistsException,
+          ImpossibleException,
+          IllegalArgumentException,
+          ClienteInactivoException,
+          CuentaInactivaException {
+    Cliente cliente = createCliente();
+    Cuenta cuenta = createCuenta();
+    cliente.addCuenta(cuenta);
+    ClienteResponseDto clienteResponseDto = createClienteResponseDto();
+    clienteResponseDto.setTipoPersona(cliente.getTipoPersona().toString());
+    clienteResponseDto.setActivo(false);
+
+    Cliente clienteRes = createCliente();
+    clienteRes.setActivo(false);
+    clienteRes.addCuenta(cuenta);
+
+    when(clienteDao.find(dniCliente, true)).thenReturn(cliente);
+
+    doThrow(CuentaInactivaException.class)
         .when(cuentaService)
         .eliminarCuenta(cuenta.getNumeroCuenta());
 

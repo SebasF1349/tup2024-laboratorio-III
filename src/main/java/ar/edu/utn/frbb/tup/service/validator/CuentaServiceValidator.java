@@ -4,7 +4,9 @@ import ar.edu.utn.frbb.tup.model.Cliente;
 import ar.edu.utn.frbb.tup.model.Cuenta;
 import ar.edu.utn.frbb.tup.model.TipoCuenta;
 import ar.edu.utn.frbb.tup.model.TipoMoneda;
+import ar.edu.utn.frbb.tup.model.exception.CuentaActivaException;
 import ar.edu.utn.frbb.tup.model.exception.CuentaAlreadyExistsException;
+import ar.edu.utn.frbb.tup.model.exception.CuentaInactivaException;
 import ar.edu.utn.frbb.tup.model.exception.CuentaNoExistsException;
 import ar.edu.utn.frbb.tup.model.exception.CuentaNoExistsInClienteException;
 import ar.edu.utn.frbb.tup.model.exception.CuentaNoSoportadaException;
@@ -71,16 +73,39 @@ public class CuentaServiceValidator {
   }
 
   public void validateClienteHasCuenta(Cuenta cuenta, Cliente titular)
-      throws CuentaNoExistsInClienteException {
-    if (!titular.hasCuentaSameTipo(cuenta.getTipoCuenta(), cuenta.getMoneda())) {
+      throws CuentaNoExistsInClienteException, CuentaInactivaException {
+    Cuenta possibleCuenta = titular.cuentaSameTipo(cuenta.getTipoCuenta(), cuenta.getMoneda());
+    if (possibleCuenta == null) {
       throw new CuentaNoExistsInClienteException("El cliente no tiene la cuenta ingresada");
+    }
+    if (!possibleCuenta.isActivo()) {
+      throw new CuentaInactivaException(
+          "El cliente posee una cuenta del mismo tipo, pero está inhabilitada");
     }
   }
 
   public void validateClienteHasntCuenta(Cuenta cuenta, Cliente titular)
-      throws TipoCuentaAlreadyExistsException {
-    if (titular.hasCuentaSameTipo(cuenta.getTipoCuenta(), cuenta.getMoneda())) {
-      throw new TipoCuentaAlreadyExistsException("El cliente no tiene la cuenta ingresada");
+      throws TipoCuentaAlreadyExistsException, CuentaInactivaException {
+    Cuenta possibleCuenta = titular.cuentaSameTipo(cuenta.getTipoCuenta(), cuenta.getMoneda());
+    if (possibleCuenta == null) {
+      return;
+    }
+    if (!possibleCuenta.isActivo()) {
+      throw new CuentaInactivaException(
+          "El cliente ya posee una cuenta del mismo tipo, pero está inhabilitada");
+    }
+    throw new TipoCuentaAlreadyExistsException("El cliente ya posee una cuenta del mismo tipo");
+  }
+
+  public void validateCuentaIsActiva(Cuenta cuenta) throws CuentaInactivaException {
+    if (!cuenta.isActivo()) {
+      throw new CuentaInactivaException("La cuenta está inactiva");
+    }
+  }
+
+  public void validateCuentaIsNotActiva(Cuenta cuenta) throws CuentaActivaException {
+    if (cuenta.isActivo()) {
+      throw new CuentaActivaException("La cuenta está activa");
     }
   }
 }

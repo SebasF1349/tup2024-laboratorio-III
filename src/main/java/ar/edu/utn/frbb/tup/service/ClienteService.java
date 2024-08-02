@@ -12,6 +12,7 @@ import ar.edu.utn.frbb.tup.model.exception.ClienteInactivoException;
 import ar.edu.utn.frbb.tup.model.exception.ClienteMenorDeEdadException;
 import ar.edu.utn.frbb.tup.model.exception.ClienteNoExistsException;
 import ar.edu.utn.frbb.tup.model.exception.CorruptedDataInDbException;
+import ar.edu.utn.frbb.tup.model.exception.CuentaInactivaException;
 import ar.edu.utn.frbb.tup.model.exception.CuentaNoExistsException;
 import ar.edu.utn.frbb.tup.model.exception.ImpossibleException;
 import ar.edu.utn.frbb.tup.model.exception.TipoCuentaAlreadyExistsException;
@@ -52,7 +53,7 @@ public class ClienteService {
   }
 
   protected Cliente agregarCuenta(Cuenta cuenta, long dniTitular)
-      throws TipoCuentaAlreadyExistsException, ClienteNoExistsException {
+      throws TipoCuentaAlreadyExistsException, ClienteNoExistsException, CuentaInactivaException {
 
     Cliente titular = buscarClienteCompletoPorDni(dniTitular);
 

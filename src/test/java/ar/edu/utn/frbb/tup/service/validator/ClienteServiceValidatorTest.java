@@ -1,7 +1,8 @@
 package ar.edu.utn.frbb.tup.service.validator;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.when;
 
 import ar.edu.utn.frbb.tup.model.Cliente;
 import ar.edu.utn.frbb.tup.model.Cuenta;
@@ -12,6 +13,7 @@ import ar.edu.utn.frbb.tup.model.exception.ClienteAlreadyExistsException;
 import ar.edu.utn.frbb.tup.model.exception.ClienteInactivoException;
 import ar.edu.utn.frbb.tup.model.exception.ClienteMenorDeEdadException;
 import ar.edu.utn.frbb.tup.model.exception.ClienteNoExistsException;
+import ar.edu.utn.frbb.tup.model.exception.CuentaInactivaException;
 import ar.edu.utn.frbb.tup.model.exception.TipoCuentaAlreadyExistsException;
 import ar.edu.utn.frbb.tup.persistence.ClienteDao;
 import java.time.LocalDate;
@@ -116,6 +118,18 @@ public class ClienteServiceValidatorTest {
 
     assertThrows(
         TipoCuentaAlreadyExistsException.class,
+        () -> clienteServiceValidator.validateTipoCuentaUnica(cliente, cuenta));
+  }
+
+  @Test
+  public void testValidateTipoCuentaUnicaCuentaInactivaException() {
+    Cliente cliente = createCliente();
+    Cuenta cuenta = createCuenta();
+    cuenta.setActivo(false);
+    cliente.addCuenta(cuenta);
+
+    assertThrows(
+        CuentaInactivaException.class,
         () -> clienteServiceValidator.validateTipoCuentaUnica(cliente, cuenta));
   }
 

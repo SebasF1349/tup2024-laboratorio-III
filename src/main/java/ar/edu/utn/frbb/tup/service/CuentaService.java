@@ -46,7 +46,8 @@ public class CuentaService {
           TipoCuentaAlreadyExistsException,
           ClienteNoExistsException,
           CorruptedDataInDbException,
-          ClienteInactivoException {
+          ClienteInactivoException,
+          CuentaInactivaException {
 
     Cuenta cuenta = new Cuenta(cuentaRequestDto);
 
@@ -94,7 +95,8 @@ public class CuentaService {
           CuentaNoSoportadaException,
           CorruptedDataInDbException,
           ImpossibleException,
-          CuentaNoExistsInClienteException {
+          CuentaNoExistsInClienteException,
+          CuentaInactivaException {
     Cuenta cuenta = new Cuenta(cuentaRequestDto);
 
     cuentaServiceValidator.validateCuentaExists(cuenta);
@@ -122,18 +124,28 @@ public class CuentaService {
     return cuenta.toCuentaDto();
   }
 
-      throws CuentaNoExistsException, CorruptedDataInDbException, ImpossibleException {
   public CuentaResponseDto eliminarCuenta(long id)
+      throws CuentaNoExistsException,
+          CorruptedDataInDbException,
+          ImpossibleException,
+          CuentaInactivaException {
     Cuenta cuenta = buscarCuentaCompletaPorId(id);
+
+    cuentaServiceValidator.validateCuentaIsActiva(cuenta);
 
     cuenta.setActivo(false);
     cuentaDao.save(cuenta);
     return cuenta.toCuentaDto();
   }
 
-      throws CuentaNoExistsException, CorruptedDataInDbException, ImpossibleException {
   public CuentaResponseDto activarCuenta(long id)
+      throws CuentaNoExistsException,
+          CorruptedDataInDbException,
+          ImpossibleException,
+          CuentaActivaException {
     Cuenta cuenta = buscarCuentaCompletaPorId(id);
+
+    cuentaServiceValidator.validateCuentaIsNotActiva(cuenta);
 
     cuenta.setActivo(true);
     cuentaDao.save(cuenta);
@@ -185,8 +197,13 @@ public class CuentaService {
   }
 
   public CuentaMovimientosResponseDto buscarTransaccionesDeCuentaPorId(long id)
-      throws CuentaNoExistsException, CorruptedDataInDbException, ImpossibleException {
+      throws CuentaNoExistsException,
+          CorruptedDataInDbException,
+          ImpossibleException,
+          CuentaInactivaException {
     Cuenta cuenta = buscarCuentaCompletaPorId(id);
+
+    cuentaServiceValidator.validateCuentaIsActiva(cuenta);
 
     CuentaMovimientosResponseDto cuentaMovimientosResponseDto =
         cuenta.toCuentaMovimientoResponseDto();

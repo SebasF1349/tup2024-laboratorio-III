@@ -4,6 +4,8 @@ import ar.edu.utn.frbb.tup.controller.validator.CuentaControllerValidator;
 import ar.edu.utn.frbb.tup.model.exception.ClienteInactivoException;
 import ar.edu.utn.frbb.tup.model.exception.ClienteNoExistsException;
 import ar.edu.utn.frbb.tup.model.exception.CorruptedDataInDbException;
+import ar.edu.utn.frbb.tup.model.exception.CuentaActivaException;
+import ar.edu.utn.frbb.tup.model.exception.CuentaInactivaException;
 import ar.edu.utn.frbb.tup.model.exception.CuentaNoExistsException;
 import ar.edu.utn.frbb.tup.model.exception.CuentaNoExistsInClienteException;
 import ar.edu.utn.frbb.tup.model.exception.CuentaNoSoportadaException;
@@ -47,7 +49,8 @@ public class CuentaController {
           TipoCuentaAlreadyExistsException,
           ClienteNoExistsException,
           CorruptedDataInDbException,
-          ClienteInactivoException {
+          ClienteInactivoException,
+          CuentaInactivaException {
     cuentaValidator.validate(cuentaRequestDto);
     CuentaResponseDto cuentaResponse = cuentaService.darDeAltaCuenta(cuentaRequestDto);
     return new ResponseEntity<CuentaResponseDto>(
@@ -55,8 +58,11 @@ public class CuentaController {
   }
 
   @DeleteMapping(value = "/{id}")
-      throws CuentaNoExistsException, CorruptedDataInDbException, ImpossibleException {
   public CuentaResponseDto eliminarCuenta(@PathVariable long id)
+      throws CuentaNoExistsException,
+          CorruptedDataInDbException,
+          ImpossibleException,
+          CuentaInactivaException {
     return cuentaService.eliminarCuenta(id);
   }
 
@@ -68,14 +74,18 @@ public class CuentaController {
           CuentaNoSoportadaException,
           CorruptedDataInDbException,
           ImpossibleException,
-          CuentaNoExistsInClienteException {
+          CuentaNoExistsInClienteException,
+          CuentaInactivaException {
     cuentaValidator.validate(cuentaDto);
     return cuentaService.actualizarCuenta(cuentaDto);
   }
 
   @GetMapping(value = "/{id}/transacciones")
   public CuentaMovimientosResponseDto obtenerTransaccionesEnCuenta(@PathVariable long id)
-      throws CuentaNoExistsException, CorruptedDataInDbException, ImpossibleException {
+      throws CuentaNoExistsException,
+          CorruptedDataInDbException,
+          ImpossibleException,
+          CuentaInactivaException {
     return cuentaService.buscarTransaccionesDeCuentaPorId(id);
   }
 }
