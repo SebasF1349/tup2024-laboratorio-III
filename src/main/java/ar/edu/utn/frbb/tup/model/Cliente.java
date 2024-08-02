@@ -45,6 +45,7 @@ public class Cliente extends Persona {
   public ClienteCuentasResponseDto toClienteCuentasResponseDto() {
     ClienteCuentasResponseDto clienteCuentasResponseDto = new ClienteCuentasResponseDto();
     clienteCuentasResponseDto.setDni(this.getDni());
+    clienteCuentasResponseDto.setCuentas(new HashSet<>());
     return clienteCuentasResponseDto;
   }
 
