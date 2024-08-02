@@ -16,9 +16,4 @@ public class Retiro extends MovimientoUnidireccional {
   protected TipoTransaccion getTipoTransaccion() {
     return TipoTransaccion.CREDITO;
   }
-
-  @Override
-  public String getTipoMovimiento() {
-    return "RETIRO";
-  }
 }

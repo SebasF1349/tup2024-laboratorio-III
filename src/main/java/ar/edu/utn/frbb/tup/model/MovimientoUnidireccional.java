@@ -16,6 +16,11 @@ public abstract class MovimientoUnidireccional extends Movimiento {
 
   protected abstract TipoTransaccion getTipoTransaccion();
 
+  @Override
+  public String getTipoMovimiento() {
+    return this.getTipoTransaccion().toString();
+  }
+
   public double actualizarCuentaMonto(Cuenta cuenta) throws ImpossibleException {
     switch (getTipoTransaccion()) {
       case DEBITO:

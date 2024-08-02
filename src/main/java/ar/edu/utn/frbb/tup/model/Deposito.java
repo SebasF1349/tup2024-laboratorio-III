@@ -16,9 +16,4 @@ public class Deposito extends MovimientoUnidireccional {
   protected TipoTransaccion getTipoTransaccion() {
     return TipoTransaccion.DEBITO;
   }
-
-  @Override
-  public String getTipoMovimiento() {
-    return "DEPOSITO";
-  }
 }
