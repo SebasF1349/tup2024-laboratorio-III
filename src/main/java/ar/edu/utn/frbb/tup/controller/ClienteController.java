@@ -34,8 +34,7 @@ public class ClienteController {
   @Autowired private ClienteControllerValidator clienteControllerValidator;
 
   @GetMapping(value = "/{dni}")
-  public ClienteResponseDto obtenerCliente(@PathVariable long dni)
-      throws ClienteNoExistsException, WrongInputDataException {
+  public ClienteResponseDto obtenerCliente(@PathVariable long dni) throws ClienteNoExistsException {
     return clienteService.buscarClientePorDni(dni);
   }
 

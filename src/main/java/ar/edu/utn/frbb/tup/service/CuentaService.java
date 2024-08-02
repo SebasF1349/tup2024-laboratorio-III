@@ -68,10 +68,7 @@ public class CuentaService {
   }
 
   public CuentaDto buscarCuentaPorId(long numeroCuenta)
-      throws CuentaNoExistsException,
-          CorruptedDataInDbException,
-          ImpossibleException,
-          IllegalArgumentException {
+      throws CuentaNoExistsException, CorruptedDataInDbException, ImpossibleException {
     Cuenta cuenta = cuentaDao.find(numeroCuenta, false);
 
     cuentaServiceValidator.validateCuentaExists(cuenta);
@@ -94,8 +91,7 @@ public class CuentaService {
           CuentaNoSoportadaException,
           CorruptedDataInDbException,
           ImpossibleException,
-          CuentaNoExistsInClienteException,
-          ClienteInactivoException {
+          CuentaNoExistsInClienteException {
     Cuenta cuenta = new Cuenta(cuentaDto);
 
     cuentaServiceValidator.validateCuentaExists(cuenta);
@@ -186,10 +182,7 @@ public class CuentaService {
   }
 
   public CuentaMovimientosResponseDto buscarTransaccionesDeCuentaPorId(long id)
-      throws CuentaNoExistsException,
-          CorruptedDataInDbException,
-          ImpossibleException,
-          IllegalArgumentException {
+      throws CuentaNoExistsException, CorruptedDataInDbException, ImpossibleException {
     Cuenta cuenta = buscarCuentaCompletaPorId(id);
 
     CuentaMovimientosResponseDto cuentaMovimientosResponseDto =

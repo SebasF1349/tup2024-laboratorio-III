@@ -66,8 +66,7 @@ public class CuentaController {
           CuentaNoSoportadaException,
           CorruptedDataInDbException,
           ImpossibleException,
-          CuentaNoExistsInClienteException,
-          ClienteInactivoException {
+          CuentaNoExistsInClienteException {
     cuentaValidator.validate(cuentaDto);
     return cuentaService.actualizarCuenta(cuentaDto);
   }

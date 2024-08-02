@@ -35,8 +35,7 @@ public class MovimientoController {
           MonedasDistintasException,
           CorruptedDataInDbException,
           BanelcoErrorException,
-          ImpossibleException,
-          IllegalArgumentException {
+          ImpossibleException {
     movimientoControllerValidator.validate(transferenciaDto);
     TransferenciaResponseDto transferenciaResponse =
         movimientoService.realizarTransferencia(transferenciaDto);

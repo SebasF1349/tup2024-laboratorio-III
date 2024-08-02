@@ -32,8 +32,7 @@ public class MovimientoService {
           MonedasDistintasException,
           CorruptedDataInDbException,
           BanelcoErrorException,
-          ImpossibleException,
-          IllegalArgumentException {
+          ImpossibleException {
 
     Cuenta cuentaOrigen =
         cuentaService.buscarCuentaCompletaPorId(transferenciaDto.getCuentaOrigen());
