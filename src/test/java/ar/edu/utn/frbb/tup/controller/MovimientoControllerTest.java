@@ -1,6 +1,7 @@
 package ar.edu.utn.frbb.tup.controller;
 
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.aMapWithSize;
+import static org.hamcrest.Matchers.any;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.mockito.Mockito.doThrow;
@@ -13,6 +14,7 @@ import ar.edu.utn.frbb.tup.controller.validator.MovimientoControllerValidator;
 import ar.edu.utn.frbb.tup.model.exception.BanelcoErrorException;
 import ar.edu.utn.frbb.tup.model.exception.CorruptedDataInDbException;
 import ar.edu.utn.frbb.tup.model.exception.CuentaNoExistsException;
+import ar.edu.utn.frbb.tup.model.exception.ImpossibleException;
 import ar.edu.utn.frbb.tup.model.exception.MonedasDistintasException;
 import ar.edu.utn.frbb.tup.model.exception.MontoInsuficienteException;
 import ar.edu.utn.frbb.tup.model.exception.WrongInputDataException;
@@ -98,7 +100,7 @@ public class MovimientoControllerTest {
   }
 
   @Test
-  public void testRealizarTransferenciaCuentaDoesntExistsFail() throws Exception {
+  public void testRealizarTransferenciaCuentaDoesntExistsException() throws Exception {
     TransferenciaDto transferenciaDto = createTransferenciaDto();
     String transferenciaDtoMapped = objectMapper.writeValueAsString(transferenciaDto);
 
@@ -200,6 +202,27 @@ public class MovimientoControllerTest {
         .andExpect(status().isServiceUnavailable())
         .andExpect(jsonPath("$", notNullValue()))
         .andExpect(jsonPath("$.errorCode", is(any(Integer.class))));
+  }
+
+  @Test
+  public void testRealizarTransferenciaImpossibleException() throws Exception {
+    TransferenciaDto transferenciaDto = createTransferenciaDto();
+    String transferenciaDtoMapped = objectMapper.writeValueAsString(transferenciaDto);
+
+    doThrow(new ImpossibleException())
+        .when(movimientoService)
+        .realizarTransferencia(transferenciaDto);
+
+    MockHttpServletRequestBuilder mockRequest =
+        MockMvcRequestBuilders.post(transferEndpoint)
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON)
+            .content(transferenciaDtoMapped);
+    mockMvc
+        .perform(mockRequest)
+        .andExpect(status().isInternalServerError())
+        .andExpect(jsonPath("$", notNullValue()))
+        .andExpect(jsonPath("$.errorCode", is(500100)));
   }
 
   @Test

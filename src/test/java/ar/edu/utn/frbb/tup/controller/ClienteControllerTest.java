@@ -19,6 +19,7 @@ import ar.edu.utn.frbb.tup.model.exception.ClienteInactivoException;
 import ar.edu.utn.frbb.tup.model.exception.ClienteMenorDeEdadException;
 import ar.edu.utn.frbb.tup.model.exception.ClienteNoExistsException;
 import ar.edu.utn.frbb.tup.model.exception.CorruptedDataInDbException;
+import ar.edu.utn.frbb.tup.model.exception.ImpossibleException;
 import ar.edu.utn.frbb.tup.model.exception.WrongInputDataException;
 import ar.edu.utn.frbb.tup.service.ClienteService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -59,7 +60,7 @@ public class ClienteControllerTest {
   }
 
   @Test
-  public void testObtenerClienteDoesntExistsFail() throws Exception {
+  public void testObtenerClienteDoesntExistsException() throws Exception {
     doThrow(new ClienteNoExistsException("")).when(clienteService).buscarClientePorDni(dniCliente);
 
     mockMvc
@@ -134,7 +135,7 @@ public class ClienteControllerTest {
   }
 
   @Test
-  public void testCrearClienteIncorrectDataFail() throws Exception {
+  public void testCrearClienteIncorrectDataException() throws Exception {
     ClienteRequestDto clienteDto = createClienteRequestDto();
     String clienteDtoMapped = objectMapper.writeValueAsString(clienteDto);
 
@@ -154,7 +155,7 @@ public class ClienteControllerTest {
   }
 
   @Test
-  public void testCrearClienteAlreadyExistsFail() throws Exception {
+  public void testCrearClienteAlreadyExistsException() throws Exception {
     ClienteRequestDto clienteDto = createClienteRequestDto();
     String clienteDtoMapped = objectMapper.writeValueAsString(clienteDto);
 
@@ -176,7 +177,7 @@ public class ClienteControllerTest {
   }
 
   @Test
-  public void testCrearClienteMenorDeEdadFail() throws Exception {
+  public void testCrearClienteMenorDeEdadException() throws Exception {
     ClienteRequestDto clienteDto = createClienteRequestDto();
     String clienteDtoMapped = objectMapper.writeValueAsString(clienteDto);
 
@@ -227,7 +228,7 @@ public class ClienteControllerTest {
   }
 
   @Test
-  public void testEliminarClienteDoesntExistsFail() throws Exception {
+  public void testEliminarClienteDoesntExistsException() throws Exception {
     doThrow(new ClienteNoExistsException("")).when(clienteService).eliminarCliente(dniCliente);
 
     mockMvc
@@ -235,6 +236,17 @@ public class ClienteControllerTest {
         .andExpect(status().isNotFound())
         .andExpect(jsonPath("$", notNullValue()))
         .andExpect(jsonPath("$.errorCode", is(404101)));
+  }
+
+  @Test
+  public void testEliminarClienteImpossibleException() throws Exception {
+    doThrow(new ImpossibleException()).when(clienteService).eliminarCliente(dniCliente);
+
+    mockMvc
+        .perform(delete(createEndpoint(dniCliente)))
+        .andExpect(status().isInternalServerError())
+        .andExpect(jsonPath("$", notNullValue()))
+        .andExpect(jsonPath("$.errorCode", is(500100)));
   }
 
   @Test
@@ -312,7 +324,7 @@ public class ClienteControllerTest {
   }
 
   @Test
-  public void testActualizarClienteIncorrectDataFail() throws Exception {
+  public void testActualizarClienteWrongInputDataException() throws Exception {
     ClienteRequestDto clienteDto = createClienteRequestDto();
     String clienteDtoMapped = objectMapper.writeValueAsString(clienteDto);
 
@@ -332,7 +344,7 @@ public class ClienteControllerTest {
   }
 
   @Test
-  public void testActualizarClienteNoExistsFail() throws Exception {
+  public void testActualizarClienteNoExistsException() throws Exception {
     ClienteRequestDto clienteDto = createClienteRequestDto();
     String clienteDtoMapped = objectMapper.writeValueAsString(clienteDto);
 
@@ -352,7 +364,7 @@ public class ClienteControllerTest {
   }
 
   @Test
-  public void testActualizarClienteMenorDeEdadFail() throws Exception {
+  public void testActualizarClienteMenorDeEdadException() throws Exception {
     ClienteRequestDto clienteDto = createClienteRequestDto();
     String clienteDtoMapped = objectMapper.writeValueAsString(clienteDto);
 
@@ -413,7 +425,7 @@ public class ClienteControllerTest {
   }
 
   @Test
-  public void testActivarClienteDoesntExistsFail() throws Exception {
+  public void testActivarClienteDoesntExistsException() throws Exception {
     doThrow(new ClienteNoExistsException("")).when(clienteService).activarCliente(dniCliente);
 
     mockMvc
