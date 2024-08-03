@@ -30,6 +30,7 @@ public class Cuenta {
     this.moneda = tipoMoneda;
     this.movimientos = new HashSet<>();
     this.titular = titular;
+    this.activo = true;
   }
 
   public Cuenta(CuentaRequestDto cuentaRequestDto) {
@@ -39,6 +40,7 @@ public class Cuenta {
     this.titular = null;
     this.tipoCuenta = TipoCuenta.fromString(cuentaRequestDto.getTipoCuenta());
     this.moneda = TipoMoneda.fromString(cuentaRequestDto.getMoneda());
+    this.activo = true;
   }
 
   public CuentaResponseDto toCuentaDto() {
@@ -48,12 +50,14 @@ public class Cuenta {
     cuentaDto.setMoneda(this.moneda.toString());
     cuentaDto.setTitular(this.titular.getDni());
     cuentaDto.setActivo(this.activo);
+    cuentaDto.setNumeroCuenta(this.numeroCuenta);
     return cuentaDto;
   }
 
   public CuentaMovimientosResponseDto toCuentaMovimientoResponseDto() {
     CuentaMovimientosResponseDto cuentaMovimientosResponseDto = new CuentaMovimientosResponseDto();
     cuentaMovimientosResponseDto.setNumeroCuenta(this.numeroCuenta);
+    cuentaMovimientosResponseDto.setMovimientos(new HashSet<>());
     return cuentaMovimientosResponseDto;
   }
 
@@ -229,6 +233,7 @@ public class Cuenta {
     cuentaResponseDto.setBalance(this.getBalance());
     cuentaResponseDto.setTipoCuenta(this.getTipoCuenta().toString());
     cuentaResponseDto.setMoneda(this.getMoneda().toString());
+    cuentaResponseDto.setActivo(this.isActivo());
     return cuentaResponseDto;
   }
 }

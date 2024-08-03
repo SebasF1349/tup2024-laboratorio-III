@@ -9,6 +9,7 @@ public class CuentaResponseDto {
   @NotNull private String tipoCuenta;
   @NotNull private String moneda;
   @Positive private long titular;
+  @Positive private long numeroCuenta;
   private boolean activo;
 
   public double getBalance() {
@@ -51,6 +52,14 @@ public class CuentaResponseDto {
     this.titular = titular;
   }
 
+  public long getNumeroCuenta() {
+    return numeroCuenta;
+  }
+
+  public void setNumeroCuenta(long numeroCuenta) {
+    this.numeroCuenta = numeroCuenta;
+  }
+
   @Override
   public int hashCode() {
     final int prime = 31;
@@ -61,6 +70,7 @@ public class CuentaResponseDto {
     result = prime * result + ((tipoCuenta == null) ? 0 : tipoCuenta.hashCode());
     result = prime * result + ((moneda == null) ? 0 : moneda.hashCode());
     result = prime * result + (int) (titular ^ (titular >>> 32));
+    result = prime * result + (int) (numeroCuenta ^ (numeroCuenta >>> 32));
     result = prime * result + (activo ? 1231 : 1237);
     return result;
   }
@@ -97,6 +107,9 @@ public class CuentaResponseDto {
     if (titular != other.titular) {
       return false;
     }
+    if (numeroCuenta != other.numeroCuenta) {
+      return false;
+    }
     if (activo != other.activo) {
       return false;
     }
@@ -113,6 +126,8 @@ public class CuentaResponseDto {
         + moneda
         + ", titular="
         + titular
+        + ", numeroCuenta="
+        + numeroCuenta
         + ", activo="
         + activo
         + "}";
