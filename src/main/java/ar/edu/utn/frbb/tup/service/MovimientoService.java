@@ -1,6 +1,6 @@
 package ar.edu.utn.frbb.tup.service;
 
-import ar.edu.utn.frbb.tup.controller.TransferenciaDto;
+import ar.edu.utn.frbb.tup.controller.TransferenciaRequestDto;
 import ar.edu.utn.frbb.tup.controller.TransferenciaResponseDto;
 import ar.edu.utn.frbb.tup.externalService.Banelco;
 import ar.edu.utn.frbb.tup.externalService.BanelcoResponseDto;
@@ -26,7 +26,7 @@ public class MovimientoService {
   @Autowired MovimientoServiceValidator movimientoServiceValidator;
   @Autowired CuentaService cuentaService;
 
-  public TransferenciaResponseDto realizarTransferencia(TransferenciaDto transferenciaDto)
+  public TransferenciaResponseDto realizarTransferencia(TransferenciaRequestDto transferenciaDto)
       throws CuentaNoExistsException,
           MontoInsuficienteException,
           MonedasDistintasException,

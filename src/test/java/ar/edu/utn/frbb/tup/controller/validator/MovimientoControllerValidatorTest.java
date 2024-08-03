@@ -3,7 +3,7 @@ package ar.edu.utn.frbb.tup.controller.validator;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import ar.edu.utn.frbb.tup.controller.TransferenciaDto;
+import ar.edu.utn.frbb.tup.controller.TransferenciaRequestDto;
 import ar.edu.utn.frbb.tup.model.exception.WrongInputDataException;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -26,7 +26,7 @@ public class MovimientoControllerValidatorTest {
 
   @Test
   public void testValidateTipoMonedaFail() {
-    TransferenciaDto transferenciaDto = new TransferenciaDto();
+    TransferenciaRequestDto transferenciaDto = new TransferenciaRequestDto();
     transferenciaDto.setMoneda("A");
 
     assertThrows(
@@ -36,7 +36,7 @@ public class MovimientoControllerValidatorTest {
 
   @Test
   public void testValidateTipoMonedaPSuccess() {
-    TransferenciaDto transferenciaDto = new TransferenciaDto();
+    TransferenciaRequestDto transferenciaDto = new TransferenciaRequestDto();
     transferenciaDto.setMoneda("P");
 
     assertDoesNotThrow(() -> movimientoControllerValidator.validateMoneda(transferenciaDto));
@@ -44,7 +44,7 @@ public class MovimientoControllerValidatorTest {
 
   @Test
   public void testValidateTipoMonedaDJSuccess() {
-    TransferenciaDto transferenciaDto = new TransferenciaDto();
+    TransferenciaRequestDto transferenciaDto = new TransferenciaRequestDto();
     transferenciaDto.setMoneda("D");
 
     assertDoesNotThrow(() -> movimientoControllerValidator.validateMoneda(transferenciaDto));

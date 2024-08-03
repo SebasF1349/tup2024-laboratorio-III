@@ -25,7 +25,7 @@ public class MovimientoController {
 
   @PostMapping(value = "/transfer")
   public TransferenciaResponseDto realizarTransferencia(
-      @Valid @RequestBody TransferenciaDto transferenciaDto)
+      @Valid @RequestBody TransferenciaRequestDto transferenciaDto)
       throws WrongInputDataException,
           CuentaNoExistsException,
           MontoInsuficienteException,

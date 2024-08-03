@@ -1,6 +1,6 @@
 package ar.edu.utn.frbb.tup.service.validator;
 
-import ar.edu.utn.frbb.tup.controller.TransferenciaDto;
+import ar.edu.utn.frbb.tup.controller.TransferenciaRequestDto;
 import ar.edu.utn.frbb.tup.externalService.BanelcoResponseDto;
 import ar.edu.utn.frbb.tup.model.Cuenta;
 import ar.edu.utn.frbb.tup.model.TipoMoneda;
@@ -24,7 +24,8 @@ public class MovimientoServiceValidator {
   }
 
   public void validateMonedaIngresadaCorrecta(
-      Cuenta cuentaOrigen, TransferenciaDto transferenciaDto) throws MonedasDistintasException {
+      Cuenta cuentaOrigen, TransferenciaRequestDto transferenciaDto)
+      throws MonedasDistintasException {
     if (!cuentaOrigen.getMoneda().equals(TipoMoneda.fromString(transferenciaDto.getMoneda()))) {
       throw new MonedasDistintasException("Las cuenta no poseen la moneda requerida.");
     }

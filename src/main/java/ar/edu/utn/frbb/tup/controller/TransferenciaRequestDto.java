@@ -3,7 +3,7 @@ package ar.edu.utn.frbb.tup.controller;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Positive;
 
-public class TransferenciaDto {
+public class TransferenciaRequestDto {
   @Positive long cuentaOrigen;
   @Positive long cuentaDestino;
   @Positive double monto;
@@ -65,7 +65,7 @@ public class TransferenciaDto {
     if (getClass() != obj.getClass()) {
       return false;
     }
-    TransferenciaDto other = (TransferenciaDto) obj;
+    TransferenciaRequestDto other = (TransferenciaRequestDto) obj;
     if (cuentaOrigen != other.cuentaOrigen) {
       return false;
     }

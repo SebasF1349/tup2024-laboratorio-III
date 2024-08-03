@@ -56,7 +56,7 @@ public class MovimientoControllerTest {
 
   @Test
   public void testRealizarTransferenciaMissingInputData() throws Exception {
-    TransferenciaDto transferenciaDto = new TransferenciaDto();
+    TransferenciaRequestDto transferenciaDto = new TransferenciaRequestDto();
     String transferenciaDtoMapped = objectMapper.writeValueAsString(transferenciaDto);
 
     MockHttpServletRequestBuilder mockRequest =
@@ -79,7 +79,7 @@ public class MovimientoControllerTest {
 
   @Test
   public void testRealizarTransferenciaWrongInputDataException() throws Exception {
-    TransferenciaDto transferenciaDto = createTransferenciaDto();
+    TransferenciaRequestDto transferenciaDto = createTransferenciaDto();
     String transferenciaDtoMapped = objectMapper.writeValueAsString(transferenciaDto);
 
     doThrow(new WrongInputDataException(""))
@@ -101,7 +101,7 @@ public class MovimientoControllerTest {
 
   @Test
   public void testRealizarTransferenciaCuentaDoesntExistsException() throws Exception {
-    TransferenciaDto transferenciaDto = createTransferenciaDto();
+    TransferenciaRequestDto transferenciaDto = createTransferenciaDto();
     String transferenciaDtoMapped = objectMapper.writeValueAsString(transferenciaDto);
 
     doThrow(new CuentaNoExistsException(""))
@@ -122,7 +122,7 @@ public class MovimientoControllerTest {
 
   @Test
   public void testRealizarTransferenciaMontoInsuficienteException() throws Exception {
-    TransferenciaDto transferenciaDto = createTransferenciaDto();
+    TransferenciaRequestDto transferenciaDto = createTransferenciaDto();
     String transferenciaDtoMapped = objectMapper.writeValueAsString(transferenciaDto);
 
     doThrow(new MontoInsuficienteException(""))
@@ -143,7 +143,7 @@ public class MovimientoControllerTest {
 
   @Test
   public void testRealizarTransferenciaMonedasDistintasException() throws Exception {
-    TransferenciaDto transferenciaDto = createTransferenciaDto();
+    TransferenciaRequestDto transferenciaDto = createTransferenciaDto();
     String transferenciaDtoMapped = objectMapper.writeValueAsString(transferenciaDto);
 
     doThrow(new MonedasDistintasException(""))
@@ -164,7 +164,7 @@ public class MovimientoControllerTest {
 
   @Test
   public void testRealizarTransferenciaCorruptedDataInDbException() throws Exception {
-    TransferenciaDto transferenciaDto = createTransferenciaDto();
+    TransferenciaRequestDto transferenciaDto = createTransferenciaDto();
     String transferenciaDtoMapped = objectMapper.writeValueAsString(transferenciaDto);
 
     doThrow(new CorruptedDataInDbException(""))
@@ -185,7 +185,7 @@ public class MovimientoControllerTest {
 
   @Test
   public void testRealizarTransferenciaBanelcoError() throws Exception {
-    TransferenciaDto transferenciaDto = createTransferenciaDto();
+    TransferenciaRequestDto transferenciaDto = createTransferenciaDto();
     String transferenciaDtoMapped = objectMapper.writeValueAsString(transferenciaDto);
 
     doThrow(new BanelcoErrorException("", 111))
@@ -206,7 +206,7 @@ public class MovimientoControllerTest {
 
   @Test
   public void testRealizarTransferenciaImpossibleException() throws Exception {
-    TransferenciaDto transferenciaDto = createTransferenciaDto();
+    TransferenciaRequestDto transferenciaDto = createTransferenciaDto();
     String transferenciaDtoMapped = objectMapper.writeValueAsString(transferenciaDto);
 
     doThrow(new ImpossibleException())
@@ -227,7 +227,7 @@ public class MovimientoControllerTest {
 
   @Test
   public void testRealizarTransferenciaSuccess() throws Exception {
-    TransferenciaDto transferenciaDto = createTransferenciaDto();
+    TransferenciaRequestDto transferenciaDto = createTransferenciaDto();
     TransferenciaResponseDto transferenciaResponseDto = createTransferenciaResponseDto();
     String transferenciaResponseDtoMapped =
         objectMapper.writeValueAsString(transferenciaResponseDto);
@@ -247,8 +247,8 @@ public class MovimientoControllerTest {
         .andExpect(content().string(transferenciaResponseDtoMapped));
   }
 
-  private TransferenciaDto createTransferenciaDto() {
-    TransferenciaDto transferenciaDto = new TransferenciaDto();
+  private TransferenciaRequestDto createTransferenciaDto() {
+    TransferenciaRequestDto transferenciaDto = new TransferenciaRequestDto();
     transferenciaDto.setCuentaOrigen(1);
     transferenciaDto.setCuentaDestino(2);
     transferenciaDto.setMonto(1000);
