@@ -544,6 +544,7 @@ public class ClienteServiceTest {
     Cliente cliente = createCliente();
     Cuenta cuenta = createCuenta();
     cliente.addCuenta(cuenta);
+    cuenta.setTitular(cliente);
 
     ClienteCuentasResponseDto clienteCuentasResponseDtoExpected =
         cliente.toClienteCuentasResponseDto();

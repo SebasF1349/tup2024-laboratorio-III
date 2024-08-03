@@ -203,12 +203,8 @@ public class CuentaServiceTest {
   @Test
   public void testBuscarCuentaPorIdCuentaNoExistsException()
       throws CuentaNoExistsException, ImpossibleException {
-    Cuenta cuenta = createCuenta();
 
-    when(cuentaDao.find(numeroCuenta, false)).thenReturn(cuenta);
-    doThrow(CuentaNoExistsException.class)
-        .when(cuentaServiceValidator)
-        .validateCuentaExists(cuenta);
+    when(cuentaDao.find(numeroCuenta, false)).thenReturn(null);
 
     assertThrows(
         CuentaNoExistsException.class, () -> cuentaService.buscarCuentaPorId(numeroCuenta));
@@ -239,11 +235,7 @@ public class CuentaServiceTest {
   @Test
   public void testBuscarCuentaPorIdValidateImpossibleException()
       throws ImpossibleException, CuentaNoExistsException {
-    Cuenta cuenta = createCuenta();
-
-    when(cuentaDao.find(numeroCuenta, false)).thenReturn(cuenta);
-
-    doThrow(ImpossibleException.class).when(cuentaServiceValidator).validateCuentaExists(cuenta);
+    doThrow(ImpossibleException.class).when(cuentaDao).find(numeroCuenta, false);
 
     assertThrows(ImpossibleException.class, () -> cuentaService.buscarCuentaPorId(numeroCuenta));
   }
@@ -428,12 +420,8 @@ public class CuentaServiceTest {
   @Test
   public void testEliminarCuentaNoExistsException()
       throws CuentaNoExistsException, ImpossibleException {
-    Cuenta cuenta = createCuenta();
 
-    when(cuentaDao.find(numeroCuenta, true)).thenReturn(cuenta);
-    doThrow(CuentaNoExistsException.class)
-        .when(cuentaServiceValidator)
-        .validateCuentaExists(cuenta);
+    when(cuentaDao.find(numeroCuenta, true)).thenReturn(null);
 
     assertThrows(CuentaNoExistsException.class, () -> cuentaService.eliminarCuenta(numeroCuenta));
   }
@@ -484,12 +472,9 @@ public class CuentaServiceTest {
           ImpossibleException,
           CuentaInactivaException {
     Cuenta cuenta = createCuenta();
-    cuenta.setNumeroCuenta(123);
     Cliente cliente = createCliente();
     cuenta.setTitular(cliente);
     CuentaResponseDto cuentaResponseDtoExpected = createCuentaResponseDto();
-    cuentaResponseDtoExpected.setTipoCuenta(cuenta.getTipoCuenta().toString());
-    cuentaResponseDtoExpected.setMoneda(cuenta.getMoneda().toString());
     cuentaResponseDtoExpected.setActivo(false);
 
     when(cuentaDao.find(numeroCuenta, true)).thenReturn(cuenta);
@@ -506,12 +491,7 @@ public class CuentaServiceTest {
   public void testActivarCuentaNoExistsException()
       throws CuentaNoExistsException, ImpossibleException {
 
-    Cuenta cuenta = createCuenta();
-
-    when(cuentaDao.find(numeroCuenta, true)).thenReturn(cuenta);
-    doThrow(CuentaNoExistsException.class)
-        .when(cuentaServiceValidator)
-        .validateCuentaExists(cuenta);
+    when(cuentaDao.find(numeroCuenta, true)).thenReturn(null);
 
     assertThrows(CuentaNoExistsException.class, () -> cuentaService.activarCuenta(numeroCuenta));
   }
@@ -560,12 +540,10 @@ public class CuentaServiceTest {
           ImpossibleException,
           CuentaActivaException {
     Cuenta cuenta = createCuenta();
-    cuenta.setNumeroCuenta(123);
+    cuenta.setNumeroCuenta(numeroCuenta);
     Cliente cliente = createCliente();
     cuenta.setTitular(cliente);
     CuentaResponseDto cuentaResponseDtoExpected = createCuentaResponseDto();
-    cuentaResponseDtoExpected.setTipoCuenta(cuenta.getTipoCuenta().toString());
-    cuentaResponseDtoExpected.setMoneda(cuenta.getMoneda().toString());
     cuentaResponseDtoExpected.setActivo(true);
 
     when(cuentaDao.find(numeroCuenta, true)).thenReturn(cuenta);
@@ -581,13 +559,6 @@ public class CuentaServiceTest {
   @Test
   public void testBuscarCuentaCompletaPorIdCuentaNoExistsException()
       throws CuentaNoExistsException, ImpossibleException {
-    Cuenta cuenta = createCuenta();
-
-    when(cuentaDao.find(numeroCuenta, true)).thenReturn(cuenta);
-    doThrow(CuentaNoExistsException.class)
-        .when(cuentaServiceValidator)
-        .validateCuentaExists(cuenta);
-
     assertThrows(
         CuentaNoExistsException.class, () -> cuentaService.buscarCuentaCompletaPorId(numeroCuenta));
   }
@@ -610,10 +581,7 @@ public class CuentaServiceTest {
   @Test
   public void testBuscarCuentaCompletaPorIdImpossibleException()
       throws CuentaNoExistsException, ImpossibleException {
-    Cuenta cuenta = createCuenta();
-
-    when(cuentaDao.find(numeroCuenta, true)).thenReturn(cuenta);
-    doThrow(ImpossibleException.class).when(cuentaServiceValidator).validateCuentaExists(cuenta);
+    doThrow(ImpossibleException.class).when(cuentaDao).find(numeroCuenta, true);
 
     assertThrows(
         ImpossibleException.class, () -> cuentaService.buscarCuentaCompletaPorId(numeroCuenta));
@@ -725,13 +693,8 @@ public class CuentaServiceTest {
   @Test
   public void testBuscarTransaccionesDeCuentaNoExistsException()
       throws ImpossibleException, CuentaNoExistsException {
-    Cuenta cuenta = createCuenta();
 
-    when(cuentaDao.find(numeroCuenta, true)).thenReturn(cuenta);
-
-    doThrow(CuentaNoExistsException.class)
-        .when(cuentaServiceValidator)
-        .validateCuentaExists(cuenta);
+    when(cuentaDao.find(numeroCuenta, true)).thenReturn(null);
 
     assertThrows(
         CuentaNoExistsException.class,
@@ -807,10 +770,11 @@ public class CuentaServiceTest {
   private CuentaResponseDto createCuentaResponseDto() {
     CuentaResponseDto cuentaResponseDto = new CuentaResponseDto();
     cuentaResponseDto.setBalance(500000);
-    cuentaResponseDto.setMoneda("P");
-    cuentaResponseDto.setTipoCuenta("A");
+    cuentaResponseDto.setMoneda(TipoMoneda.PESOS_ARGENTINOS.toString());
+    cuentaResponseDto.setTipoCuenta(TipoCuenta.CAJA_AHORROS.toString());
     cuentaResponseDto.setTitular(clienteDni);
     cuentaResponseDto.setActivo(true);
+    cuentaResponseDto.setNumeroCuenta(numeroCuenta);
     return cuentaResponseDto;
   }
 
