@@ -16,14 +16,12 @@ import ar.edu.utn.frbb.tup.model.exception.CorruptedDataInDbException;
 import ar.edu.utn.frbb.tup.model.exception.CuentaActivaException;
 import ar.edu.utn.frbb.tup.model.exception.CuentaInactivaException;
 import ar.edu.utn.frbb.tup.model.exception.CuentaNoExistsException;
-import ar.edu.utn.frbb.tup.model.exception.CuentaNoExistsInClienteException;
 import ar.edu.utn.frbb.tup.model.exception.CuentaNoSoportadaException;
 import ar.edu.utn.frbb.tup.model.exception.ImpossibleException;
 import ar.edu.utn.frbb.tup.model.exception.TipoCuentaAlreadyExistsException;
 import ar.edu.utn.frbb.tup.persistence.CuentaDao;
 import ar.edu.utn.frbb.tup.persistence.MovimientoDao;
 import ar.edu.utn.frbb.tup.service.validator.CuentaServiceValidator;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
@@ -105,41 +103,6 @@ public class CuentaService {
     }
     cuenta.setTitular(titular);
 
-    return cuenta.toCuentaDto();
-  }
-
-  public CuentaResponseDto actualizarCuenta(@Valid CuentaRequestDto cuentaRequestDto)
-      throws CuentaNoExistsException,
-          ClienteNoExistsException,
-          CuentaNoSoportadaException,
-          CorruptedDataInDbException,
-          ImpossibleException,
-          CuentaNoExistsInClienteException,
-          CuentaInactivaException {
-    Cuenta cuenta = new Cuenta(cuentaRequestDto);
-
-    cuentaServiceValidator.validateCuentaExists(cuenta);
-    cuentaServiceValidator.validateTipoCuentaEstaSoportada(cuenta);
-
-    Cliente titular = clienteService.buscarClienteCompletoPorDni(cuentaRequestDto.getTitular());
-
-    cuentaServiceValidator.validateClienteHasCuenta(cuenta, titular);
-
-    try {
-      clienteService.actualizarCliente(titular);
-    } catch (ClienteNoExistsException ex) {
-      throw new CorruptedDataInDbException(
-          "Titular de cuenta guardado en Base de Datos con datos incorrectos");
-    } catch (ClienteMenorDeEdadException ex) {
-      throw new CorruptedDataInDbException(
-          "Titular de cuenta guardado en Base de Datos con edad incorrecta");
-    } catch (ClienteInactivoException ex) {
-      throw new CorruptedDataInDbException(
-          "Titular de cuenta guardado en Base de Datos inactivo, pero cuenta es activa ");
-    }
-
-    cuenta.setTitular(titular);
-    cuentaDao.save(cuenta);
     return cuenta.toCuentaDto();
   }
 

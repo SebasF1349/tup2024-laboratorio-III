@@ -7,7 +7,6 @@ import ar.edu.utn.frbb.tup.model.exception.CorruptedDataInDbException;
 import ar.edu.utn.frbb.tup.model.exception.CuentaActivaException;
 import ar.edu.utn.frbb.tup.model.exception.CuentaInactivaException;
 import ar.edu.utn.frbb.tup.model.exception.CuentaNoExistsException;
-import ar.edu.utn.frbb.tup.model.exception.CuentaNoExistsInClienteException;
 import ar.edu.utn.frbb.tup.model.exception.CuentaNoSoportadaException;
 import ar.edu.utn.frbb.tup.model.exception.ImpossibleException;
 import ar.edu.utn.frbb.tup.model.exception.TipoCuentaAlreadyExistsException;
@@ -23,7 +22,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -66,20 +64,6 @@ public class CuentaController {
           ImpossibleException,
           CuentaInactivaException {
     return cuentaService.eliminarCuenta(id);
-  }
-
-  @PutMapping
-  public CuentaResponseDto actualizarCuenta(@Valid @RequestBody CuentaRequestDto cuentaDto)
-      throws WrongInputDataException,
-          CuentaNoExistsException,
-          ClienteNoExistsException,
-          CuentaNoSoportadaException,
-          CorruptedDataInDbException,
-          ImpossibleException,
-          CuentaNoExistsInClienteException,
-          CuentaInactivaException {
-    cuentaValidator.validate(cuentaDto);
-    return cuentaService.actualizarCuenta(cuentaDto);
   }
 
   @PatchMapping(value = "/{id}")
