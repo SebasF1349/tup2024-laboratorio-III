@@ -235,7 +235,6 @@ public class Cuenta {
     cuentaResponseDto.setMoneda(this.getMoneda().toString());
     cuentaResponseDto.setActivo(this.isActivo());
     cuentaResponseDto.setNumeroCuenta(this.numeroCuenta);
-    cuentaResponseDto.setTitular(this.titular.getDni());
     return cuentaResponseDto;
   }
 }
