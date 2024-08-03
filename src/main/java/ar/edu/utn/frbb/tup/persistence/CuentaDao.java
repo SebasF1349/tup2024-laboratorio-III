@@ -14,11 +14,6 @@ public class CuentaDao extends AbstractBaseDao {
 
   @Autowired MovimientoDao movimientoDao;
 
-  @Override
-  protected String getEntityName() {
-    return "CUENTA";
-  }
-
   public Cuenta find(long numeroCuenta, boolean loadComplete) throws ImpossibleException {
     if (getInMemoryDatabase().get(numeroCuenta) == null) return null;
     Cuenta cuenta = ((CuentaEntity) getInMemoryDatabase().get(numeroCuenta)).toCuenta();
@@ -31,7 +26,9 @@ public class CuentaDao extends AbstractBaseDao {
   }
 
   public void save(Cuenta cuenta) {
-    cuenta.setNumeroCuenta(getInMemoryDatabase().size() + 1);
+    if (cuenta.getNumeroCuenta() == 0) {
+      cuenta.setNumeroCuenta(getInMemoryDatabase().size() + 1);
+    }
     CuentaEntity entity = new CuentaEntity(cuenta);
     getInMemoryDatabase().put(entity.getId(), entity);
   }
@@ -45,5 +42,10 @@ public class CuentaDao extends AbstractBaseDao {
       }
     }
     return cuentasDelCliente;
+  }
+
+  @Override
+  protected String getEntityName() {
+    return "CUENTA";
   }
 }
