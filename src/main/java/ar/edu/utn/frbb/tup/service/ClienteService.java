@@ -184,6 +184,7 @@ public class ClienteService {
 
     for (Cuenta cuenta : cliente.getCuentas()) {
       CuentaResponseDto cuentaResponseDto = cuenta.toCuentaResponseDto();
+      cuentaResponseDto.setTitular(cliente.getDni());
       clienteCuentasResponseDto.addCuenta(cuentaResponseDto);
     }
 
