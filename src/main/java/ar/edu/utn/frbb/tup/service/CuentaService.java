@@ -92,7 +92,9 @@ public class CuentaService {
       throws CuentaNoExistsException, CorruptedDataInDbException, ImpossibleException {
     Cuenta cuenta = cuentaDao.find(numeroCuenta, false);
 
-    cuentaServiceValidator.validateCuentaExists(cuenta);
+    if (cuenta == null) {
+      throw new CuentaNoExistsException("No existe una cuenta con el id " + numeroCuenta);
+    }
 
     Cliente titular;
     try {
@@ -173,7 +175,9 @@ public class CuentaService {
       throws CuentaNoExistsException, CorruptedDataInDbException, ImpossibleException {
     Cuenta cuenta = cuentaDao.find(numeroCuenta, true);
 
-    cuentaServiceValidator.validateCuentaExists(cuenta);
+    if (cuenta == null) {
+      throw new CuentaNoExistsException("No existe una cuenta con el id " + numeroCuenta);
+    }
 
     Cliente titular;
     try {
