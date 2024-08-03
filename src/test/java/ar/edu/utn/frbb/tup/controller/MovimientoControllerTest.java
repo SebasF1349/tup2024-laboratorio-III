@@ -243,7 +243,7 @@ public class MovimientoControllerTest {
 
     mockMvc
         .perform(mockRequest)
-        .andExpect(status().isCreated())
+        .andExpect(status().isOk())
         .andExpect(content().string(transferenciaResponseDtoMapped));
   }
 

@@ -549,6 +549,7 @@ public class ClienteServiceTest {
     ClienteCuentasResponseDto clienteCuentasResponseDtoExpected =
         cliente.toClienteCuentasResponseDto();
     CuentaResponseDto cuentaResponseDto = cuenta.toCuentaResponseDto();
+    cuentaResponseDto.setTitular(cliente.getDni());
     clienteCuentasResponseDtoExpected.addCuenta(cuentaResponseDto);
 
     when(clienteDao.find(dniCliente, true)).thenReturn(cliente);

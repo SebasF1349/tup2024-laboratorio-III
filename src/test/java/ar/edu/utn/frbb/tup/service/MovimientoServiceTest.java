@@ -298,7 +298,18 @@ public class MovimientoServiceTest {
         movimientoService.realizarTransferencia(transferenciaDto);
 
     verify(movimientoDao, times(1)).save(any(Transferencia.class));
-    assertEquals(transferenciaResponseDto, transferenciaDtoResult);
+    assertEquals(
+        transferenciaResponseDto.getMovimientoId(), transferenciaDtoResult.getMovimientoId());
+    assertEquals(
+        transferenciaResponseDto.getCuentaOrigen(), transferenciaDtoResult.getCuentaOrigen());
+    assertEquals(
+        transferenciaResponseDto.getCuentaDestino(), transferenciaDtoResult.getCuentaDestino());
+    assertEquals(transferenciaResponseDto.getMonto(), transferenciaDtoResult.getMonto());
+    assertEquals(transferenciaResponseDto.getMoneda(), transferenciaDtoResult.getMoneda());
+    assertEquals(
+        transferenciaResponseDto.getMontoDebitado(), transferenciaDtoResult.getMontoDebitado());
+    assertEquals(
+        transferenciaResponseDto.getDescripcion(), transferenciaDtoResult.getDescripcion());
   }
 
   @Test
@@ -326,7 +337,18 @@ public class MovimientoServiceTest {
     TransferenciaResponseDto transferenciaDtoResult =
         movimientoService.realizarTransferencia(transferenciaDto);
 
-    assertEquals(transferenciaResponseDto, transferenciaDtoResult);
+    assertEquals(
+        transferenciaResponseDto.getMovimientoId(), transferenciaDtoResult.getMovimientoId());
+    assertEquals(
+        transferenciaResponseDto.getCuentaOrigen(), transferenciaDtoResult.getCuentaOrigen());
+    assertEquals(
+        transferenciaResponseDto.getCuentaDestino(), transferenciaDtoResult.getCuentaDestino());
+    assertEquals(transferenciaResponseDto.getMonto(), transferenciaDtoResult.getMonto());
+    assertEquals(transferenciaResponseDto.getMoneda(), transferenciaDtoResult.getMoneda());
+    assertEquals(
+        transferenciaResponseDto.getMontoDebitado(), transferenciaDtoResult.getMontoDebitado());
+    assertEquals(
+        transferenciaResponseDto.getDescripcion(), transferenciaDtoResult.getDescripcion());
   }
 
   @Test

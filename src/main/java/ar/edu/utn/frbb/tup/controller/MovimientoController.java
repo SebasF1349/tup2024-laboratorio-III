@@ -11,9 +11,6 @@ import ar.edu.utn.frbb.tup.model.exception.WrongInputDataException;
 import ar.edu.utn.frbb.tup.service.MovimientoService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,7 +24,7 @@ public class MovimientoController {
   @Autowired private MovimientoControllerValidator movimientoControllerValidator;
 
   @PostMapping(value = "/transfer")
-  public ResponseEntity<TransferenciaResponseDto> realizarTransferencia(
+  public TransferenciaResponseDto realizarTransferencia(
       @Valid @RequestBody TransferenciaDto transferenciaDto)
       throws WrongInputDataException,
           CuentaNoExistsException,
@@ -37,9 +34,6 @@ public class MovimientoController {
           BanelcoErrorException,
           ImpossibleException {
     movimientoControllerValidator.validate(transferenciaDto);
-    TransferenciaResponseDto transferenciaResponse =
-        movimientoService.realizarTransferencia(transferenciaDto);
-    return new ResponseEntity<TransferenciaResponseDto>(
-        transferenciaResponse, new HttpHeaders(), HttpStatus.CREATED);
+    return movimientoService.realizarTransferencia(transferenciaDto);
   }
 }

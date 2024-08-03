@@ -40,11 +40,14 @@ public class Transferencia extends Movimiento {
 
   public TransferenciaResponseDto toTransferenciaResponseDto() {
     TransferenciaResponseDto transferenciaDto = new TransferenciaResponseDto();
+    transferenciaDto.setMovimientoId(this.getMovimientoId());
+    transferenciaDto.setDiaHora(this.getDiaHora().toString());
     transferenciaDto.setMonto(this.getMonto());
     transferenciaDto.setMoneda(this.getCuenta().getMoneda().toString());
     transferenciaDto.setCuentaOrigen(this.getCuenta().getNumeroCuenta());
     transferenciaDto.setCuentaDestino(this.getCuentaDestino().getNumeroCuenta());
     transferenciaDto.setMontoDebitado(this.getMontoDebitado());
+    transferenciaDto.setDescripcion(this.getDescripcion());
     return transferenciaDto;
   }
 
