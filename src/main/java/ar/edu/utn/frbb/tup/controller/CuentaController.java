@@ -51,7 +51,8 @@ public class CuentaController {
           ClienteNoExistsException,
           CorruptedDataInDbException,
           ClienteInactivoException,
-          CuentaInactivaException {
+          CuentaInactivaException,
+          ImpossibleException {
     cuentaValidator.validate(cuentaRequestDto);
     CuentaResponseDto cuentaResponse = cuentaService.darDeAltaCuenta(cuentaRequestDto);
     return new ResponseEntity<CuentaResponseDto>(

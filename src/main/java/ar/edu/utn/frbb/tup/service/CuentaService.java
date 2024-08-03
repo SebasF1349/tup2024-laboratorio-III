@@ -51,7 +51,8 @@ public class CuentaService {
           ClienteNoExistsException,
           CorruptedDataInDbException,
           ClienteInactivoException,
-          CuentaInactivaException {
+          CuentaInactivaException,
+          ImpossibleException {
 
     Cuenta cuenta = new Cuenta(cuentaRequestDto);
 
@@ -72,6 +73,18 @@ public class CuentaService {
           "Titular de cuenta guardado en Base de Datos con edad incorrecta");
     }
     cuentaDao.save(cuenta);
+
+    titular.addCuenta(cuenta);
+    try {
+      clienteService.actualizarCliente(titular);
+    } catch (ClienteNoExistsException e) {
+      throw new ImpossibleException();
+    } catch (ClienteMenorDeEdadException e) {
+      throw new ImpossibleException();
+    } catch (ClienteInactivoException e) {
+      throw new ImpossibleException();
+    }
+
     return cuenta.toCuentaDto();
   }
 

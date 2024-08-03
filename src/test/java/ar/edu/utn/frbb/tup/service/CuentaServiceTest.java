@@ -182,7 +182,8 @@ public class CuentaServiceTest {
           ClienteMenorDeEdadException,
           ClienteInactivoException,
           CorruptedDataInDbException,
-          CuentaInactivaException {
+          CuentaInactivaException,
+          ImpossibleException {
     CuentaRequestDto cuentaRequestDto = createCuentaRequestDto();
     Cliente titular = createCliente();
 
