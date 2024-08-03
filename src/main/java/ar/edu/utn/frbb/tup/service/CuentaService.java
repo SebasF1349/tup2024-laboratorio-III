@@ -30,11 +30,15 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class CuentaService {
-  CuentaDao cuentaDao = new CuentaDao();
-  MovimientoDao movimientoDao = new MovimientoDao();
+  CuentaDao cuentaDao;
+  MovimientoDao movimientoDao;
   ClienteService clienteService;
 
   @Autowired CuentaServiceValidator cuentaServiceValidator;
+
+  public CuentaService(CuentaDao cuentaDao) {
+    this.cuentaDao = cuentaDao;
+  }
 
   @Autowired
   public void setClienteService(@Lazy ClienteService clienteService) {
