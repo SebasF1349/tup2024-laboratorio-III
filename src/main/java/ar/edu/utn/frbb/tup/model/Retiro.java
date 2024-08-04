@@ -32,7 +32,7 @@ public class Retiro extends MovimientoUnidireccional {
     retiroResponseDto.setCuenta(this.getCuenta().getNumeroCuenta());
     retiroResponseDto.setDescripcion(this.getDescripcion());
     retiroResponseDto.setMonto(this.getMonto());
-    retiroResponseDto.setTipoTransaccion(this.getTipoTransaccion().toString());
+    retiroResponseDto.setTipoTransaccion(this.getTipoMovimiento());
     return retiroResponseDto;
   }
 }
