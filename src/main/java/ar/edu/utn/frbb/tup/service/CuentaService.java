@@ -162,6 +162,7 @@ public class CuentaService {
 
     cuentaOrigen.setBalance(nuevoSaldoOrigen);
     cuentaOrigen.addMovimiento(movimiento);
+    cuentaDao.save(cuentaOrigen);
   }
 
   protected void agregarTransferenciaACuentas(Transferencia transferencia) {
@@ -169,6 +170,8 @@ public class CuentaService {
 
     cuentaOrigen.setBalance(transferencia.getNuevoMontoCuentaOrigen());
     cuentaOrigen.addMovimiento(transferencia);
+
+    cuentaDao.save(cuentaOrigen);
 
     Cuenta cuentaDestino = transferencia.getCuentaDestino();
 
@@ -178,6 +181,7 @@ public class CuentaService {
 
     cuentaDestino.setBalance(transferencia.getNuevoMontoCuentaDestino());
     cuentaDestino.addMovimiento(transferencia);
+    cuentaDao.save(cuentaDestino);
   }
 
   public CuentaMovimientosResponseDto buscarTransaccionesDeCuentaPorId(long id)
