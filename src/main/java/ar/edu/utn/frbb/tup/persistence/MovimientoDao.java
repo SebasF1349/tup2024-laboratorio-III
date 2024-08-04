@@ -9,10 +9,6 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class MovimientoDao extends AbstractBaseDao {
-  @Override
-  protected String getEntityName() {
-    return "MOVIMIENTO";
-  }
 
   public Movimiento find(long idMovimiento) throws ImpossibleException {
     if (getInMemoryDatabase().get(idMovimiento) == null) return null;
@@ -20,6 +16,9 @@ public class MovimientoDao extends AbstractBaseDao {
   }
 
   public void save(Movimiento movimiento) {
+    if (movimiento.getMovimientoId() == 0) {
+      movimiento.setMovimientoId(getInMemoryDatabase().size() + 1);
+    }
     MovimientoEntity entity = new MovimientoEntity(movimiento);
     getInMemoryDatabase().put(entity.getId(), entity);
   }
@@ -34,5 +33,10 @@ public class MovimientoDao extends AbstractBaseDao {
       }
     }
     return movimientosDeCuenta;
+  }
+
+  @Override
+  protected String getEntityName() {
+    return "MOVIMIENTO";
   }
 }
