@@ -8,18 +8,21 @@ public class Transferencia extends Movimiento {
   private Cuenta cuentaDestino;
   private double montoDebitado;
 
-  public Transferencia(double monto, Transferencia transferencia) {
+  public Transferencia(double monto, double montoDebitado, Transferencia transferencia) {
     super(monto, transferencia.getCuenta());
     this.cuentaDestino = transferencia.getCuentaDestino();
+    this.montoDebitado = montoDebitado;
   }
 
-  public Transferencia(double monto, Cuenta cuentaDestino, Cuenta cuenta) {
+  public Transferencia(double monto, double montoDebitado, Cuenta cuentaDestino, Cuenta cuenta) {
     super(monto, cuenta);
     this.cuentaDestino = cuentaDestino;
+    this.montoDebitado = montoDebitado;
   }
 
   public Transferencia(
       double monto,
+      double montoDebitado,
       Cuenta cuentaDestino,
       LocalDateTime diaHora,
       long movimientoId,
@@ -27,12 +30,17 @@ public class Transferencia extends Movimiento {
       String descripcion) {
     super(monto, diaHora, movimientoId, cuenta, descripcion);
     this.cuentaDestino = cuentaDestino;
+    this.montoDebitado = montoDebitado;
   }
 
   public Transferencia(
-      TransferenciaRequestDto transferenciaDto, Cuenta cuenta, Cuenta cuentaDestino) {
+      TransferenciaRequestDto transferenciaDto,
+      Cuenta cuenta,
+      Cuenta cuentaDestino,
+      double montoDebitado) {
     super(transferenciaDto.getMonto(), cuenta);
     this.cuentaDestino = cuentaDestino;
+    this.montoDebitado = montoDebitado;
   }
 
   public Transferencia(TransferenciaRequestDto transferenciaDto, Cuenta cuenta) {
@@ -42,13 +50,14 @@ public class Transferencia extends Movimiento {
   public TransferenciaResponseDto toTransferenciaResponseDto() {
     TransferenciaResponseDto transferenciaDto = new TransferenciaResponseDto();
     transferenciaDto.setMovimientoId(this.getMovimientoId());
-    transferenciaDto.setDiaHora(this.getDiaHora().toString());
+    transferenciaDto.setFecha(this.getDiaHora().toString());
     transferenciaDto.setMonto(this.getMonto());
     transferenciaDto.setMoneda(this.getCuenta().getMoneda().toString());
     transferenciaDto.setCuentaOrigen(this.getCuenta().getNumeroCuenta());
     transferenciaDto.setCuentaDestino(this.getCuentaDestino().getNumeroCuenta());
     transferenciaDto.setMontoDebitado(this.getMontoDebitado());
     transferenciaDto.setDescripcion(this.getDescripcion());
+    transferenciaDto.setTipoTransaccion(this.getTipoMovimiento());
     return transferenciaDto;
   }
 
