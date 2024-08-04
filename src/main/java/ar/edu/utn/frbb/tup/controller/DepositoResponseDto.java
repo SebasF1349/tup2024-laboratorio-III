@@ -5,6 +5,11 @@ import jakarta.validation.constraints.Positive;
 public class DepositoResponseDto extends MovimientoResponseDto {
   @Positive private long cuenta;
 
+  public DepositoResponseDto() {
+    super();
+    this.setTipoTransaccion("Debito");
+  }
+
   public long getCuenta() {
     return cuenta;
   }

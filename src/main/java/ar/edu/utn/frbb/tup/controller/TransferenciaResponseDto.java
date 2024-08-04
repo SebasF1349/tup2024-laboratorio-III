@@ -6,6 +6,11 @@ public class TransferenciaResponseDto extends MovimientoResponseDto {
   @Positive private long cuentaOrigen;
   @Positive private long cuentaDestino;
 
+  public TransferenciaResponseDto() {
+    super();
+    this.setTipoTransaccion("Transferencia");
+  }
+
   public long getCuentaOrigen() {
     return cuentaOrigen;
   }
