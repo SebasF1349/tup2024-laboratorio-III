@@ -76,11 +76,11 @@ public class CuentaService {
     try {
       clienteService.actualizarCliente(titular);
     } catch (ClienteNoExistsException e) {
-      throw new ImpossibleException();
+      throw new ImpossibleException("Titular no existe [darDeAltaCuenta]");
     } catch (ClienteMenorDeEdadException e) {
-      throw new ImpossibleException();
+      throw new ImpossibleException("Titular menor de edad [darDeAltaCuenta]");
     } catch (ClienteInactivoException e) {
-      throw new ImpossibleException();
+      throw new ImpossibleException("Titular inactivo [darDeAltaCuenta]");
     }
 
     return cuenta.toCuentaDto();

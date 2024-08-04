@@ -33,7 +33,7 @@ public enum TipoMoneda {
       case DOLARES_AMERICANOS:
         return "us$";
       default:
-        throw new ImpossibleException();
+        throw new ImpossibleException("Moneda imposible [TipoMoneda]");
     }
   }
 

@@ -85,7 +85,7 @@ public class CuentaControllerTest {
 
   @Test
   public void testObtenerCuentaImpossibleException() throws Exception {
-    doThrow(new ImpossibleException()).when(cuentaService).buscarCuentaPorId(numeroCuenta);
+    doThrow(new ImpossibleException("")).when(cuentaService).buscarCuentaPorId(numeroCuenta);
 
     mockMvc
         .perform(get(createEndpoint(numeroCuenta)))
@@ -341,7 +341,7 @@ public class CuentaControllerTest {
 
   @Test
   public void testEliminarCuentaImpossibleException() throws Exception {
-    doThrow(new ImpossibleException()).when(cuentaService).eliminarCuenta(numeroCuenta);
+    doThrow(new ImpossibleException("")).when(cuentaService).eliminarCuenta(numeroCuenta);
 
     mockMvc
         .perform(delete(createEndpoint(numeroCuenta)))
@@ -398,7 +398,7 @@ public class CuentaControllerTest {
 
   @Test
   public void testActivarCuentaImpossibleException() throws Exception {
-    doThrow(new ImpossibleException()).when(cuentaService).activarCuenta(numeroCuenta);
+    doThrow(new ImpossibleException("")).when(cuentaService).activarCuenta(numeroCuenta);
 
     mockMvc
         .perform(patch(createEndpoint(numeroCuenta)))
@@ -459,7 +459,7 @@ public class CuentaControllerTest {
 
   @Test
   public void testObtenerTransaccionesEnCuentaImpossibleException() throws Exception {
-    doThrow(new ImpossibleException())
+    doThrow(new ImpossibleException(""))
         .when(cuentaService)
         .buscarTransaccionesDeCuentaPorId(numeroCuenta);
 

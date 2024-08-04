@@ -55,7 +55,7 @@ public class MovimientoEntity extends BaseEntity {
         movimiento = new Deposito(this.monto, this.diaHora, this.getId(), cuenta, this.descripcion);
         break;
       default:
-        throw new ImpossibleException();
+        throw new ImpossibleException("Movimiento impossible [movimientoEntity.toMovmiento()]");
     }
     return movimiento;
   }

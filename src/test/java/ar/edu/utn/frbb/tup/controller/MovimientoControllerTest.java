@@ -211,7 +211,7 @@ public class MovimientoControllerTest {
     TransferenciaRequestDto transferenciaDto = createTransferenciaDto();
     String transferenciaDtoMapped = objectMapper.writeValueAsString(transferenciaDto);
 
-    doThrow(new ImpossibleException())
+    doThrow(new ImpossibleException(""))
         .when(movimientoService)
         .realizarTransferencia(transferenciaDto);
 
@@ -359,7 +359,7 @@ public class MovimientoControllerTest {
     DepositoRequestDto depositoDto = createDepositoDto();
     String depositoDtoMapped = objectMapper.writeValueAsString(depositoDto);
 
-    doThrow(new ImpossibleException()).when(movimientoService).realizarDeposito(depositoDto);
+    doThrow(new ImpossibleException("")).when(movimientoService).realizarDeposito(depositoDto);
 
     MockHttpServletRequestBuilder mockRequest =
         MockMvcRequestBuilders.post(depositEndpoint)
@@ -499,7 +499,7 @@ public class MovimientoControllerTest {
     RetiroRequestDto retiroDto = createRetiroDto();
     String retiroDtoMapped = objectMapper.writeValueAsString(retiroDto);
 
-    doThrow(new ImpossibleException()).when(movimientoService).realizarRetiro(retiroDto);
+    doThrow(new ImpossibleException("")).when(movimientoService).realizarRetiro(retiroDto);
 
     MockHttpServletRequestBuilder mockRequest =
         MockMvcRequestBuilders.post(withdrawalEndpoint)

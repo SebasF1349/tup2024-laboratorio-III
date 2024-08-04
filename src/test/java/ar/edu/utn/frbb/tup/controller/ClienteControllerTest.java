@@ -260,7 +260,7 @@ public class ClienteControllerTest {
 
   @Test
   public void testEliminarClienteImpossibleException() throws Exception {
-    doThrow(new ImpossibleException()).when(clienteService).eliminarCliente(dniCliente);
+    doThrow(new ImpossibleException("")).when(clienteService).eliminarCliente(dniCliente);
 
     mockMvc
         .perform(delete(createEndpoint(dniCliente)))

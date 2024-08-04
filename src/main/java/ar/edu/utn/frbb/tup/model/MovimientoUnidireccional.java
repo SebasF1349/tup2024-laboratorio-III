@@ -28,7 +28,7 @@ public abstract class MovimientoUnidireccional extends Movimiento {
       case CREDITO:
         return cuenta.getBalance() - this.getMonto();
       default:
-        throw new ImpossibleException();
+        throw new ImpossibleException("TipoTransaccion distinto a DEBITO o CREDITO");
     }
   }
 }
