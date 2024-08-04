@@ -357,7 +357,7 @@ public class MovimientoServiceTest {
     Cuenta cuentaOrigen = createCuenta(1);
     cuentaOrigen.setMoneda(TipoMoneda.PESOS_ARGENTINOS);
     Cuenta cuentaDestino = createCuenta(1);
-    Transferencia transferencia = new Transferencia(monto, cuentaDestino, cuentaOrigen);
+    Transferencia transferencia = new Transferencia(monto, 0, cuentaDestino, cuentaOrigen);
 
     assertEquals(movimientoService.getMontoDebitado(transferencia), monto);
   }
@@ -368,7 +368,7 @@ public class MovimientoServiceTest {
     Cuenta cuentaOrigen = createCuenta(1);
     cuentaOrigen.setMoneda(TipoMoneda.PESOS_ARGENTINOS);
     Cuenta cuentaDestino = createCuenta(1);
-    Transferencia transferencia = new Transferencia(monto, cuentaDestino, cuentaOrigen);
+    Transferencia transferencia = new Transferencia(monto, 0, cuentaDestino, cuentaOrigen);
 
     assertEquals(movimientoService.getMontoDebitado(transferencia), monto * 1.02);
   }
@@ -379,7 +379,7 @@ public class MovimientoServiceTest {
     Cuenta cuentaOrigen = createCuenta(1);
     cuentaOrigen.setMoneda(TipoMoneda.DOLARES_AMERICANOS);
     Cuenta cuentaDestino = createCuenta(1);
-    Transferencia transferencia = new Transferencia(monto, cuentaDestino, cuentaOrigen);
+    Transferencia transferencia = new Transferencia(monto, 0, cuentaDestino, cuentaOrigen);
 
     assertEquals(movimientoService.getMontoDebitado(transferencia), monto);
   }
@@ -390,7 +390,7 @@ public class MovimientoServiceTest {
     Cuenta cuentaOrigen = createCuenta(1);
     cuentaOrigen.setMoneda(TipoMoneda.DOLARES_AMERICANOS);
     Cuenta cuentaDestino = createCuenta(1);
-    Transferencia transferencia = new Transferencia(monto, cuentaDestino, cuentaOrigen);
+    Transferencia transferencia = new Transferencia(monto, 0, cuentaDestino, cuentaOrigen);
 
     assertEquals(movimientoService.getMontoDebitado(transferencia), monto * 1.005);
   }
@@ -420,6 +420,7 @@ public class MovimientoServiceTest {
     transferenciaResponseDto.setMonto(1000);
     transferenciaResponseDto.setMontoDebitado(1000);
     transferenciaResponseDto.setMoneda("P");
+    transferenciaResponseDto.setDescripcion("Transferencia");
     return transferenciaResponseDto;
   }
 

@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import ar.edu.utn.frbb.tup.externalService.BanelcoResponseDto;
 import ar.edu.utn.frbb.tup.model.Cuenta;
+import ar.edu.utn.frbb.tup.model.Retiro;
 import ar.edu.utn.frbb.tup.model.TipoCuenta;
 import ar.edu.utn.frbb.tup.model.TipoMoneda;
 import ar.edu.utn.frbb.tup.model.Transferencia;
@@ -46,12 +47,21 @@ public class MovimientoServiceValidatorTest {
   }
 
   @Test
-  public void validateMontoSuccess() {
+  public void validateMontoTransferenciaSuccess() {
     Transferencia transferencia = createTransferencia();
     transferencia.getCuenta().setBalance(100);
-    transferencia.setMonto(50);
+    transferencia.setMontoDebitado(50);
 
     assertDoesNotThrow(() -> movimientoServiceValidator.validateMonto(transferencia));
+  }
+
+  @Test
+  public void validateMontoRetiroSuccess() {
+    Retiro retiro = createRetiro();
+    retiro.getCuenta().setBalance(100);
+    retiro.setMonto(50);
+
+    assertDoesNotThrow(() -> movimientoServiceValidator.validateMonto(retiro));
   }
 
   @Test
@@ -129,6 +139,10 @@ public class MovimientoServiceValidatorTest {
   }
 
   private Transferencia createTransferencia() {
-    return new Transferencia(1000, createCuenta(1), createCuenta(2));
+    return new Transferencia(1000, 1000, createCuenta(1), createCuenta(2));
+  }
+
+  private Retiro createRetiro() {
+    return new Retiro(1000, createCuenta(1));
   }
 }

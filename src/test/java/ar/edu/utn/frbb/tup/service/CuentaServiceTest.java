@@ -500,9 +500,12 @@ public class CuentaServiceTest {
     Cuenta cuentaOrigen = createCuenta();
     cuentaOrigen.setBalance(balance);
 
-    Transferencia transferencia = new Transferencia(monto, null, cuentaOrigen);
+    Transferencia transferencia = createTransferencia();
     transferencia.setMovimientoId(123);
+    transferencia.setMonto(monto);
     transferencia.setMontoDebitado(monto);
+    transferencia.setCuenta(cuentaOrigen);
+    transferencia.setCuentaDestino(null);
 
     cuentaService.agregarTransferenciaACuentas(transferencia);
 
@@ -510,6 +513,7 @@ public class CuentaServiceTest {
     assertEquals(cuentaOrigen.getBalance(), balance - monto);
     assertEquals(cuentaOrigen.getMovimiento(transferencia.getMovimientoId()), transferencia);
     assertNull(transferencia.getCuentaDestino());
+    verify(cuentaDao, times(1)).save(cuentaOrigen);
   }
 
   @Test
@@ -521,9 +525,12 @@ public class CuentaServiceTest {
     cuentaOrigen.setBalance(balance1);
     Cuenta cuentaDestino = createCuenta();
     cuentaDestino.setBalance(balance2);
-    Transferencia transferencia = new Transferencia(monto, cuentaDestino, cuentaOrigen);
+    Transferencia transferencia = createTransferencia();
     transferencia.setMovimientoId(123);
+    transferencia.setMonto(monto);
     transferencia.setMontoDebitado(monto);
+    transferencia.setCuenta(cuentaOrigen);
+    transferencia.setCuentaDestino(cuentaDestino);
 
     cuentaService.agregarTransferenciaACuentas(transferencia);
 
@@ -532,6 +539,9 @@ public class CuentaServiceTest {
     assertEquals(cuentaOrigen.getMovimiento(transferencia.getMovimientoId()), transferencia);
     assertEquals(cuentaDestino.getBalance(), balance2 + monto);
     assertEquals(cuentaDestino.getMovimiento(transferencia.getMovimientoId()), transferencia);
+    verify(cuentaDao, times(1)).save(cuentaOrigen);
+    verify(cuentaDao, times(1)).save(cuentaDestino);
+    verify(cuentaDao, times(2)).save(any(Cuenta.class));
   }
 
   @Test
@@ -649,6 +659,6 @@ public class CuentaServiceTest {
   }
 
   private Transferencia createTransferencia() {
-    return new Transferencia(1000, createCuenta(), createCuenta());
+    return new Transferencia(1000, 1000, createCuenta(), createCuenta());
   }
 }
