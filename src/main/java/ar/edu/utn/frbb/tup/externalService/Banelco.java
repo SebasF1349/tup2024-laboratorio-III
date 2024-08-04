@@ -9,9 +9,9 @@ public class Banelco {
     int statusCode;
     int internalCode;
     String message;
-    if (random <= 5) {
+    if (random <= 2) {
       statusCode = 400;
-      if (random <= 3) {
+      if (random == 1) {
         internalCode = 1;
         message = "Cuenta de destino no existe o no esta habilitada para recibir transferencias.";
       } else {
