@@ -19,8 +19,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/")
 public class MovimientoController {
-  @Autowired private MovimientoService movimientoService;
 
+  @Autowired private MovimientoService movimientoService;
   @Autowired private MovimientoControllerValidator movimientoControllerValidator;
 
   @PostMapping(value = "/transfer")
@@ -35,5 +35,29 @@ public class MovimientoController {
           ImpossibleException {
     movimientoControllerValidator.validate(transferenciaDto);
     return movimientoService.realizarTransferencia(transferenciaDto);
+  }
+
+  @PostMapping(value = "/deposit")
+  public DepositoResponseDto realizarDeposito(
+      @Valid @RequestBody DepositoRequestDto depositoRequestDto)
+      throws WrongInputDataException,
+          MonedasDistintasException,
+          CuentaNoExistsException,
+          CorruptedDataInDbException,
+          ImpossibleException {
+    movimientoControllerValidator.validate(depositoRequestDto);
+    return movimientoService.realizarDeposito(depositoRequestDto);
+  }
+
+  @PostMapping(value = "/withdrawal")
+  public RetiroResponseDto realizarRetiro(@Valid @RequestBody RetiroRequestDto retiroRequestDto)
+      throws WrongInputDataException,
+          MonedasDistintasException,
+          CuentaNoExistsException,
+          CorruptedDataInDbException,
+          ImpossibleException,
+          MontoInsuficienteException {
+    movimientoControllerValidator.validate(retiroRequestDto);
+    return movimientoService.realizarRetiro(retiroRequestDto);
   }
 }

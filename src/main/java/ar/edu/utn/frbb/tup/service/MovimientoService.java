@@ -1,10 +1,16 @@
 package ar.edu.utn.frbb.tup.service;
 
+import ar.edu.utn.frbb.tup.controller.DepositoRequestDto;
+import ar.edu.utn.frbb.tup.controller.DepositoResponseDto;
+import ar.edu.utn.frbb.tup.controller.RetiroRequestDto;
+import ar.edu.utn.frbb.tup.controller.RetiroResponseDto;
 import ar.edu.utn.frbb.tup.controller.TransferenciaRequestDto;
 import ar.edu.utn.frbb.tup.controller.TransferenciaResponseDto;
 import ar.edu.utn.frbb.tup.externalService.Banelco;
 import ar.edu.utn.frbb.tup.externalService.BanelcoResponseDto;
 import ar.edu.utn.frbb.tup.model.Cuenta;
+import ar.edu.utn.frbb.tup.model.Deposito;
+import ar.edu.utn.frbb.tup.model.Retiro;
 import ar.edu.utn.frbb.tup.model.TipoMoneda;
 import ar.edu.utn.frbb.tup.model.Transferencia;
 import ar.edu.utn.frbb.tup.model.exception.BanelcoErrorException;
@@ -15,16 +21,21 @@ import ar.edu.utn.frbb.tup.model.exception.MonedasDistintasException;
 import ar.edu.utn.frbb.tup.model.exception.MontoInsuficienteException;
 import ar.edu.utn.frbb.tup.persistence.MovimientoDao;
 import ar.edu.utn.frbb.tup.service.validator.MovimientoServiceValidator;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class MovimientoService {
-  MovimientoDao movimientoDao = new MovimientoDao();
+  MovimientoDao movimientoDao;
   Banelco banelco = new Banelco();
 
   @Autowired MovimientoServiceValidator movimientoServiceValidator;
   @Autowired CuentaService cuentaService;
+
+  public MovimientoService(MovimientoDao movimientoDao) {
+    this.movimientoDao = movimientoDao;
+  }
 
   public TransferenciaResponseDto realizarTransferencia(TransferenciaRequestDto transferenciaDto)
       throws CuentaNoExistsException,
@@ -57,6 +68,7 @@ public class MovimientoService {
 
       Cuenta cuentaExterna = new Cuenta();
       cuentaExterna.setNumeroCuenta(transferenciaDto.getCuentaDestino());
+      cuentaExterna.setExterna(true);
       transferencia.setCuentaDestino(cuentaExterna);
     }
 
@@ -64,8 +76,8 @@ public class MovimientoService {
 
     movimientoServiceValidator.validateMonto(transferencia);
 
-    cuentaService.agregarTransferenciaACuentas(transferencia);
     movimientoDao.save(transferencia);
+    cuentaService.agregarTransferenciaACuentas(transferencia);
     return transferencia.toTransferenciaResponseDto();
   }
 
@@ -81,5 +93,40 @@ public class MovimientoService {
       nuevoMonto = transferencia.getMonto();
     }
     return nuevoMonto;
+  }
+
+  public DepositoResponseDto realizarDeposito(@Valid DepositoRequestDto depositoRequestDto)
+      throws MonedasDistintasException,
+          CuentaNoExistsException,
+          CorruptedDataInDbException,
+          ImpossibleException {
+    Cuenta cuentaOrigen = cuentaService.buscarCuentaCompletaPorId(depositoRequestDto.getCuenta());
+
+    movimientoServiceValidator.validateMonedaIngresadaCorrecta(cuentaOrigen, depositoRequestDto);
+
+    Deposito deposito = new Deposito(depositoRequestDto, cuentaOrigen);
+
+    movimientoDao.save(deposito);
+    cuentaService.agregarMovimientoACuentas(deposito);
+    return deposito.toDepositoResponseDto();
+  }
+
+  public RetiroResponseDto realizarRetiro(@Valid RetiroRequestDto retiroRequestDto)
+      throws MonedasDistintasException,
+          CuentaNoExistsException,
+          CorruptedDataInDbException,
+          ImpossibleException,
+          MontoInsuficienteException {
+    Cuenta cuentaOrigen = cuentaService.buscarCuentaCompletaPorId(retiroRequestDto.getCuenta());
+
+    movimientoServiceValidator.validateMonedaIngresadaCorrecta(cuentaOrigen, retiroRequestDto);
+
+    Retiro retiro = new Retiro(retiroRequestDto, cuentaOrigen);
+
+    movimientoServiceValidator.validateMonto(retiro);
+
+    movimientoDao.save(retiro);
+    cuentaService.agregarMovimientoACuentas(retiro);
+    return retiro.toRetiroResponseDto();
   }
 }
