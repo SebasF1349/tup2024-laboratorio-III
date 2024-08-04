@@ -29,7 +29,7 @@ public abstract class Movimiento {
     MovimientoResponseDto movimientoResponseDto = new MovimientoResponseDto();
     movimientoResponseDto.setFecha(this.getDiaHora().toString());
     movimientoResponseDto.setDescripcion(this.getDescripcion());
-    if (this.getTipoMovimiento() == "TRANSFERENCIA") {
+    if (this.getTipoMovimiento() == "Transferencia") {
       Transferencia transferencia = (Transferencia) this;
       if (transferencia.getCuenta().getNumeroCuenta() == numeroCuenta) {
         movimientoResponseDto.setTipoTransaccion(TipoTransaccion.DEBITO.toString());

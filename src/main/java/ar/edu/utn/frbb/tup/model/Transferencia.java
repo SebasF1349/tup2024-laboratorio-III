@@ -87,7 +87,7 @@ public class Transferencia extends Movimiento {
 
   @Override
   public String getTipoMovimiento() {
-    return "TRANSFERENCIA";
+    return "Transferencia";
   }
 
   @Override
