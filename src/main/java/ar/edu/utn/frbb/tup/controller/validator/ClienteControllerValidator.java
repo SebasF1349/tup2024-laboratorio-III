@@ -1,6 +1,7 @@
 package ar.edu.utn.frbb.tup.controller.validator;
 
 import ar.edu.utn.frbb.tup.controller.ClienteRequestDto;
+import ar.edu.utn.frbb.tup.model.TipoPersona;
 import ar.edu.utn.frbb.tup.model.exception.WrongInputDataException;
 import java.time.LocalDate;
 import org.springframework.stereotype.Component;
@@ -9,7 +10,6 @@ import org.springframework.stereotype.Component;
 public class ClienteControllerValidator {
 
   public void validate(ClienteRequestDto clienteDto) throws WrongInputDataException {
-    // NOTE: validate dni???
     validateTipoPersona(clienteDto);
     validateStringWithOnlyLetters(clienteDto.getNombre(), "nombre");
     validateStringWithOnlyLetters(clienteDto.getApellido(), "apellido");
@@ -17,7 +17,9 @@ public class ClienteControllerValidator {
   }
 
   public void validateTipoPersona(ClienteRequestDto clienteDto) throws WrongInputDataException {
-    if (!"F".equals(clienteDto.getTipoPersona()) && !"J".equals(clienteDto.getTipoPersona())) {
+    try {
+      TipoPersona.fromString(clienteDto.getTipoPersona());
+    } catch (IllegalArgumentException ex) {
       throw new WrongInputDataException("El tipo de persona no es correcto");
     }
   }

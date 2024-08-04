@@ -1,6 +1,7 @@
 package ar.edu.utn.frbb.tup.controller.validator;
 
 import ar.edu.utn.frbb.tup.controller.CuentaRequestDto;
+import ar.edu.utn.frbb.tup.model.TipoCuenta;
 import ar.edu.utn.frbb.tup.model.TipoMoneda;
 import ar.edu.utn.frbb.tup.model.exception.WrongInputDataException;
 import org.springframework.stereotype.Component;
@@ -13,8 +14,9 @@ public class CuentaControllerValidator {
   }
 
   public void validateTipoCuenta(CuentaRequestDto cuentaRequestDto) throws WrongInputDataException {
-    if (!"C".equals(cuentaRequestDto.getTipoCuenta())
-        && !"A".equals(cuentaRequestDto.getTipoCuenta())) {
+    try {
+      TipoCuenta.fromString(cuentaRequestDto.getTipoCuenta());
+    } catch (IllegalArgumentException ex) {
       throw new WrongInputDataException("El tipo de cuenta no es correcto");
     }
   }

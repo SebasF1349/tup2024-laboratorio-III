@@ -16,7 +16,7 @@ public enum TipoCuenta {
 
   public static TipoCuenta fromString(String text) {
     for (TipoCuenta tipo : TipoCuenta.values()) {
-      if (tipo.descripcion.equalsIgnoreCase(text) || tipo.toString().equals(text)) {
+      if (tipo.descripcion.equalsIgnoreCase(text) || tipo.toString().equalsIgnoreCase(text)) {
         return tipo;
       }
     }

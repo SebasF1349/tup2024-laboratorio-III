@@ -16,7 +16,7 @@ public enum TipoPersona {
 
   public static TipoPersona fromString(String text) {
     for (TipoPersona tipo : TipoPersona.values()) {
-      if (tipo.descripcion.equalsIgnoreCase(text)) {
+      if (tipo.descripcion.equalsIgnoreCase(text) || tipo.toString().equalsIgnoreCase(text)) {
         return tipo;
       }
     }
@@ -28,9 +28,9 @@ public enum TipoPersona {
   public String toString() {
     switch (this) {
       case PERSONA_FISICA:
-        return "Persona Física";
+        return "Fisica";
       case PERSONA_JURIDICA:
-        return "Persona Jurídica";
+        return "Juridica";
       default:
         return null;
     }

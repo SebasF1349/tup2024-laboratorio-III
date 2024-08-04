@@ -35,7 +35,7 @@ public class MovimientoServiceValidator {
       Cuenta cuentaOrigen, MovimientoRequestDto movimientoRequestDto)
       throws MonedasDistintasException {
     if (!cuentaOrigen.getMoneda().equals(TipoMoneda.fromString(movimientoRequestDto.getMoneda()))) {
-      throw new MonedasDistintasException("Las cuenta no poseen la moneda requerida.");
+      throw new MonedasDistintasException("La cuenta no posee la moneda requerida.");
     }
   }
 

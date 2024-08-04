@@ -43,6 +43,22 @@ public class ClienteControllerValidatorTest {
   }
 
   @Test
+  public void testValidateTipoPersonaFisicaSuccess() {
+    ClienteRequestDto clienteDto = new ClienteRequestDto();
+    clienteDto.setTipoPersona("Fisica");
+
+    assertDoesNotThrow(() -> clienteControllerValidator.validateTipoPersona(clienteDto));
+  }
+
+  @Test
+  public void testValidateTipoPersonaJuridicaSuccess() {
+    ClienteRequestDto clienteDto = new ClienteRequestDto();
+    clienteDto.setTipoPersona("juriDICA");
+
+    assertDoesNotThrow(() -> clienteControllerValidator.validateTipoPersona(clienteDto));
+  }
+
+  @Test
   public void testValidateTipoPersonaJSuccess() {
     ClienteRequestDto clienteDto = new ClienteRequestDto();
     clienteDto.setTipoPersona("J");

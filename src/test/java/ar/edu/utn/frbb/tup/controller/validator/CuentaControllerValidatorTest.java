@@ -43,9 +43,25 @@ public class CuentaControllerValidatorTest {
   }
 
   @Test
+  public void testValidateTipoCuentaCuentaCorrienteSuccess() {
+    CuentaRequestDto cuentaDto = new CuentaRequestDto();
+    cuentaDto.setTipoCuenta("cuenta CORRIENTE");
+
+    assertDoesNotThrow(() -> cuentaControllerValidator.validateTipoCuenta(cuentaDto));
+  }
+
+  @Test
   public void testValidateTipoCuentaASuccess() {
     CuentaRequestDto cuentaDto = new CuentaRequestDto();
     cuentaDto.setTipoCuenta("A");
+
+    assertDoesNotThrow(() -> cuentaControllerValidator.validateTipoCuenta(cuentaDto));
+  }
+
+  @Test
+  public void testValidateTipoCuentaCajaAhorroSuccess() {
+    CuentaRequestDto cuentaDto = new CuentaRequestDto();
+    cuentaDto.setTipoCuenta("Caja de ahorros");
 
     assertDoesNotThrow(() -> cuentaControllerValidator.validateTipoCuenta(cuentaDto));
   }
