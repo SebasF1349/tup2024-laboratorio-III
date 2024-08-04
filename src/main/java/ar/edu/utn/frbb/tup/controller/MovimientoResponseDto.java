@@ -1,14 +1,25 @@
 package ar.edu.utn.frbb.tup.controller;
 
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
 public class MovimientoResponseDto {
+  @Positive private long movimientoId;
   @NotNull private String fecha;
   @NotNull private String tipoTransaccion;
   @NotNull private String descripcion;
   @Positive private double monto;
   @Positive private double montoDebitado;
+  @NotEmpty private String moneda;
+
+  public long getMovimientoId() {
+    return movimientoId;
+  }
+
+  public void setMovimientoId(long movimientoId) {
+    this.movimientoId = movimientoId;
+  }
 
   public String getFecha() {
     return fecha;
@@ -113,5 +124,13 @@ public class MovimientoResponseDto {
         + ", monto="
         + monto
         + "}";
+  }
+
+  public String getMoneda() {
+    return moneda;
+  }
+
+  public void setMoneda(String moneda) {
+    this.moneda = moneda;
   }
 }
