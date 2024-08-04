@@ -16,11 +16,13 @@ public class Cuenta {
   private Cliente titular;
   private Set<Movimiento> movimientos;
   private boolean activo;
+  private boolean externa;
 
   public Cuenta() {
     this.fechaApertura = LocalDateTime.now();
     this.balance = 0;
     this.movimientos = new HashSet<>();
+    this.externa = false;
   }
 
   public Cuenta(TipoCuenta tipoCuenta, TipoMoneda tipoMoneda, Cliente titular) {
@@ -31,6 +33,7 @@ public class Cuenta {
     this.movimientos = new HashSet<>();
     this.titular = titular;
     this.activo = true;
+    this.externa = false;
   }
 
   public Cuenta(CuentaRequestDto cuentaRequestDto) {
@@ -41,6 +44,7 @@ public class Cuenta {
     this.tipoCuenta = TipoCuenta.fromString(cuentaRequestDto.getTipoCuenta());
     this.moneda = TipoMoneda.fromString(cuentaRequestDto.getMoneda());
     this.activo = true;
+    this.externa = false;
   }
 
   public CuentaResponseDto toCuentaDto() {
@@ -59,6 +63,16 @@ public class Cuenta {
     cuentaMovimientosResponseDto.setNumeroCuenta(this.numeroCuenta);
     cuentaMovimientosResponseDto.setMovimientos(new HashSet<>());
     return cuentaMovimientosResponseDto;
+  }
+
+  public CuentaResponseDto toCuentaResponseDto() {
+    CuentaResponseDto cuentaResponseDto = new CuentaResponseDto();
+    cuentaResponseDto.setBalance(this.getBalance());
+    cuentaResponseDto.setTipoCuenta(this.getTipoCuenta().toString());
+    cuentaResponseDto.setMoneda(this.getMoneda().toString());
+    cuentaResponseDto.setActivo(this.isActivo());
+    cuentaResponseDto.setNumeroCuenta(this.numeroCuenta);
+    return cuentaResponseDto;
   }
 
   public long getNumeroCuenta() {
@@ -139,25 +153,12 @@ public class Cuenta {
     this.activo = activo;
   }
 
-  @Override
-  public String toString() {
-    return "Cuenta{numeroCuenta="
-        + numeroCuenta
-        + ", fechaApertura="
-        + fechaApertura
-        + ", balance="
-        + balance
-        + ", tipoCuenta="
-        + tipoCuenta
-        + ", moneda="
-        + moneda
-        + ", titular="
-        + titular
-        + ", movimientos="
-        + movimientos
-        + ", activo="
-        + activo
-        + "}";
+  public boolean isExterna() {
+    return externa;
+  }
+
+  public void setExterna(boolean externa) {
+    this.externa = externa;
   }
 
   @Override
@@ -174,6 +175,7 @@ public class Cuenta {
     result = prime * result + ((titular == null) ? 0 : titular.hashCode());
     result = prime * result + ((movimientos == null) ? 0 : movimientos.hashCode());
     result = prime * result + (activo ? 1231 : 1237);
+    result = prime * result + (externa ? 1231 : 1237);
     return result;
   }
 
@@ -225,16 +227,32 @@ public class Cuenta {
     if (activo != other.activo) {
       return false;
     }
+    if (externa != other.externa) {
+      return false;
+    }
     return true;
   }
 
-  public CuentaResponseDto toCuentaResponseDto() {
-    CuentaResponseDto cuentaResponseDto = new CuentaResponseDto();
-    cuentaResponseDto.setBalance(this.getBalance());
-    cuentaResponseDto.setTipoCuenta(this.getTipoCuenta().toString());
-    cuentaResponseDto.setMoneda(this.getMoneda().toString());
-    cuentaResponseDto.setActivo(this.isActivo());
-    cuentaResponseDto.setNumeroCuenta(this.numeroCuenta);
-    return cuentaResponseDto;
+  @Override
+  public String toString() {
+    return "Cuenta{numeroCuenta="
+        + numeroCuenta
+        + ", fechaApertura="
+        + fechaApertura
+        + ", balance="
+        + balance
+        + ", tipoCuenta="
+        + tipoCuenta
+        + ", moneda="
+        + moneda
+        + ", titular="
+        + titular
+        + ", movimientos="
+        + movimientos
+        + ", activo="
+        + activo
+        + ", externa="
+        + externa
+        + "}";
   }
 }

@@ -16,9 +16,14 @@ public class CuentaEntity extends BaseEntity {
   private long titular;
   private List<Long> movimientos;
   private boolean activo;
+  private boolean externa;
 
   public CuentaEntity(Cuenta cuenta) {
     super(cuenta.getNumeroCuenta());
+    this.externa = cuenta.isExterna();
+    if (cuenta.isExterna()) {
+      return;
+    }
     this.balance = cuenta.getBalance();
     this.tipoCuenta = cuenta.getTipoCuenta().toString();
     this.moneda = cuenta.getMoneda().toString();
@@ -42,8 +47,12 @@ public class CuentaEntity extends BaseEntity {
 
   public Cuenta toCuenta() {
     Cuenta cuenta = new Cuenta();
-    cuenta.setBalance(this.balance);
     cuenta.setNumeroCuenta(this.getId());
+    cuenta.setExterna(this.isExterna());
+    if (cuenta.isExterna()) {
+      return cuenta;
+    }
+    cuenta.setBalance(this.balance);
     cuenta.setTipoCuenta(TipoCuenta.fromString(this.tipoCuenta));
     cuenta.setMoneda(TipoMoneda.fromString(this.moneda));
     cuenta.setFechaApertura(this.fechaCreacion);
@@ -108,6 +117,14 @@ public class CuentaEntity extends BaseEntity {
     this.activo = activo;
   }
 
+  public boolean isExterna() {
+    return externa;
+  }
+
+  public void setExterna(boolean externa) {
+    this.externa = externa;
+  }
+
   @Override
   public int hashCode() {
     final int prime = 31;
@@ -121,6 +138,7 @@ public class CuentaEntity extends BaseEntity {
     result = prime * result + (int) (titular ^ (titular >>> 32));
     result = prime * result + ((movimientos == null) ? 0 : movimientos.hashCode());
     result = prime * result + (activo ? 1231 : 1237);
+    result = prime * result + (externa ? 1231 : 1237);
     return result;
   }
 
@@ -171,6 +189,9 @@ public class CuentaEntity extends BaseEntity {
       return false;
     }
     if (activo != other.activo) {
+      return false;
+    }
+    if (externa != other.externa) {
       return false;
     }
     return true;
