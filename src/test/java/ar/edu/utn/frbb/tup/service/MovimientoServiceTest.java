@@ -1,18 +1,25 @@
 package ar.edu.utn.frbb.tup.service;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import ar.edu.utn.frbb.tup.controller.DepositoRequestDto;
+import ar.edu.utn.frbb.tup.controller.DepositoResponseDto;
+import ar.edu.utn.frbb.tup.controller.RetiroRequestDto;
+import ar.edu.utn.frbb.tup.controller.RetiroResponseDto;
 import ar.edu.utn.frbb.tup.controller.TransferenciaRequestDto;
 import ar.edu.utn.frbb.tup.controller.TransferenciaResponseDto;
 import ar.edu.utn.frbb.tup.externalService.Banelco;
 import ar.edu.utn.frbb.tup.externalService.BanelcoResponseDto;
 import ar.edu.utn.frbb.tup.model.Cuenta;
+import ar.edu.utn.frbb.tup.model.Movimiento;
+import ar.edu.utn.frbb.tup.model.MovimientoUnidireccional;
+import ar.edu.utn.frbb.tup.model.Retiro;
 import ar.edu.utn.frbb.tup.model.TipoCuenta;
 import ar.edu.utn.frbb.tup.model.TipoMoneda;
 import ar.edu.utn.frbb.tup.model.Transferencia;
@@ -310,6 +317,8 @@ public class MovimientoServiceTest {
         transferenciaResponseDto.getMontoDebitado(), transferenciaDtoResult.getMontoDebitado());
     assertEquals(
         transferenciaResponseDto.getDescripcion(), transferenciaDtoResult.getDescripcion());
+    assertEquals(
+        transferenciaResponseDto.getTipoTransaccion(), transferenciaDtoResult.getTipoTransaccion());
   }
 
   @Test
@@ -349,6 +358,8 @@ public class MovimientoServiceTest {
         transferenciaResponseDto.getMontoDebitado(), transferenciaDtoResult.getMontoDebitado());
     assertEquals(
         transferenciaResponseDto.getDescripcion(), transferenciaDtoResult.getDescripcion());
+    assertEquals(
+        transferenciaResponseDto.getTipoTransaccion(), transferenciaDtoResult.getTipoTransaccion());
   }
 
   @Test
@@ -395,6 +406,207 @@ public class MovimientoServiceTest {
     assertEquals(movimientoService.getMontoDebitado(transferencia), monto * 1.005);
   }
 
+  @Test
+  public void testRealizarDepositoMonedasDistintasException()
+      throws MonedasDistintasException,
+          CuentaNoExistsException,
+          CorruptedDataInDbException,
+          ImpossibleException {
+    DepositoRequestDto depositoDto = createDepositoDto();
+    Cuenta cuentaOrigen = createCuenta(1);
+
+    when(cuentaService.buscarCuentaCompletaPorId(depositoDto.getCuenta())).thenReturn(cuentaOrigen);
+
+    doThrow(MonedasDistintasException.class)
+        .when(movimientoServiceValidator)
+        .validateMonedaIngresadaCorrecta(cuentaOrigen, depositoDto);
+
+    assertThrows(
+        MonedasDistintasException.class, () -> movimientoService.realizarDeposito(depositoDto));
+  }
+
+  @Test
+  public void testRealizarDepositoCuentaNoExistsException()
+      throws CuentaNoExistsException, CorruptedDataInDbException, ImpossibleException {
+    DepositoRequestDto depositoDto = createDepositoDto();
+
+    doThrow(CuentaNoExistsException.class)
+        .when(cuentaService)
+        .buscarCuentaCompletaPorId(depositoDto.getCuenta());
+
+    assertThrows(
+        CuentaNoExistsException.class, () -> movimientoService.realizarDeposito(depositoDto));
+  }
+
+  @Test
+  public void testRealizarDepositoCorruptedDataInDbException()
+      throws CuentaNoExistsException, CorruptedDataInDbException, ImpossibleException {
+    DepositoRequestDto depositoDto = createDepositoDto();
+
+    doThrow(CorruptedDataInDbException.class)
+        .when(cuentaService)
+        .buscarCuentaCompletaPorId(depositoDto.getCuenta());
+
+    assertThrows(
+        CorruptedDataInDbException.class, () -> movimientoService.realizarDeposito(depositoDto));
+  }
+
+  @Test
+  public void testRealizarDepositoBuscarCuentaImpossibleException()
+      throws CuentaNoExistsException, CorruptedDataInDbException, ImpossibleException {
+    DepositoRequestDto depositoDto = createDepositoDto();
+
+    doThrow(ImpossibleException.class)
+        .when(cuentaService)
+        .buscarCuentaCompletaPorId(depositoDto.getCuenta());
+
+    assertThrows(ImpossibleException.class, () -> movimientoService.realizarDeposito(depositoDto));
+  }
+
+  @Test
+  public void testRealizarDepositoAgregarMovimientoACuentasImpossibleException()
+      throws ImpossibleException {
+    DepositoRequestDto depositoDto = createDepositoDto();
+
+    doThrow(ImpossibleException.class)
+        .when(cuentaService)
+        .agregarMovimientoACuentas(any(MovimientoUnidireccional.class));
+
+    assertThrows(ImpossibleException.class, () -> movimientoService.realizarDeposito(depositoDto));
+  }
+
+  @Test
+  public void testRealizarDepositoSuccess()
+      throws MonedasDistintasException,
+          CuentaNoExistsException,
+          CorruptedDataInDbException,
+          ImpossibleException {
+    DepositoRequestDto depositoDto = createDepositoDto();
+    Cuenta cuentaOrigen = createCuenta(1);
+    DepositoResponseDto depositoResponseDto = createDepositoResponseDto();
+    depositoResponseDto.setMoneda(cuentaOrigen.getMoneda().toString());
+
+    when(cuentaService.buscarCuentaCompletaPorId(depositoDto.getCuenta())).thenReturn(cuentaOrigen);
+
+    DepositoResponseDto depositoDtoResult = movimientoService.realizarDeposito(depositoDto);
+
+    verify(movimientoDao, times(1)).save(any(Movimiento.class));
+    assertEquals(depositoResponseDto.getMovimientoId(), depositoDtoResult.getMovimientoId());
+    assertEquals(depositoResponseDto.getTipoTransaccion(), depositoDtoResult.getTipoTransaccion());
+    assertEquals(depositoResponseDto.getDescripcion(), depositoDtoResult.getDescripcion());
+    assertEquals(depositoResponseDto.getMonto(), depositoDtoResult.getMonto());
+    assertEquals(depositoResponseDto.getMontoDebitado(), depositoDtoResult.getMontoDebitado());
+    assertEquals(depositoResponseDto.getMoneda(), depositoDtoResult.getMoneda());
+    assertEquals(depositoResponseDto.getCuenta(), depositoDtoResult.getCuenta());
+  }
+
+  @Test
+  public void testRealizarRetiroMonedasDistintasException()
+      throws MonedasDistintasException,
+          CuentaNoExistsException,
+          CorruptedDataInDbException,
+          ImpossibleException {
+    RetiroRequestDto retiroDto = createRetiroDto();
+    Cuenta cuentaOrigen = createCuenta(1);
+
+    when(cuentaService.buscarCuentaCompletaPorId(retiroDto.getCuenta())).thenReturn(cuentaOrigen);
+
+    doThrow(MonedasDistintasException.class)
+        .when(movimientoServiceValidator)
+        .validateMonedaIngresadaCorrecta(cuentaOrigen, retiroDto);
+
+    assertThrows(
+        MonedasDistintasException.class, () -> movimientoService.realizarRetiro(retiroDto));
+  }
+
+  @Test
+  public void testRealizarRetiroCuentaNoExistsException()
+      throws CuentaNoExistsException, CorruptedDataInDbException, ImpossibleException {
+    RetiroRequestDto retiroDto = createRetiroDto();
+
+    doThrow(CuentaNoExistsException.class)
+        .when(cuentaService)
+        .buscarCuentaCompletaPorId(retiroDto.getCuenta());
+
+    assertThrows(CuentaNoExistsException.class, () -> movimientoService.realizarRetiro(retiroDto));
+  }
+
+  @Test
+  public void testRealizarRetiroCorruptedDataInDbException()
+      throws CuentaNoExistsException, CorruptedDataInDbException, ImpossibleException {
+    RetiroRequestDto retiroDto = createRetiroDto();
+
+    doThrow(CorruptedDataInDbException.class)
+        .when(cuentaService)
+        .buscarCuentaCompletaPorId(retiroDto.getCuenta());
+
+    assertThrows(
+        CorruptedDataInDbException.class, () -> movimientoService.realizarRetiro(retiroDto));
+  }
+
+  @Test
+  public void testRealizarRetiroBuscarCuentaImpossibleException()
+      throws CuentaNoExistsException, CorruptedDataInDbException, ImpossibleException {
+    RetiroRequestDto retiroDto = createRetiroDto();
+
+    doThrow(ImpossibleException.class)
+        .when(cuentaService)
+        .buscarCuentaCompletaPorId(retiroDto.getCuenta());
+
+    assertThrows(ImpossibleException.class, () -> movimientoService.realizarRetiro(retiroDto));
+  }
+
+  @Test
+  public void testRealizarRetiroAgregarMovimientoACuentasImpossibleException()
+      throws ImpossibleException {
+    RetiroRequestDto retiroDto = createRetiroDto();
+
+    doThrow(ImpossibleException.class)
+        .when(cuentaService)
+        .agregarMovimientoACuentas(any(MovimientoUnidireccional.class));
+
+    assertThrows(ImpossibleException.class, () -> movimientoService.realizarRetiro(retiroDto));
+  }
+
+  @Test
+  public void testRealizarRetiroMontoInsuficienteException()
+      throws ImpossibleException, MontoInsuficienteException {
+    RetiroRequestDto retiroDto = createRetiroDto();
+
+    doThrow(MontoInsuficienteException.class)
+        .when(movimientoServiceValidator)
+        .validateMonto(any(Retiro.class));
+
+    assertThrows(
+        MontoInsuficienteException.class, () -> movimientoService.realizarRetiro(retiroDto));
+  }
+
+  @Test
+  public void testRealizarRetiroSuccess()
+      throws MonedasDistintasException,
+          CuentaNoExistsException,
+          CorruptedDataInDbException,
+          ImpossibleException,
+          MontoInsuficienteException {
+    RetiroRequestDto retiroDto = createRetiroDto();
+    Cuenta cuentaOrigen = createCuenta(1);
+    RetiroResponseDto retiroResponseDto = createRetiroResponseDto();
+    retiroResponseDto.setMoneda(cuentaOrigen.getMoneda().toString());
+
+    when(cuentaService.buscarCuentaCompletaPorId(retiroDto.getCuenta())).thenReturn(cuentaOrigen);
+
+    RetiroResponseDto retiroDtoResult = movimientoService.realizarRetiro(retiroDto);
+
+    verify(movimientoDao, times(1)).save(any(Movimiento.class));
+    assertEquals(retiroResponseDto.getMovimientoId(), retiroDtoResult.getMovimientoId());
+    assertEquals(retiroResponseDto.getTipoTransaccion(), retiroDtoResult.getTipoTransaccion());
+    assertEquals(retiroResponseDto.getDescripcion(), retiroDtoResult.getDescripcion());
+    assertEquals(retiroResponseDto.getMonto(), retiroDtoResult.getMonto());
+    assertEquals(retiroResponseDto.getMontoDebitado(), retiroDtoResult.getMontoDebitado());
+    assertEquals(retiroResponseDto.getMoneda(), retiroDtoResult.getMoneda());
+    assertEquals(retiroResponseDto.getCuenta(), retiroDtoResult.getCuenta());
+  }
+
   private Cuenta createCuenta(int id) {
     Cuenta cuenta = new Cuenta();
     cuenta.setNumeroCuenta(id);
@@ -426,5 +638,39 @@ public class MovimientoServiceTest {
 
   private BanelcoResponseDto createBanelcoResponse() {
     return new BanelcoResponseDto();
+  }
+
+  private DepositoRequestDto createDepositoDto() {
+    DepositoRequestDto depositoDto = new DepositoRequestDto();
+    depositoDto.setCuenta(1);
+    depositoDto.setMonto(1000);
+    depositoDto.setMoneda("D");
+    return depositoDto;
+  }
+
+  private DepositoResponseDto createDepositoResponseDto() {
+    DepositoResponseDto depositoResponseDto = new DepositoResponseDto();
+    depositoResponseDto.setCuenta(1);
+    depositoResponseDto.setMonto(1000);
+    depositoResponseDto.setMoneda("D");
+    depositoResponseDto.setDescripcion("Deposito");
+    return depositoResponseDto;
+  }
+
+  private RetiroRequestDto createRetiroDto() {
+    RetiroRequestDto retiroDto = new RetiroRequestDto();
+    retiroDto.setCuenta(1);
+    retiroDto.setMonto(1000);
+    retiroDto.setMoneda("D");
+    return retiroDto;
+  }
+
+  private RetiroResponseDto createRetiroResponseDto() {
+    RetiroResponseDto retiroResponseDto = new RetiroResponseDto();
+    retiroResponseDto.setCuenta(1);
+    retiroResponseDto.setMonto(1000);
+    retiroResponseDto.setMoneda("D");
+    retiroResponseDto.setDescripcion("Retiro");
+    return retiroResponseDto;
   }
 }
