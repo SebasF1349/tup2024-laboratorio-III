@@ -14,6 +14,7 @@ public class MovimientoEntity extends BaseEntity {
   private long numeroCuenta;
   private LocalDateTime diaHora;
   private double monto;
+  private double montoDebitado;
   private long numeroCuentaDestino;
   private String descripcion;
 
@@ -26,24 +27,31 @@ public class MovimientoEntity extends BaseEntity {
     this.descripcion = movimiento.getDescripcion();
     if (movimiento instanceof Transferencia) {
       this.numeroCuentaDestino = ((Transferencia) movimiento).getCuentaDestino().getNumeroCuenta();
+      this.montoDebitado = ((Transferencia) movimiento).getMontoDebitado();
     }
   }
 
   public Movimiento toMovimiento() throws ImpossibleException {
     CuentaDao cuentaDao = new CuentaDao();
-    Cuenta cuenta = cuentaDao.find(this.numeroCuenta, true);
+    Cuenta cuenta = cuentaDao.find(this.numeroCuenta, false);
     Movimiento movimiento;
     switch (this.movimiento) {
-      case "TRANSFERENCIA":
-        Cuenta cuentaDestino = cuentaDao.find(this.numeroCuentaDestino, true);
+      case "Transferencia":
+        Cuenta cuentaDestino = cuentaDao.find(this.numeroCuentaDestino, false);
         movimiento =
             new Transferencia(
-                this.monto, cuentaDestino, this.diaHora, this.getId(), cuenta, this.descripcion);
+                this.monto,
+                this.montoDebitado,
+                cuentaDestino,
+                this.diaHora,
+                this.getId(),
+                cuenta,
+                this.descripcion);
         break;
-      case "RETIRO":
+      case "Crédito":
         movimiento = new Retiro(this.monto, this.diaHora, this.getId(), cuenta, this.descripcion);
         break;
-      case "DEPOSITO":
+      case "Débito":
         movimiento = new Deposito(this.monto, this.diaHora, this.getId(), cuenta, this.descripcion);
         break;
       default:
@@ -98,5 +106,13 @@ public class MovimientoEntity extends BaseEntity {
 
   public void setDescripcion(String descripcion) {
     this.descripcion = descripcion;
+  }
+
+  public double getMontoDebitado() {
+    return montoDebitado;
+  }
+
+  public void setMontoDebitado(double montoDebitado) {
+    this.montoDebitado = montoDebitado;
   }
 }
