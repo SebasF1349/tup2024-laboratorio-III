@@ -14,6 +14,7 @@ public abstract class Movimiento {
     this.diaHora = LocalDateTime.now();
     this.monto = monto;
     this.cuenta = cuenta;
+    this.descripcion = this.getClass().getSimpleName();
   }
 
   public Movimiento(
@@ -27,15 +28,18 @@ public abstract class Movimiento {
 
   public MovimientoResponseDto toMovimientoResponseDto(long numeroCuenta) {
     MovimientoResponseDto movimientoResponseDto = new MovimientoResponseDto();
-    movimientoResponseDto.setFecha(this.getDiaHora().toString());
+    movimientoResponseDto.setMovimientoId(this.getMovimientoId());
     movimientoResponseDto.setDescripcion(this.getDescripcion());
+    movimientoResponseDto.setFecha(this.getDiaHora().toString());
+    movimientoResponseDto.setMoneda(this.getCuenta().getMoneda().toString());
+    movimientoResponseDto.setMonto(this.getMonto());
     if (this.getTipoMovimiento() == "Transferencia") {
       Transferencia transferencia = (Transferencia) this;
       if (transferencia.getCuenta().getNumeroCuenta() == numeroCuenta) {
-        movimientoResponseDto.setTipoTransaccion(TipoTransaccion.DEBITO.toString());
+        movimientoResponseDto.setTipoTransaccion(TipoTransaccion.CREDITO.toString());
         movimientoResponseDto.setMontoDebitado(transferencia.getMontoDebitado());
       } else if (transferencia.getCuentaDestino().getNumeroCuenta() == numeroCuenta) {
-        movimientoResponseDto.setTipoTransaccion(TipoTransaccion.CREDITO.toString());
+        movimientoResponseDto.setTipoTransaccion(TipoTransaccion.DEBITO.toString());
         movimientoResponseDto.setMontoDebitado(transferencia.getMonto());
       }
     } else {
