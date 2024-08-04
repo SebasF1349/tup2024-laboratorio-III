@@ -94,6 +94,10 @@ public class CuentaService {
       throw new CuentaNoExistsException("No existe una cuenta con el id " + numeroCuenta);
     }
 
+    if (cuenta.isExterna()) {
+      throw new CuentaNoExistsException("Cuenta solicitada es externa");
+    }
+
     Cliente titular;
     try {
       titular = clienteService.getClienteByCuenta(cuenta.getNumeroCuenta());
@@ -140,6 +144,10 @@ public class CuentaService {
 
     if (cuenta == null) {
       throw new CuentaNoExistsException("No existe una cuenta con el id " + numeroCuenta);
+    }
+
+    if (cuenta.isExterna()) {
+      throw new CuentaNoExistsException("Cuenta solicitada es externa");
     }
 
     Cliente titular;
