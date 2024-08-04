@@ -28,9 +28,9 @@ public enum TipoTransaccion {
   public String toString() {
     switch (this) {
       case DEBITO:
-        return "Débito";
+        return "Debito";
       case CREDITO:
-        return "Crédito";
+        return "Credito";
       default:
         return null;
     }

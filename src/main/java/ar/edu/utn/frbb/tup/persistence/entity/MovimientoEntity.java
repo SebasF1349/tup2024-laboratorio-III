@@ -48,10 +48,10 @@ public class MovimientoEntity extends BaseEntity {
                 cuenta,
                 this.descripcion);
         break;
-      case "Crédito":
+      case "Credito":
         movimiento = new Retiro(this.monto, this.diaHora, this.getId(), cuenta, this.descripcion);
         break;
-      case "Débito":
+      case "Debito":
         movimiento = new Deposito(this.monto, this.diaHora, this.getId(), cuenta, this.descripcion);
         break;
       default:
