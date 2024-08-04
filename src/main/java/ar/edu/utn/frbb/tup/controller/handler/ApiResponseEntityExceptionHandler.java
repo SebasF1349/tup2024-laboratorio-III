@@ -29,8 +29,6 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @ControllerAdvice
 public class ApiResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
 
-  // TODO: Improve error messages
-
   @ExceptionHandler(value = {NotFoundException.class})
   protected ResponseEntity<Object> handleClienteNotFound(NotFoundException ex, WebRequest request) {
     ApiError error = new ApiError(ex.getCode(), ex.getMessage());

@@ -31,7 +31,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class CuentaController {
 
   @Autowired private CuentaService cuentaService;
-
   @Autowired private CuentaControllerValidator cuentaValidator;
 
   @GetMapping(value = "/{id}")
