@@ -1,8 +1,9 @@
 package ar.edu.utn.frbb.tup.service.validator;
 
-import ar.edu.utn.frbb.tup.controller.TransferenciaRequestDto;
+import ar.edu.utn.frbb.tup.controller.MovimientoRequestDto;
 import ar.edu.utn.frbb.tup.externalService.BanelcoResponseDto;
 import ar.edu.utn.frbb.tup.model.Cuenta;
+import ar.edu.utn.frbb.tup.model.Movimiento;
 import ar.edu.utn.frbb.tup.model.TipoMoneda;
 import ar.edu.utn.frbb.tup.model.Transferencia;
 import ar.edu.utn.frbb.tup.model.exception.BanelcoErrorException;
@@ -14,19 +15,26 @@ import org.springframework.stereotype.Service;
 @Service
 public class MovimientoServiceValidator {
 
-  public void validateMonto(Transferencia transferencia) throws MontoInsuficienteException {
-    if (transferencia.getMontoDebitado() > transferencia.getCuenta().getBalance()) {
+  public void validateMonto(Movimiento movimiento) throws MontoInsuficienteException {
+    double monto;
+    if (movimiento.getTipoMovimiento() == "Transferencia") {
+      Transferencia transferencia = (Transferencia) movimiento;
+      monto = transferencia.getMontoDebitado();
+    } else {
+      monto = movimiento.getMonto();
+    }
+    if (monto > movimiento.getCuenta().getBalance()) {
       throw new MontoInsuficienteException(
           "La cuenta "
-              + transferencia.getCuenta().getNumeroCuenta()
-              + " no tiene saldo suficiente para realizar la transferencia.");
+              + movimiento.getCuenta().getNumeroCuenta()
+              + " no tiene saldo suficiente para realizar la operación.");
     }
   }
 
   public void validateMonedaIngresadaCorrecta(
-      Cuenta cuentaOrigen, TransferenciaRequestDto transferenciaDto)
+      Cuenta cuentaOrigen, MovimientoRequestDto movimientoRequestDto)
       throws MonedasDistintasException {
-    if (!cuentaOrigen.getMoneda().equals(TipoMoneda.fromString(transferenciaDto.getMoneda()))) {
+    if (!cuentaOrigen.getMoneda().equals(TipoMoneda.fromString(movimientoRequestDto.getMoneda()))) {
       throw new MonedasDistintasException("Las cuenta no poseen la moneda requerida.");
     }
   }
