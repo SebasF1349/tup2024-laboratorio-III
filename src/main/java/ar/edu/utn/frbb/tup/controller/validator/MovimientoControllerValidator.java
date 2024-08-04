@@ -1,6 +1,7 @@
 package ar.edu.utn.frbb.tup.controller.validator;
 
 import ar.edu.utn.frbb.tup.controller.MovimientoRequestDto;
+import ar.edu.utn.frbb.tup.model.TipoMoneda;
 import ar.edu.utn.frbb.tup.model.exception.WrongInputDataException;
 import org.springframework.stereotype.Component;
 
@@ -10,11 +11,11 @@ public class MovimientoControllerValidator {
     validateMoneda(movimientoRequestDto);
   }
 
-  // TODO: pdf shows it should accept "dolares" too
   public void validateMoneda(MovimientoRequestDto movimientoRequestDto)
       throws WrongInputDataException {
-    if (!"P".equals(movimientoRequestDto.getMoneda())
-        && !"D".equals(movimientoRequestDto.getMoneda())) {
+    try {
+      TipoMoneda.fromString(movimientoRequestDto.getMoneda());
+    } catch (IllegalArgumentException ex) {
       throw new WrongInputDataException("La moneda no es correcta");
     }
   }

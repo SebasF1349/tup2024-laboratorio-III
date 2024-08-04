@@ -68,9 +68,25 @@ public class CuentaControllerValidatorTest {
   }
 
   @Test
-  public void testValidateTipoMonedaDJSuccess() {
+  public void testValidateTipoMonedaPesosSuccess() {
+    CuentaRequestDto cuentaDto = new CuentaRequestDto();
+    cuentaDto.setMoneda("Pesos");
+
+    assertDoesNotThrow(() -> cuentaControllerValidator.validateMoneda(cuentaDto));
+  }
+
+  @Test
+  public void testValidateTipoMonedaDSuccess() {
     CuentaRequestDto cuentaDto = new CuentaRequestDto();
     cuentaDto.setMoneda("D");
+
+    assertDoesNotThrow(() -> cuentaControllerValidator.validateMoneda(cuentaDto));
+  }
+
+  @Test
+  public void testValidateTipoMonedaDolaresSuccess() {
+    CuentaRequestDto cuentaDto = new CuentaRequestDto();
+    cuentaDto.setMoneda("dolares");
 
     assertDoesNotThrow(() -> cuentaControllerValidator.validateMoneda(cuentaDto));
   }

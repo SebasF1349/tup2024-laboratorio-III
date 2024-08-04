@@ -43,9 +43,25 @@ public class MovimientoControllerValidatorTest {
   }
 
   @Test
-  public void testValidateTipoMonedaDJSuccess() {
+  public void testValidateTipoMonedaPesosSuccess() {
+    TransferenciaRequestDto transferenciaDto = new TransferenciaRequestDto();
+    transferenciaDto.setMoneda("Pesos");
+
+    assertDoesNotThrow(() -> movimientoControllerValidator.validateMoneda(transferenciaDto));
+  }
+
+  @Test
+  public void testValidateTipoMonedaDSuccess() {
     TransferenciaRequestDto transferenciaDto = new TransferenciaRequestDto();
     transferenciaDto.setMoneda("D");
+
+    assertDoesNotThrow(() -> movimientoControllerValidator.validateMoneda(transferenciaDto));
+  }
+
+  @Test
+  public void testValidateTipoMonedaDolaresSuccess() {
+    TransferenciaRequestDto transferenciaDto = new TransferenciaRequestDto();
+    transferenciaDto.setMoneda("dolares");
 
     assertDoesNotThrow(() -> movimientoControllerValidator.validateMoneda(transferenciaDto));
   }

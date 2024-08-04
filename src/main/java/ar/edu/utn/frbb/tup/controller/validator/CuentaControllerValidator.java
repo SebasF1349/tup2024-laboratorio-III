@@ -1,6 +1,7 @@
 package ar.edu.utn.frbb.tup.controller.validator;
 
 import ar.edu.utn.frbb.tup.controller.CuentaRequestDto;
+import ar.edu.utn.frbb.tup.model.TipoMoneda;
 import ar.edu.utn.frbb.tup.model.exception.WrongInputDataException;
 import org.springframework.stereotype.Component;
 
@@ -19,7 +20,9 @@ public class CuentaControllerValidator {
   }
 
   public void validateMoneda(CuentaRequestDto cuentaRequestDto) throws WrongInputDataException {
-    if (!"P".equals(cuentaRequestDto.getMoneda()) && !"D".equals(cuentaRequestDto.getMoneda())) {
+    try {
+      TipoMoneda.fromString(cuentaRequestDto.getMoneda());
+    } catch (IllegalArgumentException ex) {
       throw new WrongInputDataException("La moneda no es correcta");
     }
   }

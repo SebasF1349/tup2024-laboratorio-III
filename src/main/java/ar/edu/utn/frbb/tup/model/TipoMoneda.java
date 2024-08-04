@@ -18,7 +18,7 @@ public enum TipoMoneda {
 
   public static TipoMoneda fromString(String text) {
     for (TipoMoneda tipo : TipoMoneda.values()) {
-      if (tipo.descripcion.equalsIgnoreCase(text) || tipo.toString().equals(text)) {
+      if (tipo.descripcion.equalsIgnoreCase(text) || tipo.toString().equalsIgnoreCase(text)) {
         return tipo;
       }
     }
@@ -41,9 +41,9 @@ public enum TipoMoneda {
   public String toString() {
     switch (this) {
       case PESOS_ARGENTINOS:
-        return "Pesos Argentinos";
+        return "Pesos";
       case DOLARES_AMERICANOS:
-        return "Dólares Americanos";
+        return "Dolares";
       default:
         return null;
     }
