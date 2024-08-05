@@ -535,7 +535,7 @@ public class ClienteControllerTest {
     clienteDto.setApellido("Apellido");
     clienteDto.setFechaNacimiento("1990-01-01");
     clienteDto.setTipoPersona("F");
-    clienteDto.setBanco("");
+    clienteDto.setBanco("Galicia");
     return clienteDto;
   }
 
@@ -546,7 +546,7 @@ public class ClienteControllerTest {
     clienteDto.setApellido("Apellido");
     clienteDto.setFechaNacimiento("1990-01-01");
     clienteDto.setTipoPersona("F");
-    clienteDto.setBanco("");
+    clienteDto.setBanco("Galicia");
     return clienteDto;
   }
 }
