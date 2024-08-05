@@ -1,9 +1,16 @@
 package ar.edu.utn.frbb.tup.controller;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
 import jakarta.validation.constraints.Positive;
 
 public class RetiroRequestDto extends MovimientoRequestDto {
-  @Positive private long cuenta;
+  @Schema(
+      description = "Id de la cuenta a la que se le realiza el retiro",
+      example = "123456",
+      requiredMode = RequiredMode.REQUIRED)
+  @Positive
+  private long cuenta;
 
   public long getCuenta() {
     return cuenta;

@@ -1,13 +1,40 @@
 package ar.edu.utn.frbb.tup.controller;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
 public class PersonaDto {
-  @NotNull @Positive private long dni;
-  @NotNull private String nombre;
-  @NotNull private String apellido;
-  @NotNull private String fechaNacimiento;
+
+  @Schema(
+      description = "DNI del Cliente",
+      example = "12345678",
+      requiredMode = RequiredMode.REQUIRED)
+  @NotNull
+  @Positive
+  private long dni;
+
+  @Schema(
+      description = "Nombre del Cliente",
+      example = "Federico",
+      requiredMode = RequiredMode.REQUIRED)
+  @NotNull
+  private String nombre;
+
+  @Schema(
+      description = "Apellido del Cliente",
+      example = "Garcia",
+      requiredMode = RequiredMode.REQUIRED)
+  @NotNull
+  private String apellido;
+
+  @Schema(
+      description = "Fecha de Nacimiento del Cliente",
+      example = "1998-01-05",
+      requiredMode = RequiredMode.REQUIRED)
+  @NotNull
+  private String fechaNacimiento;
 
   public String getNombre() {
     return nombre;

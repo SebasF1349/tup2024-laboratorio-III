@@ -1,11 +1,24 @@
 package ar.edu.utn.frbb.tup.controller;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Positive;
 
 public class MovimientoRequestDto {
-  @Positive private double monto;
-  @NotEmpty private String moneda;
+  @Schema(
+      description = "Monto del movimiento",
+      example = "1000",
+      requiredMode = RequiredMode.REQUIRED)
+  @Positive
+  private double monto;
+
+  @Schema(
+      description = "Moneda del movimiento",
+      example = "pesos",
+      requiredMode = RequiredMode.REQUIRED)
+  @NotEmpty
+  private String moneda;
 
   public double getMonto() {
     return monto;

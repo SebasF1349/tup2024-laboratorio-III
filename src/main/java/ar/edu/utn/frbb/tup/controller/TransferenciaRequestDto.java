@@ -1,10 +1,23 @@
 package ar.edu.utn.frbb.tup.controller;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
 import jakarta.validation.constraints.Positive;
 
 public class TransferenciaRequestDto extends MovimientoRequestDto {
-  @Positive long cuentaOrigen;
-  @Positive long cuentaDestino;
+  @Schema(
+      description = "Id de la Cuenta de Origen de la Transferencia",
+      example = "123456",
+      requiredMode = RequiredMode.REQUIRED)
+  @Positive
+  long cuentaOrigen;
+
+  @Schema(
+      description = "Id de la Cuenta de Destino de la Transferencia",
+      example = "654321",
+      requiredMode = RequiredMode.REQUIRED)
+  @Positive
+  long cuentaDestino;
 
   public long getCuentaOrigen() {
     return cuentaOrigen;

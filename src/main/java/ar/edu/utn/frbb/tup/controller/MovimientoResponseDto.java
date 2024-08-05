@@ -1,17 +1,54 @@
 package ar.edu.utn.frbb.tup.controller;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
 public class MovimientoResponseDto {
-  @Positive private long movimientoId;
-  @NotNull private String fecha;
-  @NotNull private String tipoTransaccion;
-  @NotNull private String descripcion;
-  @Positive private double monto;
-  @Positive private double montoDebitado;
-  @NotEmpty private String moneda;
+  @Schema(description = "Id del Movimiento", example = "123", requiredMode = RequiredMode.REQUIRED)
+  @Positive
+  private long movimientoId;
+
+  @Schema(
+      description = "Fecha de realización del movimiento",
+      example = "2024-01-05",
+      requiredMode = RequiredMode.REQUIRED)
+  @NotNull
+  private String fecha;
+
+  @Schema(
+      description = "Tipo de la Transaccion",
+      example = "Credito",
+      requiredMode = RequiredMode.REQUIRED)
+  @NotNull
+  private String tipoTransaccion;
+
+  @Schema(
+      description = "Descripcion del movimiento",
+      example = "Pago en el supermercado",
+      requiredMode = RequiredMode.REQUIRED)
+  @NotNull
+  private String descripcion;
+
+  @Schema(
+      description = "Monto del movimiento",
+      example = "1000",
+      requiredMode = RequiredMode.REQUIRED)
+  @Positive
+  private double monto;
+
+  @Schema(description = "Monto debitado", example = "1000", requiredMode = RequiredMode.REQUIRED)
+  @Positive
+  private double montoDebitado;
+
+  @Schema(
+      description = "Moneda del movimiento",
+      example = "pesos",
+      requiredMode = RequiredMode.REQUIRED)
+  @NotEmpty
+  private String moneda;
 
   public long getMovimientoId() {
     return movimientoId;

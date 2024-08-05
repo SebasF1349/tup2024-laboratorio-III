@@ -4,6 +4,10 @@ import ar.edu.utn.frbb.tup.model.exception.BadRequestException;
 import ar.edu.utn.frbb.tup.model.exception.InternalServerErrorException;
 import ar.edu.utn.frbb.tup.model.exception.NotFoundException;
 import ar.edu.utn.frbb.tup.model.exception.ServiceUnavailableException;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import java.util.HashMap;
@@ -30,12 +34,34 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 public class ApiResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
 
   @ExceptionHandler(value = {NotFoundException.class})
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "404",
+            description = "No Encontrado",
+            content = {
+              @Content(
+                  mediaType = "application/json",
+                  schema = @Schema(implementation = ApiError.class))
+            })
+      })
   protected ResponseEntity<Object> handleClienteNotFound(NotFoundException ex, WebRequest request) {
     ApiError error = new ApiError(ex.getCode(), ex.getMessage());
     return handleExceptionInternal(ex, error, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
   }
 
   @ExceptionHandler(value = {BadRequestException.class})
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "400",
+            description = "Datos Incorrectos",
+            content = {
+              @Content(
+                  mediaType = "application/json",
+                  schema = @Schema(implementation = ApiError.class))
+            })
+      })
   protected ResponseEntity<Object> handleClienteAlreadyExists(
       BadRequestException ex, WebRequest request) {
     ApiError error = new ApiError(ex.getCode(), ex.getMessage());
@@ -43,6 +69,17 @@ public class ApiResponseEntityExceptionHandler extends ResponseEntityExceptionHa
   }
 
   @ExceptionHandler(value = {InternalServerErrorException.class})
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "500",
+            description = "Error del Servidor",
+            content = {
+              @Content(
+                  mediaType = "application/json",
+                  schema = @Schema(implementation = ApiError.class))
+            })
+      })
   protected ResponseEntity<Object> handleBanelcoError(
       InternalServerErrorException ex, WebRequest request) {
     ApiError error = new ApiError(ex.getCode(), ex.getMessage());
@@ -51,6 +88,17 @@ public class ApiResponseEntityExceptionHandler extends ResponseEntityExceptionHa
   }
 
   @ExceptionHandler(value = {ServiceUnavailableException.class})
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "503",
+            description = "Servicio No Disponible",
+            content = {
+              @Content(
+                  mediaType = "application/json",
+                  schema = @Schema(implementation = ApiError.class))
+            })
+      })
   protected ResponseEntity<Object> handleBanelcoError(
       ServiceUnavailableException ex, WebRequest request) {
     ApiError error = new ApiError(ex.getCode(), ex.getMessage());
@@ -59,6 +107,17 @@ public class ApiResponseEntityExceptionHandler extends ResponseEntityExceptionHa
   }
 
   @ExceptionHandler({MethodArgumentTypeMismatchException.class})
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "400",
+            description = "Datos Incorrectos",
+            content = {
+              @Content(
+                  mediaType = "application/json",
+                  schema = @Schema(implementation = ApiError.class))
+            })
+      })
   public ResponseEntity<Object> handleMethodArgumentTypeMismatch(
       MethodArgumentTypeMismatchException ex, WebRequest request) {
     String errorMessage = ex.getName() + " debe ser de tipo " + ex.getRequiredType().getName();
@@ -67,6 +126,17 @@ public class ApiResponseEntityExceptionHandler extends ResponseEntityExceptionHa
   }
 
   @ExceptionHandler(value = {IllegalArgumentException.class})
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "400",
+            description = "Datos Incorrectos",
+            content = {
+              @Content(
+                  mediaType = "application/json",
+                  schema = @Schema(implementation = ApiError.class))
+            })
+      })
   protected ResponseEntity<Object> handleIllegalArgumentException(
       IllegalArgumentException ex, WebRequest request) {
     ApiError error = new ApiError(400103, ex.getMessage());
@@ -74,6 +144,17 @@ public class ApiResponseEntityExceptionHandler extends ResponseEntityExceptionHa
   }
 
   @ExceptionHandler({ConstraintViolationException.class})
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "400",
+            description = "Datos Incorrectos",
+            content = {
+              @Content(
+                  mediaType = "application/json",
+                  schema = @Schema(implementation = ApiErrorDetailed.class))
+            })
+      })
   public ResponseEntity<Object> handleConstraintViolation(
       ConstraintViolationException ex, WebRequest request) {
     Map<String, String> errors = new HashMap<>();
@@ -83,12 +164,23 @@ public class ApiResponseEntityExceptionHandler extends ResponseEntityExceptionHa
           violation.getMessage());
     }
 
-    ApiError apiError = new ApiError(400104, "Campos fallaron validación", errors);
+    ApiError apiError = new ApiErrorDetailed(400104, "Campos fallaron validación", errors);
     return handleExceptionInternal(
         ex, apiError, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
   }
 
   @Override
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "400",
+            description = "Datos Incorrectos",
+            content = {
+              @Content(
+                  mediaType = "application/json",
+                  schema = @Schema(implementation = ApiError.class))
+            })
+      })
   protected ResponseEntity<Object> handleTypeMismatch(
       TypeMismatchException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
     String errorMessage =
@@ -98,6 +190,17 @@ public class ApiResponseEntityExceptionHandler extends ResponseEntityExceptionHa
   }
 
   @Override
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "400",
+            description = "Datos Incorrectos",
+            content = {
+              @Content(
+                  mediaType = "application/json",
+                  schema = @Schema(implementation = ApiError.class))
+            })
+      })
   protected ResponseEntity<Object> handleMissingServletRequestParameter(
       MissingServletRequestParameterException ex,
       HttpHeaders headers,
@@ -109,6 +212,17 @@ public class ApiResponseEntityExceptionHandler extends ResponseEntityExceptionHa
   }
 
   @Override
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "400",
+            description = "Datos Incorrectos",
+            content = {
+              @Content(
+                  mediaType = "application/json",
+                  schema = @Schema(implementation = ApiErrorDetailed.class))
+            })
+      })
   protected ResponseEntity<Object> handleMethodArgumentNotValid(
       MethodArgumentNotValidException ex,
       HttpHeaders headers,
@@ -123,11 +237,22 @@ public class ApiResponseEntityExceptionHandler extends ResponseEntityExceptionHa
               String errorMessage = error.getDefaultMessage();
               errors.put(fieldName, errorMessage);
             });
-    ApiError apiError = new ApiError(400104, "Campos fallaron validación", errors);
+    ApiError apiError = new ApiErrorDetailed(400104, "Campos fallaron validación", errors);
     return handleExceptionInternal(ex, apiError, headers, HttpStatus.BAD_REQUEST, request);
   }
 
   @Override
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "400",
+            description = "Datos Incorrectos",
+            content = {
+              @Content(
+                  mediaType = "application/json",
+                  schema = @Schema(implementation = ApiError.class))
+            })
+      })
   protected ResponseEntity<Object> handleHttpMessageNotReadable(
       HttpMessageNotReadableException ex,
       HttpHeaders headers,
@@ -138,6 +263,17 @@ public class ApiResponseEntityExceptionHandler extends ResponseEntityExceptionHa
   }
 
   @Override
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "400",
+            description = "Datos Incorrectos",
+            content = {
+              @Content(
+                  mediaType = "application/json",
+                  schema = @Schema(implementation = ApiError.class))
+            })
+      })
   protected ResponseEntity<Object> handleNoHandlerFoundException(
       NoHandlerFoundException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
 
@@ -150,6 +286,17 @@ public class ApiResponseEntityExceptionHandler extends ResponseEntityExceptionHa
   }
 
   @Override
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "405",
+            description = "Metodo No Soportado",
+            content = {
+              @Content(
+                  mediaType = "application/json",
+                  schema = @Schema(implementation = ApiError.class))
+            })
+      })
   protected ResponseEntity<Object> handleHttpRequestMethodNotSupported(
       HttpRequestMethodNotSupportedException ex,
       HttpHeaders headers,
@@ -160,6 +307,17 @@ public class ApiResponseEntityExceptionHandler extends ResponseEntityExceptionHa
   }
 
   @ExceptionHandler(value = {Exception.class})
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "500",
+            description = "Error Del Servidor",
+            content = {
+              @Content(
+                  mediaType = "application/json",
+                  schema = @Schema(implementation = ApiError.class))
+            })
+      })
   protected ResponseEntity<Object> handleAllExceptions(Exception ex, WebRequest request) {
     ApiError error = new ApiError(500000, ex.getMessage());
     return handleExceptionInternal(

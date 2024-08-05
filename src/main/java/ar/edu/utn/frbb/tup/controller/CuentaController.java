@@ -12,10 +12,16 @@ import ar.edu.utn.frbb.tup.model.exception.ImpossibleException;
 import ar.edu.utn.frbb.tup.model.exception.TipoCuentaAlreadyExistsException;
 import ar.edu.utn.frbb.tup.model.exception.WrongInputDataException;
 import ar.edu.utn.frbb.tup.service.CuentaService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,21 +33,46 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@Tag(name = "Cuenta Endpoints")
 @RequestMapping("/api/cuenta")
 public class CuentaController {
 
   @Autowired private CuentaService cuentaService;
   @Autowired private CuentaControllerValidator cuentaValidator;
 
-  @GetMapping(value = "/{id}")
-  public CuentaResponseDto obtenerCuenta(@PathVariable long id)
+  @Operation(summary = "Obtener Cuenta")
+  @ApiResponses(
+      value = {
+        @ApiResponse(responseCode = "200", description = "Cuenta obtenido exitosamente"),
+        @ApiResponse(responseCode = "404", description = "Cuenta no existe"),
+        @ApiResponse(responseCode = "500", description = "Error interno del servidor"),
+      })
+  @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+  public CuentaResponseDto obtenerCuenta(
+      @PathVariable @Parameter(description = "Id de la Cuenta", example = "123456") long id)
       throws CuentaNoExistsException, CorruptedDataInDbException, ImpossibleException {
     return cuentaService.buscarCuentaPorId(id);
   }
 
-  @PostMapping
+  @Operation(summary = "Crear Cuenta")
+  @ApiResponses(
+      value = {
+        @ApiResponse(responseCode = "201", description = "Cuenta obtenido exitosamente"),
+        @ApiResponse(
+            responseCode = "400",
+            description =
+                "Información no válida\t\n"
+                    + "Cuenta no soportada\t\n"
+                    + "Cliente ya posee cuenta del mismo tipo\t\n"
+                    + "Cuenta inactiva\t\n"
+                    + "Cliente inactivo"),
+        @ApiResponse(responseCode = "404", description = "Cliente no existe\t\nCuenta no existe"),
+        @ApiResponse(responseCode = "500", description = "Error interno del servidor"),
+      })
+  @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<CuentaResponseDto> crearCuenta(
-      @Valid @RequestBody CuentaRequestDto cuentaRequestDto)
+      @Valid @RequestBody @Parameter(name = "Cuenta", description = "Datos de la Cuenta")
+          CuentaRequestDto cuentaRequestDto)
       throws WrongInputDataException,
           CuentaNoSoportadaException,
           TipoCuentaAlreadyExistsException,
@@ -56,8 +87,17 @@ public class CuentaController {
         cuentaResponse, new HttpHeaders(), HttpStatus.CREATED);
   }
 
-  @DeleteMapping(value = "/{id}")
-  public CuentaResponseDto eliminarCuenta(@PathVariable long id)
+  @Operation(summary = "Inactivar Cuenta")
+  @ApiResponses(
+      value = {
+        @ApiResponse(responseCode = "200", description = "Cuenta inactivada exitosamente"),
+        @ApiResponse(responseCode = "400", description = "Cuenta ya inactiva\t\n"),
+        @ApiResponse(responseCode = "404", description = "Cuenta no existe"),
+        @ApiResponse(responseCode = "500", description = "Error interno del servidor"),
+      })
+  @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+  public CuentaResponseDto eliminarCuenta(
+      @PathVariable @Parameter(description = "Id de la Cuenta", example = "123456") long id)
       throws CuentaNoExistsException,
           CorruptedDataInDbException,
           ImpossibleException,
@@ -65,8 +105,17 @@ public class CuentaController {
     return cuentaService.eliminarCuenta(id);
   }
 
-  @PatchMapping(value = "/{id}")
-  public CuentaResponseDto activarCuenta(@PathVariable long id)
+  @Operation(summary = "Activar Cuenta")
+  @ApiResponses(
+      value = {
+        @ApiResponse(responseCode = "200", description = "Cuenta inactivada exitosamente"),
+        @ApiResponse(responseCode = "400", description = "Cuenta ya activa\t\n"),
+        @ApiResponse(responseCode = "404", description = "Cuenta no existe"),
+        @ApiResponse(responseCode = "500", description = "Error interno del servidor"),
+      })
+  @PatchMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+  public CuentaResponseDto activarCuenta(
+      @PathVariable @Parameter(description = "Id de la Cuenta", example = "123456") long id)
       throws CuentaNoExistsException,
           CorruptedDataInDbException,
           ImpossibleException,
@@ -74,8 +123,17 @@ public class CuentaController {
     return cuentaService.activarCuenta(id);
   }
 
-  @GetMapping(value = "/{id}/transacciones")
-  public CuentaMovimientosResponseDto obtenerTransaccionesEnCuenta(@PathVariable long id)
+  @Operation(summary = "Obtener transacciones en Cuenta")
+  @ApiResponses(
+      value = {
+        @ApiResponse(responseCode = "200", description = "Cuenta inactivada exitosamente"),
+        @ApiResponse(responseCode = "400", description = "Cuenta ya inactiva\t\n"),
+        @ApiResponse(responseCode = "404", description = "Cuenta no existe"),
+        @ApiResponse(responseCode = "500", description = "Error interno del servidor"),
+      })
+  @GetMapping(value = "/{id}/transacciones", produces = MediaType.APPLICATION_JSON_VALUE)
+  public CuentaMovimientosResponseDto obtenerTransaccionesEnCuenta(
+      @PathVariable @Parameter(description = "Id de la Cuenta", example = "123456") long id)
       throws CuentaNoExistsException,
           CorruptedDataInDbException,
           ImpossibleException,

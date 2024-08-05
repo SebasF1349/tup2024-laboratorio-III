@@ -1,10 +1,26 @@
 package ar.edu.utn.frbb.tup.controller;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
 import jakarta.validation.constraints.NotNull;
 
 public class ClienteResponseDto extends PersonaDto {
-  @NotNull private String tipoPersona;
-  @NotNull private String banco;
+  @Schema(
+      description = "Tipo de Persona",
+      example = "Juridica",
+      requiredMode = RequiredMode.REQUIRED)
+  @NotNull
+  @NotNull
+  private String tipoPersona;
+
+  @Schema(description = "Banco", example = "Galicia", requiredMode = RequiredMode.REQUIRED)
+  @NotNull
+  private String banco;
+
+  @Schema(
+      description = "Estado del Cliente",
+      example = "true",
+      requiredMode = RequiredMode.REQUIRED)
   private boolean activo;
 
   public String getTipoPersona() {
