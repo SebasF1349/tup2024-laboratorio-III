@@ -29,7 +29,7 @@ public class CuentaRequestDto {
       description = "DNI del Titular",
       example = "12345678",
       requiredMode = RequiredMode.REQUIRED)
-  @Positive(message = "Campo debe ser un número positivo")
+  @Positive(message = "Campo debe ser un numero positivo")
   private long titular;
 
   public double getBalance() {

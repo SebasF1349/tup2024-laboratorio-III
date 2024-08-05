@@ -10,7 +10,7 @@ public class MovimientoRequestDto {
       description = "Monto del movimiento",
       example = "1000",
       requiredMode = RequiredMode.REQUIRED)
-  @Positive(message = "Campo debe ser un número positivo")
+  @Positive(message = "Campo debe ser un numero positivo")
   private double monto;
 
   @Schema(

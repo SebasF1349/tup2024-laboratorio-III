@@ -9,14 +9,14 @@ public class TransferenciaRequestDto extends MovimientoRequestDto {
       description = "Id de la Cuenta de Origen de la Transferencia",
       example = "123456",
       requiredMode = RequiredMode.REQUIRED)
-  @Positive(message = "Campo debe ser un número positivo")
+  @Positive(message = "Campo debe ser un numero positivo")
   long cuentaOrigen;
 
   @Schema(
       description = "Id de la Cuenta de Destino de la Transferencia",
       example = "654321",
       requiredMode = RequiredMode.REQUIRED)
-  @Positive(message = "Campo debe ser un número positivo")
+  @Positive(message = "Campo debe ser un numero positivo")
   long cuentaDestino;
 
   public long getCuentaOrigen() {

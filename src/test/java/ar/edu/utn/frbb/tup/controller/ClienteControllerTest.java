@@ -100,12 +100,12 @@ public class ClienteControllerTest {
         .andExpect(jsonPath("$", notNullValue()))
         .andExpect(jsonPath("$.errorCode", is(400104)))
         .andExpect(jsonPath("$.errors", aMapWithSize(6)))
-        .andExpect(jsonPath("$.errors.tipoPersona", is("must not be null")))
-        .andExpect(jsonPath("$.errors.banco", is("must not be null")))
-        .andExpect(jsonPath("$.errors.dni", is("must be greater than 0")))
-        .andExpect(jsonPath("$.errors.nombre", is("must not be null")))
-        .andExpect(jsonPath("$.errors.apellido", is("must not be null")))
-        .andExpect(jsonPath("$.errors.fechaNacimiento", is("must not be null")));
+        .andExpect(jsonPath("$.errors.tipoPersona", is("Campo no puede estar vacio")))
+        .andExpect(jsonPath("$.errors.banco", is("Campo no puede estar vacio")))
+        .andExpect(jsonPath("$.errors.dni", is("Campo debe ser un numero positivo")))
+        .andExpect(jsonPath("$.errors.nombre", is("Campo no puede estar vacio")))
+        .andExpect(jsonPath("$.errors.apellido", is("Campo no puede estar vacio")))
+        .andExpect(jsonPath("$.errors.fechaNacimiento", is("Campo no puede estar vacio")));
   }
 
   @Test
@@ -126,12 +126,12 @@ public class ClienteControllerTest {
         .andExpect(jsonPath("$", notNullValue()))
         .andExpect(jsonPath("$.errorCode", is(400104)))
         .andExpect(jsonPath("$.errors", aMapWithSize(6)))
-        .andExpect(jsonPath("$.errors.tipoPersona", is("must not be null")))
-        .andExpect(jsonPath("$.errors.banco", is("must not be null")))
-        .andExpect(jsonPath("$.errors.dni", is("must be greater than 0")))
-        .andExpect(jsonPath("$.errors.nombre", is("must not be null")))
-        .andExpect(jsonPath("$.errors.apellido", is("must not be null")))
-        .andExpect(jsonPath("$.errors.fechaNacimiento", is("must not be null")));
+        .andExpect(jsonPath("$.errors.tipoPersona", is("Campo no puede estar vacio")))
+        .andExpect(jsonPath("$.errors.banco", is("Campo no puede estar vacio")))
+        .andExpect(jsonPath("$.errors.dni", is("Campo debe ser un numero positivo")))
+        .andExpect(jsonPath("$.errors.nombre", is("Campo no puede estar vacio")))
+        .andExpect(jsonPath("$.errors.apellido", is("Campo no puede estar vacio")))
+        .andExpect(jsonPath("$.errors.fechaNacimiento", is("Campo no puede estar vacio")));
   }
 
   @Test
@@ -309,12 +309,12 @@ public class ClienteControllerTest {
         .andExpect(jsonPath("$", notNullValue()))
         .andExpect(jsonPath("$.errorCode", is(400104)))
         .andExpect(jsonPath("$.errors", aMapWithSize(6)))
-        .andExpect(jsonPath("$.errors.tipoPersona", is("must not be null")))
-        .andExpect(jsonPath("$.errors.banco", is("must not be null")))
-        .andExpect(jsonPath("$.errors.dni", is("must be greater than 0")))
-        .andExpect(jsonPath("$.errors.nombre", is("must not be null")))
-        .andExpect(jsonPath("$.errors.apellido", is("must not be null")))
-        .andExpect(jsonPath("$.errors.fechaNacimiento", is("must not be null")));
+        .andExpect(jsonPath("$.errors.tipoPersona", is("Campo no puede estar vacio")))
+        .andExpect(jsonPath("$.errors.banco", is("Campo no puede estar vacio")))
+        .andExpect(jsonPath("$.errors.dni", is("Campo debe ser un numero positivo")))
+        .andExpect(jsonPath("$.errors.nombre", is("Campo no puede estar vacio")))
+        .andExpect(jsonPath("$.errors.apellido", is("Campo no puede estar vacio")))
+        .andExpect(jsonPath("$.errors.fechaNacimiento", is("Campo no puede estar vacio")));
   }
 
   @Test
@@ -335,12 +335,12 @@ public class ClienteControllerTest {
         .andExpect(jsonPath("$", notNullValue()))
         .andExpect(jsonPath("$.errorCode", is(400104)))
         .andExpect(jsonPath("$.errors", aMapWithSize(6)))
-        .andExpect(jsonPath("$.errors.tipoPersona", is("must not be null")))
-        .andExpect(jsonPath("$.errors.banco", is("must not be null")))
-        .andExpect(jsonPath("$.errors.dni", is("must be greater than 0")))
-        .andExpect(jsonPath("$.errors.nombre", is("must not be null")))
-        .andExpect(jsonPath("$.errors.apellido", is("must not be null")))
-        .andExpect(jsonPath("$.errors.fechaNacimiento", is("must not be null")));
+        .andExpect(jsonPath("$.errors.tipoPersona", is("Campo no puede estar vacio")))
+        .andExpect(jsonPath("$.errors.banco", is("Campo no puede estar vacio")))
+        .andExpect(jsonPath("$.errors.dni", is("Campo debe ser un numero positivo")))
+        .andExpect(jsonPath("$.errors.nombre", is("Campo no puede estar vacio")))
+        .andExpect(jsonPath("$.errors.apellido", is("Campo no puede estar vacio")))
+        .andExpect(jsonPath("$.errors.fechaNacimiento", is("Campo no puede estar vacio")));
   }
 
   @Test

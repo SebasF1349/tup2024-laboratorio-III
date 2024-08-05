@@ -73,10 +73,10 @@ public class MovimientoControllerTest {
         .andExpect(jsonPath("$", notNullValue()))
         .andExpect(jsonPath("$.errorCode", is(400104)))
         .andExpect(jsonPath("$.errors", aMapWithSize(4)))
-        .andExpect(jsonPath("$.errors.monto", is("must be greater than 0")))
-        .andExpect(jsonPath("$.errors.cuentaDestino", is("must be greater than 0")))
-        .andExpect(jsonPath("$.errors.cuentaOrigen", is("must be greater than 0")))
-        .andExpect(jsonPath("$.errors.moneda", is("must not be empty")));
+        .andExpect(jsonPath("$.errors.monto", is("Campo debe ser un numero positivo")))
+        .andExpect(jsonPath("$.errors.cuentaDestino", is("Campo debe ser un numero positivo")))
+        .andExpect(jsonPath("$.errors.cuentaOrigen", is("Campo debe ser un numero positivo")))
+        .andExpect(jsonPath("$.errors.moneda", is("Campo no puede estar vacio")));
   }
 
   @Test
@@ -266,9 +266,9 @@ public class MovimientoControllerTest {
         .andExpect(jsonPath("$", notNullValue()))
         .andExpect(jsonPath("$.errorCode", is(400104)))
         .andExpect(jsonPath("$.errors", aMapWithSize(3)))
-        .andExpect(jsonPath("$.errors.monto", is("must be greater than 0")))
-        .andExpect(jsonPath("$.errors.cuenta", is("must be greater than 0")))
-        .andExpect(jsonPath("$.errors.moneda", is("must not be empty")));
+        .andExpect(jsonPath("$.errors.monto", is("Campo debe ser un numero positivo")))
+        .andExpect(jsonPath("$.errors.cuenta", is("Campo debe ser un numero positivo")))
+        .andExpect(jsonPath("$.errors.moneda", is("Campo no puede estar vacio")));
   }
 
   @Test
@@ -410,9 +410,9 @@ public class MovimientoControllerTest {
         .andExpect(jsonPath("$", notNullValue()))
         .andExpect(jsonPath("$.errorCode", is(400104)))
         .andExpect(jsonPath("$.errors", aMapWithSize(3)))
-        .andExpect(jsonPath("$.errors.monto", is("must be greater than 0")))
-        .andExpect(jsonPath("$.errors.cuenta", is("must be greater than 0")))
-        .andExpect(jsonPath("$.errors.moneda", is("must not be empty")));
+        .andExpect(jsonPath("$.errors.monto", is("Campo debe ser un numero positivo")))
+        .andExpect(jsonPath("$.errors.cuenta", is("Campo debe ser un numero positivo")))
+        .andExpect(jsonPath("$.errors.moneda", is("Campo no puede estar vacio")));
   }
 
   @Test

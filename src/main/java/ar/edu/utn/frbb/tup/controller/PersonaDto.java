@@ -11,7 +11,7 @@ public class PersonaDto {
       description = "DNI del Cliente",
       example = "12345678",
       requiredMode = RequiredMode.REQUIRED)
-  @Positive(message = "Campo debe ser un número positivo")
+  @Positive(message = "Campo debe ser un numero positivo")
   private long dni;
 
   @Schema(

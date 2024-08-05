@@ -124,9 +124,9 @@ public class CuentaControllerTest {
         .andExpect(jsonPath("$", notNullValue()))
         .andExpect(jsonPath("$.errorCode", is(400104)))
         .andExpect(jsonPath("$.errors", aMapWithSize(3)))
-        .andExpect(jsonPath("$.errors.tipoCuenta", is("must not be null")))
-        .andExpect(jsonPath("$.errors.moneda", is("must not be null")))
-        .andExpect(jsonPath("$.errors.titular", is("must be greater than 0")));
+        .andExpect(jsonPath("$.errors.tipoCuenta", is("Campo no puede estar vacio")))
+        .andExpect(jsonPath("$.errors.moneda", is("Campo no puede estar vacio")))
+        .andExpect(jsonPath("$.errors.titular", is("Campo debe ser un numero positivo")));
   }
 
   @Test
@@ -148,10 +148,10 @@ public class CuentaControllerTest {
         .andExpect(jsonPath("$", notNullValue()))
         .andExpect(jsonPath("$.errorCode", is(400104)))
         .andExpect(jsonPath("$.errors", aMapWithSize(4)))
-        .andExpect(jsonPath("$.errors.balance", is("must be greater than or equal to 0")))
-        .andExpect(jsonPath("$.errors.tipoCuenta", is("must not be null")))
-        .andExpect(jsonPath("$.errors.moneda", is("must not be null")))
-        .andExpect(jsonPath("$.errors.titular", is("must be greater than 0")));
+        .andExpect(jsonPath("$.errors.balance", is("Campo debe ser un numero positivo o cero")))
+        .andExpect(jsonPath("$.errors.tipoCuenta", is("Campo no puede estar vacio")))
+        .andExpect(jsonPath("$.errors.moneda", is("Campo no puede estar vacio")))
+        .andExpect(jsonPath("$.errors.titular", is("Campo debe ser un numero positivo")));
   }
 
   @Test
