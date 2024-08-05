@@ -389,10 +389,6 @@ public class ClienteServiceTest {
     clienteResponseDto.setTipoPersona(cliente.getTipoPersona().toString());
     clienteResponseDto.setActivo(false);
 
-    Cliente clienteRes = createCliente();
-    clienteRes.setActivo(false);
-    clienteRes.addCuenta(cuenta);
-
     when(clienteDao.find(dniCliente, true)).thenReturn(cliente);
 
     assertEquals(clienteResponseDto, clienteService.eliminarCliente(dniCliente));
