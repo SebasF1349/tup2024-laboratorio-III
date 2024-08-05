@@ -8,12 +8,12 @@ import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ApiError {
-  @Schema(description = "Código de error", example = "404101", requiredMode = RequiredMode.REQUIRED)
+  @Schema(description = "Código de error", example = "999999", requiredMode = RequiredMode.REQUIRED)
   private Integer errorCode;
 
   @Schema(
       description = "Mensaje de error",
-      example = "Fallo de verificacion",
+      example = "Error en XXXX",
       requiredMode = RequiredMode.REQUIRED)
   private String errorMessage;
 
