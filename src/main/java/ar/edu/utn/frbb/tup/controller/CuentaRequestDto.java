@@ -2,7 +2,7 @@ package ar.edu.utn.frbb.tup.controller;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 
@@ -11,25 +11,25 @@ public class CuentaRequestDto {
       description = "Dinero disponible en la cuenta",
       example = "0",
       requiredMode = RequiredMode.REQUIRED)
-  @PositiveOrZero
+  @PositiveOrZero(message = "Campo debe ser un numero positivo o cero")
   private double balance;
 
   @Schema(
       description = "Tipo de cuenta",
       example = "Caja de Ahorros",
       requiredMode = RequiredMode.REQUIRED)
-  @NotNull
+  @NotBlank(message = "Campo no puede estar vacio")
   private String tipoCuenta;
 
   @Schema(description = "Moneda", example = "Pesos", requiredMode = RequiredMode.REQUIRED)
-  @NotNull
+  @NotBlank(message = "Campo no puede estar vacio")
   private String moneda;
 
   @Schema(
       description = "DNI del Titular",
       example = "12345678",
       requiredMode = RequiredMode.REQUIRED)
-  @Positive
+  @Positive(message = "Campo debe ser un número positivo")
   private long titular;
 
   public double getBalance() {

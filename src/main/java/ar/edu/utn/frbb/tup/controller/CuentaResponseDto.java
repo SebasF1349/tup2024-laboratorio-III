@@ -2,7 +2,7 @@ package ar.edu.utn.frbb.tup.controller;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 
@@ -18,11 +18,11 @@ public class CuentaResponseDto {
       description = "Tipo de cuenta",
       example = "Caja de Ahorros",
       requiredMode = RequiredMode.REQUIRED)
-  @NotNull
+  @NotBlank
   private String tipoCuenta;
 
   @Schema(description = "Moneda", example = "Pesos", requiredMode = RequiredMode.REQUIRED)
-  @NotNull
+  @NotBlank
   private String moneda;
 
   @Schema(

@@ -1,13 +1,21 @@
 package ar.edu.utn.frbb.tup.controller;
 
-import jakarta.validation.constraints.NotNull;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 import java.util.HashSet;
 import java.util.Set;
 
 public class ClienteCuentasResponseDto {
-  @Positive private long dni;
-  @NotNull private Set<CuentaResponseDto> cuentas;
+  @Schema(
+      description = "DNI del Titular",
+      example = "12345678",
+      requiredMode = RequiredMode.REQUIRED)
+  @Positive
+  private long dni;
+
+  @NotBlank private Set<CuentaResponseDto> cuentas;
 
   public long getDni() {
     return dni;

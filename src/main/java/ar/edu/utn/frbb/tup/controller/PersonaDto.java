@@ -2,7 +2,7 @@ package ar.edu.utn.frbb.tup.controller;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 
 public class PersonaDto {
@@ -11,29 +11,28 @@ public class PersonaDto {
       description = "DNI del Cliente",
       example = "12345678",
       requiredMode = RequiredMode.REQUIRED)
-  @NotNull
-  @Positive
+  @Positive(message = "Campo debe ser un número positivo")
   private long dni;
 
   @Schema(
       description = "Nombre del Cliente",
       example = "Federico",
       requiredMode = RequiredMode.REQUIRED)
-  @NotNull
+  @NotBlank(message = "Campo no puede estar vacio")
   private String nombre;
 
   @Schema(
       description = "Apellido del Cliente",
       example = "Garcia",
       requiredMode = RequiredMode.REQUIRED)
-  @NotNull
+  @NotBlank(message = "Campo no puede estar vacio")
   private String apellido;
 
   @Schema(
       description = "Fecha de Nacimiento del Cliente",
       example = "1998-01-05",
       requiredMode = RequiredMode.REQUIRED)
-  @NotNull
+  @NotBlank(message = "Campo no puede estar vacio")
   private String fechaNacimiento;
 
   public String getNombre() {

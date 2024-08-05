@@ -9,7 +9,7 @@ public class DepositoRequestDto extends MovimientoRequestDto {
       description = "Id de la cuenta a la que se le realiza el deposito",
       example = "123456",
       requiredMode = RequiredMode.REQUIRED)
-  @Positive
+  @Positive(message = "Campo debe ser un número positivo")
   private long cuenta;
 
   public long getCuenta() {

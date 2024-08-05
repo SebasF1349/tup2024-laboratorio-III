@@ -2,7 +2,7 @@ package ar.edu.utn.frbb.tup.controller;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
-import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 
 public class MovimientoRequestDto {
@@ -10,14 +10,14 @@ public class MovimientoRequestDto {
       description = "Monto del movimiento",
       example = "1000",
       requiredMode = RequiredMode.REQUIRED)
-  @Positive
+  @Positive(message = "Campo debe ser un número positivo")
   private double monto;
 
   @Schema(
       description = "Moneda del movimiento",
       example = "pesos",
       requiredMode = RequiredMode.REQUIRED)
-  @NotEmpty
+  @NotBlank(message = "Campo no puede estar vacio")
   private String moneda;
 
   public double getMonto() {

@@ -2,19 +2,18 @@ package ar.edu.utn.frbb.tup.controller;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
 
 public class ClienteResponseDto extends PersonaDto {
   @Schema(
       description = "Tipo de Persona",
       example = "Juridica",
       requiredMode = RequiredMode.REQUIRED)
-  @NotNull
-  @NotNull
+  @NotBlank
   private String tipoPersona;
 
   @Schema(description = "Banco", example = "Galicia", requiredMode = RequiredMode.REQUIRED)
-  @NotNull
+  @NotBlank
   private String banco;
 
   @Schema(

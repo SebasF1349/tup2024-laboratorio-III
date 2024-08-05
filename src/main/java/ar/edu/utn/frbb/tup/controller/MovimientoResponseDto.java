@@ -2,8 +2,7 @@ package ar.edu.utn.frbb.tup.controller;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 
 public class MovimientoResponseDto {
@@ -15,21 +14,21 @@ public class MovimientoResponseDto {
       description = "Fecha de realización del movimiento",
       example = "2024-01-05",
       requiredMode = RequiredMode.REQUIRED)
-  @NotNull
+  @NotBlank
   private String fecha;
 
   @Schema(
       description = "Tipo de la Transaccion",
       example = "Credito",
       requiredMode = RequiredMode.REQUIRED)
-  @NotNull
+  @NotBlank
   private String tipoTransaccion;
 
   @Schema(
       description = "Descripcion del movimiento",
       example = "Pago en el supermercado",
       requiredMode = RequiredMode.REQUIRED)
-  @NotNull
+  @NotBlank
   private String descripcion;
 
   @Schema(
@@ -47,7 +46,7 @@ public class MovimientoResponseDto {
       description = "Moneda del movimiento",
       example = "pesos",
       requiredMode = RequiredMode.REQUIRED)
-  @NotEmpty
+  @NotBlank
   private String moneda;
 
   public long getMovimientoId() {

@@ -1,14 +1,18 @@
 package ar.edu.utn.frbb.tup.controller;
 
-import jakarta.validation.constraints.NotNull;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
-
 import java.util.HashSet;
 import java.util.Set;
 
 public class CuentaMovimientosResponseDto {
-  @Positive private long numeroCuenta;
-  @NotNull private Set<MovimientoResponseDto> movimientos;
+  @Schema(description = "Numero de Cuenta", example = "123", requiredMode = RequiredMode.REQUIRED)
+  @Positive
+  private long numeroCuenta;
+
+  @NotBlank private Set<MovimientoResponseDto> movimientos;
 
   public long getNumeroCuenta() {
     return numeroCuenta;
